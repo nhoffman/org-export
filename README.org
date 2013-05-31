@@ -1,0 +1,12 @@
+#+TITLE: Organism-specific read truncation on the Ion PGM (400bp chemistry)
+#+AUTHOR: Noah Hoffman
+
+* org-export
+
+Command line tool for exporting org-mode to various media
+
+Example:
+
+: ./org2html.el README.org README.html
+
+For now, use the absolute path to org2*.el
