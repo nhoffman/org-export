@@ -1,4 +1,4 @@
-#+TITLE: Organism-specific read truncation on the Ion PGM (400bp chemistry)
+#+TITLE: org-export
 #+AUTHOR: Noah Hoffman
 
 * org-export
