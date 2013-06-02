@@ -90,6 +90,18 @@ MIN-VERSION should be a version list."
     (org-babel-remove-result)))
 
 ;; org-mode configuration
+
+;; bootstrap-specific configuration
+(setq my-html-head
+      "<link rel=\"stylesheet\" type=\"text/css\"
+       href=\"http://twitter.github.io/bootstrap/assets/css/bootstrap.css\" />")
+;; overrides bootstrap default value of "width: 100%"
+(setq my-html-head-extra
+      "<style type=\"text/css\">.table {width: auto;}</style>")
+(setq my-html-doctype "<!DOCTYPE html>")
+(setq my-html-table-default-attributes
+      '(:class "table table-striped table-condensed table-bordered table-hover"))
+
 (add-hook 'org-mode-hook
 	  '(lambda ()
 	     (turn-on-font-lock)
@@ -102,11 +114,11 @@ MIN-VERSION should be a version list."
 	     (setq org-export-preserve-breaks t)
 	     (setq org-export-with-sub-superscripts nil)
 	     (setq org-export-with-section-numbers nil)
-	     (setq org-html-head
-		   "<link rel=\"stylesheet\" type=\"text/css\"
-                    href=\"http://twitter.github.io/bootstrap/assets/css/bootstrap.css\" />")
+	     (setq org-html-doctype my-html-doctype)
+	     (setq org-html-head my-html-head)
+	     (setq org-html-head-extra my-html-head-extra)
 	     (setq org-html-table-default-attributes
-		   '(:class "table table-striped table-condensed table-bordered"))
+		   my-html-table-default-attributes)
 	     (setq org-babel-default-header-args
 		   '((:session . "none")
 		     (:results . "output replace")
@@ -149,7 +161,7 @@ MIN-VERSION should be a version list."
 (setq cwd default-directory)
 
 ;; copy file containing the post to a tempfile
-(setq infile-temp (make-temp-name "infile-temp-"))
+(setq infile-temp (make-temp-name "org2html-"))
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
