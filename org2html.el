@@ -1,10 +1,8 @@
 #!emacs --script
 
-;; use the position of the current file to identify the package
-;; directory
-(setq user-emacs-directory
-      (nth 1 (reverse (split-string load-file-name "/"))))
-(message (format "using packages in %s" user-emacs-directory))
+;; Export an org-mode file to html
+;;
+;; Usage: org2html.el -infile in.org -outfile out.html [-package-dir path/to/elpa-package-dir]
 
 ;; functions for processing command line arguments
 ;; http://ergoemacs.org/emacs/elisp_hash_table.html
@@ -12,9 +10,10 @@
   ;; return true if string looks like a command line option
   (string-equal (substring str 0 1) "-"))
 
-(defun get-option (opt args)
-  ;; Return the value of "opt" from "args"; raise an error if missing.
-  (or (gethash opt args)
+(defun get-option (args opt &optional default)
+  ;; Return the value of "opt" from "args"; if there is no value for
+  ;; "opt" return "default" if provided, otherwise raise an error.
+  (or (or (gethash opt args) default)
       (error (format "Error: option -%s is required" opt))))
 
 (defun replace-all (from-str to-str)
@@ -39,6 +38,16 @@
   (if (and (is-option opt) (not (is-option val)))
       (puthash (substring opt 1 nil) val args))
   (setq clargs (cdr clargs)))
+
+;; get command line options
+(setq infile (get-option args "infile"))
+(setq outfile (get-option args "outfile"))
+
+;; -package-dir defines where elpa should find or install packages and
+;; package data
+(setq user-emacs-directory (get-option args "package-dir" "~/.org-export"))
+
+(message (format "using packages in %s" user-emacs-directory))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;; packages ;;;;;;;;;;;;;;;;;
@@ -153,9 +162,9 @@ MIN-VERSION should be a version list."
 	     (setq ess-ask-for-ess-directory nil)
 	     ))
 
-;; get command line options
-(setq infile (get-option "infile" args))
-(setq outfile (get-option "outfile" args))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; save the current directory; find-file seems to change it
 (setq cwd default-directory)
