@@ -2,7 +2,9 @@
 
 ;; Export an org-mode file to html
 ;;
-;; Usage: org2html.el -infile in.org -outfile out.html [-package-dir path/to/elpa-package-dir]
+;; Usage: org2html.el -infile in.org -outfile out.html
+;;        [-package-dir path/to/elpa-package-dir]
+;;        [-css-url url-or-path]
 
 ;; functions for processing command line arguments
 ;; http://ergoemacs.org/emacs/elisp_hash_table.html

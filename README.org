@@ -1,12 +1,44 @@
 #+TITLE: org-export
 #+AUTHOR: Noah Hoffman
 
-* org-export
+Command line tools for exporting org-mode to various media.
 
-Command line tool for exporting org-mode to various media
+Provides non-interactive compilation of org-mode files. These scripts
+(er, well, one script for now) will download necessary dependencies
+and does not rely on (or consult) the user's own emacs configuration.
+
+By default, a new folder is created in ~/.org-export the first time a
+script is executed, and dependencies (such as the most recent version
+of org-mode) are installed using elpa.
+
+* Installation
+
+Well, there isn't any, really. At the moment just drop the org2html.el
+someplace on your $PATH. Or not.
+
+* Requirements
+
+- GNU emacs 24.x
+
+
+* org2html.el
+
+Export org-mode to html
+
+Command line arguments:
+- -infile      :: Input org-mode file.
+- -outfile     :: Output html file.
+- -package-dir :: Directory into which required packages will be
+                  downloaded and installed [default ~/.org-export].
+- -css-url     :: URL or path for a css stylesheet [default
+                  http://twitter.github.io/bootstrap/assets/css/bootstrap.css].
 
 Example:
 
-: ./org2html.el README.org README.html
+: ./org2html.el -infile README.org -outfile README.html
 
-For now, use the absolute path to org2*.el
+Uses a minimally modified Bootstrap
+(http://twitter.github.io/bootstrap/) css theme by default. Be nice:
+the default url uses an asset hosted on github.io, so the polite thing
+to do would be to change this to something self-hosted for anything
+high volume.
