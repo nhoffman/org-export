@@ -46,6 +46,8 @@
 ;; -package-dir defines where elpa should find or install packages and
 ;; package data
 (setq user-emacs-directory (get-option args "package-dir" "~/.org-export"))
+(setq css-url
+      (get-option args "css-url" "http://twitter.github.io/bootstrap/assets/css/bootstrap.css"))
 
 (message (format "using packages in %s" user-emacs-directory))
 
@@ -102,8 +104,7 @@ MIN-VERSION should be a version list."
 
 ;; bootstrap-specific configuration
 (setq my-html-head
-      "<link rel=\"stylesheet\" type=\"text/css\"
-       href=\"http://twitter.github.io/bootstrap/assets/css/bootstrap.css\" />")
+      (format "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />" css-url))
 ;; overrides bootstrap default value of "width: 100%"
 (setq my-html-head-extra
       "<style type=\"text/css\">.table {width: auto;}</style>")
@@ -120,7 +121,7 @@ MIN-VERSION should be a version list."
 	     (setq org-export-allow-BIND 1)
 	     (setq org-export-html-coding-system 'utf-8)
 	     (setq org-export-html-postamble nil)
-	     (setq org-export-preserve-breaks t)
+	     ;; (setq org-export-preserve-breaks t)
 	     (setq org-export-with-sub-superscripts nil)
 	     (setq org-export-with-section-numbers nil)
 	     (setq org-html-doctype my-html-doctype)
