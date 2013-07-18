@@ -37,6 +37,10 @@ Example:
 
 : ./org2html.el -infile README.org -outfile README.html
 
+On OS X, you may need to use the absolute path to the emacs binary:
+
+: /Applications/Emacs.app/Contents/MacOS/Emacs --script org2html.el -infile ...
+
 Uses a minimally modified Bootstrap
 (http://twitter.github.io/bootstrap/) css theme by default. Be nice:
 the default url uses an asset hosted on github.io, so the polite thing
