@@ -31,7 +31,9 @@ Command line arguments:
 - -package-dir :: Directory into which required packages will be
                   downloaded and installed [default ~/.org-export].
 - -css-url     :: URL or path for a css stylesheet [default
-                  http://twitter.github.io/bootstrap/assets/css/bootstrap.css].
+                  http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css].
+
+
 
 Example:
 
@@ -42,7 +44,4 @@ On OS X, you may need to use the absolute path to the emacs binary:
 : /Applications/Emacs.app/Contents/MacOS/Emacs --script org2html.el -infile ...
 
 Uses a minimally modified Bootstrap
-(http://twitter.github.io/bootstrap/) css theme by default. Be nice:
-the default url uses an asset hosted on github.io, so the polite thing
-to do would be to change this to something self-hosted for anything
-high volume.
+(http://twitter.github.io/bootstrap/) css theme by default.
