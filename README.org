@@ -2,50 +2,66 @@
 #+AUTHOR: Noah Hoffman
 #+OPTIONS: toc:nil ^:nil
 
-*Command line tools for exporting org-mode to various media.*
+* org-export: scripted, standalone processing of org-mode files
 
-Provides non-interactive compilation of org-mode files. These scripts
-will download necessary dependencies and do not rely on (or consult)
-the user's own emacs configuration.
+** Overview
 
-By default, a new folder is created in ~/.org-export the first time a
-script is executed, and dependencies (such as the most recent version
-of org-mode) are installed using elpa.
+Emacs [[http://orgmode.org/][org-mode]] is a markup language for "keeping notes, maintaining
+TODO lists, planning projects, and authoring documents" - but most
+importantly (to me) it's a platform for literate programming and
+reproducible research. [[http://orgmode.org/worg/org-contrib/babel/][Babel]] supports the creation of documents with
+interleaved code (eg, R, Python, shell, sqlite, elisp, etc) and
+text. The code may be evaluated and the results incorporated into the
+document. One limitation is that org-mode is primarily oriented toward
+interactive compilation of documents via emacs. This project provides
+tools for non-interactive compilation of org-mode files. Why is this
+useful?
 
-* Requirements
+- Not everyone uses emacs (/gasp!/), but everyone should be able to
+  create documents using org-mode!
+- Document generation can be fully scripted (eg, as the final step in
+  an analysis pipeline).
+- Interactively-compiled documents depend on an individual user's
+  emacs configuration, which can produce different results for
+  different users; these scripts manage all dependencies from elpa
+  independently of the users' own emacs config. By default, a new
+  folder is created in ~/.org-export the first time a script is
+  executed, and dependencies (such as the most recent version of
+  org-mode) are installed using elpa. Therefore *the only requirement
+  should be emacs 24+* (tested primarily with 24.3).
+- These scripts also provide some conveniences with respect to
+  providing css styles.
 
-- GNU emacs 24+
+** Installation and use
 
+Clone this repository. Then either copy all scripts (=*.el=) to
+a directory on your =$PATH= or invoke using the absolute path to an
+individual script. =cli.el= must be present in the same directory as
+the other scripts.
 
-* Installation
-
-Either copy all scripts to a directory on your =$PATH= or invoke using
-the absolute path. The only requirement is that =cli.el= is in the
-same directory at the other scripts.
-
-If the stars are aligned, you should be able to execute using:
+If the stars are aligned (ie, both the correct version of emacs and
+the script are on your $PATH), you should be able to execute using:
 
 : org-html.el --infile ...
 
 If that doesn't work, try:
 
-: emacs --script org-html.el --infile ...
+: emacs --script path/to/org-html.el --infile ...
 
 If all else fails, you may need to use the absolute path to the emacs
 binary; for example on OS X:
 
-: /Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el --infile ...
+: /Applications/Emacs.app/Contents/MacOS/Emacs --script path/to/org-html.el --infile ...
 
-* Scripts
+** Scripts
+*** org-html.el
 
-** org-html.el
-
-Export org-mode to html
+Exports org-mode to html
 
 Command line arguments:
 
 #+BEGIN_SRC sh :results output :exports results
-/Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el -h
+emacs --script org-html.el -h
 #+END_SRC
 
 #+RESULTS:
@@ -57,3 +73,22 @@ Command line arguments:
 :                         if selected, link to Bootstrap CDN by default
 :  --package-dir      directory containing elpa packages
 :  --package-upgrade  Perform package upgrade
+
+The simplest invocation is as follows (you can test this out using this document):
+
+: emacs --script org-html.el --infile README.org
+
+If you want to provide css styles using [[http://getbootstrap.com/][Bootstrap]] (inserts a link to the Bootstrap CDN):
+
+: emacs --script org-html.el --infile README.org --bootstrap
+
+You can also embed the css content in a =<style>= block - this is
+useful if you want to distribute a file and don't want to assume that
+the user's environment will support linking to the css file.
+
+: emacs --script org-html.el --infile README.org --bootstrap --embed-css
+
+It's also easy to link to or embed alternative css stylesheets, for
+example, the ones used by the org-mode manual:
+
+: emacs --script org-html.el --infile README.org --css http://orgmode.org/org-manual.css --embed-css

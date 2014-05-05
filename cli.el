@@ -3,7 +3,6 @@
 
 (setq lexical-binding t)
 (provide 'cli)
-(require 'package)
 
 (defun cli-do-nothing () t)
 
@@ -112,20 +111,21 @@ value of `cli-do-nothing'.
 
 ;; package management
 
-(defun cli-package-installed-not-builtin-p (package &optional min-version)
-  "Return true if PACKAGE, of MIN-VERSION or newer, is installed,
-ignoring built in packages.  MIN-VERSION should be a version
-list."
+(defun cli-package-installed-p (package &optional min-version)
+  "Return true if PACKAGE, of MIN-VERSION or newer, is installed (ignoring built-in versions).
+MIN-VERSION should be a version list."
+  (unless package--initialized (error "package.el is not yet initialized!"))
   (let ((pkg-desc (assq package package-alist)))
     (if pkg-desc
-        (version-list-<= min-version
-                         (package-desc-vers (cdr pkg-desc))))))
+	(version-list-<= min-version
+			 (package-desc-vers (cdr pkg-desc)))
+      )))
 
 (defun cli-install-packages (package-list)
   "Install each package named in PACKAGE-LIST using elpa if not
 already installed."
   (mapc #'(lambda (pkg)
-	    (unless (cli-package-installed-not-builtin-p pkg)
+	    (unless (cli-package-installed-p pkg)
 	      (package-menu-refresh)
 	      (package-install pkg))
 	    ) package-list))
@@ -136,7 +136,12 @@ already installed."
     ))
 
 (defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
+  (unless (file-readable-p emacs-directory)
+    (message (format "Creating directory %s" emacs-directory))
+    (make-directory emacs-directory t))
   (setq user-emacs-directory emacs-directory)
+  ;; make sure to initialize package *after* user-emacs-directory is defined
+  (require 'package)
   (package-initialize)
   (setq package-archives (or archives cli-default-package-archives))
   (package-list-packages-no-fetch)
@@ -145,6 +150,8 @@ already installed."
 	(package-menu-mark-upgrades)
 	(package-menu-execute)))
   (cli-install-packages package-list))
+
+;; other utilities
 
 (defun cli-replace-all (from-str to-str)
   "Replace all occurrences of from-str with to-str in current buffer"
