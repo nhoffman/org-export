@@ -1,47 +1,61 @@
 #+TITLE: org-export
 #+AUTHOR: Noah Hoffman
+#+OPTIONS: toc:nil ^:nil
 
-Command line tools for exporting org-mode to various media.
+*Command line tools for exporting org-mode to various media.*
 
 Provides non-interactive compilation of org-mode files. These scripts
-(er, well, one script for now) will download necessary dependencies
-and does not rely on (or consult) the user's own emacs configuration.
+will download necessary dependencies and do not rely on (or consult)
+the user's own emacs configuration.
 
 By default, a new folder is created in ~/.org-export the first time a
 script is executed, and dependencies (such as the most recent version
 of org-mode) are installed using elpa.
 
-* Installation
-
-Well, there isn't any, really. At the moment just drop the org2html.el
-someplace on your $PATH. Or not.
-
 * Requirements
 
-- GNU emacs 24.x
+- GNU emacs 24+
 
 
-* org2html.el
+* Installation
+
+Either copy all scripts to a directory on your =$PATH= or invoke using
+the absolute path. The only requirement is that =cli.el= is in the
+same directory at the other scripts.
+
+If the stars are aligned, you should be able to execute using:
+
+: org-html.el --infile ...
+
+If that doesn't work, try:
+
+: emacs --script org-html.el --infile ...
+
+If all else fails, you may need to use the absolute path to the emacs
+binary; for example on OS X:
+
+: /Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el --infile ...
+
+* Scripts
+
+** org-html.el
 
 Export org-mode to html
 
 Command line arguments:
-- -infile      :: Input org-mode file.
-- -outfile     :: Output html file.
-- -package-dir :: Directory into which required packages will be
-                  downloaded and installed [default ~/.org-export].
-- -css-url     :: URL or path for a css stylesheet [default
-                  http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css].
+
+#+BEGIN_SRC sh :results output raw :exports results
+/Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el -h-org
+#+END_SRC
+
+#+RESULTS:
+- =--infile= :: path to input .org file
+- =--outfile= :: path to output .html file (use base name of infile by default)
+- =--css= :: path or URL of css
+- =--embed-css= :: Include contents of css in a <style> block
+- =--bootstrap= :: make Bootstrap-specific modifications to html output;
+                        if selected, link to Bootstrap CDN by default
+- =--package-dir= :: directory containing elpa packages
+- =--package-upgrade= :: Perform package upgrade
 
 
-
-Example:
-
-: ./org2html.el -infile README.org -outfile README.html
-
-On OS X, you may need to use the absolute path to the emacs binary:
-
-: /Applications/Emacs.app/Contents/MacOS/Emacs --script org2html.el -infile ...
-
-Uses a minimally modified Bootstrap
-(http://twitter.github.io/bootstrap/) css theme by default.
