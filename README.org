@@ -34,34 +34,42 @@ useful?
 
 ** Installation and use
 
-Clone this repository. Then either copy all scripts (=*.el=) to
-a directory on your =$PATH= or invoke using the absolute path to an
-individual script. =cli.el= must be present in the same directory as
-the other scripts.
+Clone this repository. Then either copy all scripts to a directory on
+your =$PATH= (eg, =cp org-export *.el /usr/local/bin=) or invoke using
+the absolute path to =org-export=. =cli.el= must be present in
+the same directory as the other scripts.
 
-If the stars are aligned (ie, both the correct version of emacs and
-the script are on your $PATH), you should be able to execute using:
+Execute the script with =-h= to see usage and available commands:
 
-: org-html.el --infile ...
+#+BEGIN_SRC sh :results output :exports both
+./org-export -h
+#+END_SRC
 
-If that doesn't work, try:
+#+RESULTS:
+: Usage: org-export command options...
+:
+: Available commands include:
+:   html
+:   tangle
 
-: emacs --script path/to/org-html.el --infile ...
+If all of the scripts are on your $PATH, you should be able to execute using:
 
-If all else fails, you may need to use the absolute path to the emacs
-binary; for example on OS X:
+: org-export html --infile ...
 
-: /Applications/Emacs.app/Contents/MacOS/Emacs --script path/to/org-html.el --infile ...
+You may need to explicitly identify the emacs binary using the =EMACS=
+environment variable; for example on OS X:
 
-** Scripts
-*** org-html.el
+: EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
+
+** Commands
+*** org-export html
 
 Exports org-mode to html
 
 Command line arguments:
 
-#+BEGIN_SRC sh :results output :exports results
-emacs --script org-html.el -h
+#+BEGIN_SRC sh :results output :exports both
+./org-export html -h
 #+END_SRC
 
 #+RESULTS:
@@ -76,19 +84,19 @@ emacs --script org-html.el -h
 
 The simplest invocation is as follows (you can test this out using this document):
 
-: emacs --script org-html.el --infile README.org
+: org-export html --infile README.org
 
 If you want to provide css styles using [[http://getbootstrap.com/][Bootstrap]] (inserts a link to the Bootstrap CDN):
 
-: emacs --script org-html.el --infile README.org --bootstrap
+: org-export html --infile README.org --bootstrap
 
 You can also embed the css content in a =<style>= block - this is
 useful if you want to distribute a file and don't want to assume that
 the user's environment will support linking to the css file.
 
-: emacs --script org-html.el --infile README.org --bootstrap --embed-css
+: org-export html --infile README.org --bootstrap --embed-css
 
 It's also easy to link to or embed alternative css stylesheets, for
 example, the ones used by the org-mode manual:
 
-: emacs --script org-html.el --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+: org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css

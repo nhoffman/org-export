@@ -1,5 +1,3 @@
-#!/usr/bin/env emacs --script
-
 (require 'cli (concat (file-name-directory load-file-name) "cli.el"))
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))

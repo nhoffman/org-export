@@ -101,13 +101,16 @@ value of `cli-do-nothing'.
 	 (apply 'max (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
 	(fstr nil))
 
+    (princ (format "Options for %s:\n\n" (file-name-nondirectory load-file-name)))
+
     (if as-org
 	(setq fstr "- =%s= :: %s\n")
       (setq fstr (format " %%-%ss  %%s\n" max-width)))
 
     (mapc #'(lambda (opt)
 	      (princ (format fstr (nth 0 opt) (nth 1 opt))))
-	  options-alist)))
+	  options-alist)
+    (princ "\n")))
 
 ;; package management
 

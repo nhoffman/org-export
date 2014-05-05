@@ -1,0 +1,26 @@
+#!/bin/bash
+
+scriptdir=$(dirname $0)
+
+if [[ -z $1 || $1 == "-h" ]]; then
+    echo "Usage: org-export command options..."
+    echo
+    echo "Available commands include:"
+    for fname in $scriptdir/org-*.el; do
+	echo -n "  "
+	basename $fname | sed -e 's/^org-//' -e 's/.el$//'
+    done
+    exit
+fi
+
+command=$1
+scriptname=$scriptdir/org-${command}.el
+
+if [[ ! -f $scriptname ]]; then
+    echo "Error: $command is not a valid command"
+    exit 1
+fi
+
+emacs="${EMACS-$(which emacs)}"
+echo "using $emacs"
+"$emacs" --no-site-file --script $scriptname echo "${@:2}"
