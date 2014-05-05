@@ -44,18 +44,16 @@ Export org-mode to html
 
 Command line arguments:
 
-#+BEGIN_SRC sh :results output raw :exports results
-/Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el -h-org
+#+BEGIN_SRC sh :results output :exports results
+/Applications/Emacs.app/Contents/MacOS/Emacs --script org-html.el -h
 #+END_SRC
 
 #+RESULTS:
-- =--infile= :: path to input .org file
-- =--outfile= :: path to output .html file (use base name of infile by default)
-- =--css= :: path or URL of css
-- =--embed-css= :: Include contents of css in a <style> block
-- =--bootstrap= :: make Bootstrap-specific modifications to html output;
-                        if selected, link to Bootstrap CDN by default
-- =--package-dir= :: directory containing elpa packages
-- =--package-upgrade= :: Perform package upgrade
-
-
+:  --infile           path to input .org file
+:  --outfile          path to output .html file (use base name of infile by default)
+:  --css              path or URL of css
+:  --embed-css        Include contents of css in a <style> block
+:  --bootstrap        make Bootstrap-specific modifications to html output;
+:                         if selected, link to Bootstrap CDN by default
+:  --package-dir      directory containing elpa packages
+:  --package-upgrade  Perform package upgrade
