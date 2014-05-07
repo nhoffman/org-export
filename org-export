@@ -21,6 +21,17 @@ if [[ ! -f $scriptname ]]; then
     exit 1
 fi
 
-emacs="${EMACS-$(which emacs)}"
-echo "using $emacs"
+if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
+    emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+else
+    emacs="${EMACS-$(which emacs)}"
+fi
+
+emacs_version=$($emacs --version | head -1)
+echo "Using $emacs, $emacs_version"
+if [[ ! $emacs_version == *24.[2345]* ]]; then
+  echo "Error: Emacs version 24.2+ is required"
+  exit 1
+fi
+
 "$emacs" --no-site-file --script $scriptname echo "${@:2}"
