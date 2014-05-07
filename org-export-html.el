@@ -1,4 +1,4 @@
-(require 'cli (concat (file-name-directory load-file-name) "cli.el"))
+(require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist

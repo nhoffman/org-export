@@ -6,15 +6,15 @@ if [[ -z $1 || $1 == "-h" ]]; then
     echo "Usage: org-export command options..."
     echo
     echo "Available commands include:"
-    for fname in $scriptdir/org-*.el; do
+    for fname in $scriptdir/org-export*.el; do
 	echo -n "  "
-	basename $fname | sed -e 's/^org-//' -e 's/.el$//'
+	basename $fname | sed -e 's/^org-export-//' -e 's/.el$//'
     done
     exit
 fi
 
 command=$1
-scriptname=$scriptdir/org-${command}.el
+scriptname=$scriptdir/org-export-${command}.el
 
 if [[ ! -f $scriptname ]]; then
     echo "Error: $command is not a valid command"
