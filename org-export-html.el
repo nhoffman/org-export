@@ -10,14 +10,11 @@
 	("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
 	("--package-dir" "directory containing elpa packages" "~/.org-export")
-	("--package-upgrade" "Perform package upgrade" nil)
 	))
 
 (setq args (cli-parse-args options-alist))
 (defun getopt (name) (gethash name args))
-
-(cli-package-setup
- (getopt "package-dir") '(ess htmlize org) (getopt "package-upgrade"))
+(cli-package-setup (getopt "package-dir") '(ess htmlize org))
 
 ;; general configuration
 (setq make-backup-files nil)

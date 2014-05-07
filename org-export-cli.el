@@ -19,7 +19,7 @@
 `options-alist') is required."
   (eq (length optdef) 2))
 
-(defun cli-parse-args (options-alist &optional arguments)
+(defun cli-parse-args (options-alist &optional docstring arguments)
   "Parses a list of arguments according to the specifiction
 provided by `options-alist' and returns a hashmap of option names
 to values. Arguments are read from `command-line-args' unless an
@@ -55,8 +55,8 @@ value of `cli-do-nothing'.
 	(hashval nil))
 
     ;; print help text and exit if command line contains -h or -h-org
-    (if (or (member "-h" clargs) (member "-h-org" clargs))
-	(progn (cli-show-help options-alist (member "-h-org" clargs))
+    (if (member "-h" clargs)
+	(progn (cli-show-help options-alist docstring)
 	       (kill-emacs 0)))
 
     ;; set defaults
@@ -94,19 +94,17 @@ value of `cli-do-nothing'.
     args
     ))
 
-(defun cli-show-help (options-alist &optional as-org)
+(defun cli-show-help (options-alist &optional docstring)
   "Display options, defaults and help text defined in
 `options-alist' (see `cli-parse-args' for specification)"
   (let ((max-width
 	 (apply 'max (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
 	(fstr nil))
 
-    (princ (format "Options for %s:\n\n" (file-name-nondirectory load-file-name)))
+    (if docstring (princ docstring))
 
-    (if as-org
-	(setq fstr "- =%s= :: %s\n")
-      (setq fstr (format " %%-%ss  %%s\n" max-width)))
-
+    (princ "Command line options:\n\n")
+    (setq fstr (format " %%-%ss  %%s\n" max-width))
     (mapc #'(lambda (opt)
 	      (princ (format fstr (nth 0 opt) (nth 1 opt))))
 	  options-alist)
@@ -163,6 +161,7 @@ already installed."
     (replace-match to-str nil t)))
 
 ;; only executed if this is the script called from the command line
+;; (ie, "if __name__ == '__main__'")
 (if (member (file-name-nondirectory load-file-name)
 	    (mapcar 'file-name-nondirectory command-line-args))
     (progn
@@ -171,7 +170,12 @@ already installed."
 	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ))
 
-      (setq args (cli-parse-args options-alist))
+      (defvar docstring "
+Manage elpa packages
+
+")
+
+      (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
 
       (cli-package-setup
