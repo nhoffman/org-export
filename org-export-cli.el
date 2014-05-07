@@ -161,3 +161,19 @@ already installed."
   (beginning-of-buffer)
   (while (search-forward from-str nil t)
     (replace-match to-str nil t)))
+
+;; only executed if this is the script called from the command line
+(if (member (file-name-nondirectory load-file-name)
+	    (mapcar 'file-name-nondirectory command-line-args))
+    (progn
+      (setq options-alist
+	    '(("--package-dir" "directory containing elpa packages" "~/.org-export")
+	      ("--package-upgrade" "Perform package upgrade" nil)
+	      ))
+
+      (setq args (cli-parse-args options-alist))
+      (defun getopt (name) (gethash name args))
+
+      (cli-package-setup
+       (getopt "package-dir") '(ess htmlize org) (getopt "package-upgrade"))
+      ))
