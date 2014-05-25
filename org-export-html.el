@@ -100,7 +100,8 @@
 
 (defvar infile (getopt "infile"))
 (defvar outfile
-  (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".html" infile)))
+  (file-truename
+   (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".html" infile))))
 
 ;; remember the current directory; find-file changes it
 (defvar cwd default-directory)
