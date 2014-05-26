@@ -5,8 +5,7 @@
       '(("--infile" "path to input .org file")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
-	("--package-dir" "directory containing elpa packages" "~/.org-export")
-	))
+	("--package-dir" "directory containing elpa packages" "~/.org-export")))
 
 (setq args (cli-parse-args options-alist))
 (defun getopt (name) (gethash name args))
@@ -68,6 +67,7 @@
 (defvar outfile
   (file-truename
    (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".html" infile))))
+(defvar save-as (file-name-nondirectory outfile))
 
 ;; remember the current directory; find-file changes it
 (defvar cwd default-directory)
@@ -99,12 +99,13 @@
         <meta name=\"date\" content=\"%s\" />
         <meta name=\"category\" content=\"%s\" />
         <meta name=\"tags\" content=\"%s\" />
+        <meta name=\"save_as\" content=\"%s\" />
     </head>
-    <body>" title author date category tags)
-  ))
+    <body>" title author date category tags save-as)))
 
-        ;; <meta name=\"modified\" content=\"2012-07-10 20:14\" />
-        ;; <meta name=\"summary\" content=\"Short version for index and feeds\" />
+;; might want to add these fields later
+;; <meta name=\"modified\" content=\"2012-07-10 20:14\" />
+;; <meta name=\"summary\" content=\"Short version for index and feeds\" />
 
 (org-html-export-as-html nil nil nil t)
 
@@ -113,18 +114,7 @@
 (goto-char (point-max))
 (insert "</body></html>")
 
-;; It is not possible to add attributes to certain elements (eg,
-;; <body>) using org-mode configuration, so we'll just use string
-;; replacement as necessary.
-;; (if (getopt "bootstrap")
-;;     (progn
-;;       (cli-replace-all "<body>" "<body class=\"container\">")
-;;       (cli-replace-all
-;;        "<table>"
-;;        "<table class=\"table table-striped table-bordered table-condensed\"
-;;          style=\"width: auto;\">")
-;;       (cli-replace-all "<dl class=\"org-dl\">" "<dl class=\"dl-horizontal\">")))
-
+;; all done
 (write-file outfile)
 
 ;; clean up
