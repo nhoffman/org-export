@@ -71,7 +71,10 @@
 
 ;; remember the current directory; find-file changes it
 (defvar cwd default-directory)
-(defvar infile-temp (make-temp-name outfile))
+;; copy the source file to a temporary file; note that using the
+;; infile as the base name defines the working directory as the same
+;; as the input file
+(defvar infile-temp (make-temp-name infile))
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
