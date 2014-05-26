@@ -100,8 +100,9 @@
         <meta name=\"category\" content=\"%s\" />
         <meta name=\"tags\" content=\"%s\" />
         <meta name=\"save_as\" content=\"%s\" />
+        <meta name=\"url\" content=\"%s\" />
     </head>
-    <body>" title author date category tags save-as)))
+    <body>" title author date category tags save-as save-as)))
 
 ;; might want to add these fields later
 ;; <meta name=\"modified\" content=\"2012-07-10 20:14\" />
