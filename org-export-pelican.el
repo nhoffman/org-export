@@ -9,8 +9,10 @@
 
 (setq args (cli-parse-args options-alist))
 (defun getopt (name) (gethash name args))
-(cli-package-setup (getopt "package-dir") '(ess htmlize org))
+;; (cli-package-setup (getopt "package-dir") '(ess htmlize org))
+(cli-package-setup (getopt "package-dir") '(ess org))
 (require 'ox)
+(require 'ox-html)
 
 ;; general configuration
 (setq make-backup-files nil)
@@ -24,9 +26,8 @@
 ;; org-mode and export configuration
 (add-hook 'org-mode-hook
 	  '(lambda ()
-	     (font-lock-mode)
-	     (setq org-src-fontify-natively t)
-	     ;; (setq org-pygment-path "/usr/local/bin/pygmentize")
+	     ;; (font-lock-mode)
+	     (setq org-src-fontify-natively nil)
 	     (setq org-confirm-babel-evaluate nil)
 	     (setq org-export-allow-BIND 1)
 	     ;; (setq org-export-preserve-breaks t)
@@ -78,6 +79,12 @@
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
+
+(defun org-html-fontify-code (code lang)
+  "Replaces the original function to suppress syntax
+highlighting"
+  (when code
+    (org-html-encode-plain-text code)))
 
 (defun plist-get-as-text (plist attr)
   "Get attributes from the output of org-export-get-environment"
