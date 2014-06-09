@@ -56,7 +56,7 @@
 		      (sql . t)
 		      (sqlite . t)
 		      (emacs-lisp . t)
-		      ;; (pygment . t)
+		      (dot . t)
 		      )))
 	     ))
 
