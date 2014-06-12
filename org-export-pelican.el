@@ -24,6 +24,17 @@
 	     ))
 
 ;; org-mode and export configuration
+
+;; store the execution path for the current environment and provide it
+;; to sh code blocks - otherwise, some system directories are
+;; prepended in the code block's environment. Would be nice to figure
+;; out where these are coming from. This solves the problem for shell
+;; code blocks, but not for other languages (like python).
+(defvar exec-path-str
+  (mapconcat 'identity exec-path ":"))
+(defvar sh-src-prologue
+  (format "export PATH=\"%s\"" exec-path-str))
+
 (add-hook 'org-mode-hook
 	  '(lambda ()
 	     ;; (font-lock-mode)
@@ -36,6 +47,7 @@
 	     	   '(:class "table table-striped table-bordered table-condensed"
 			    :style "width: auto;"))
 	     (setq org-export-with-section-numbers nil)
+	     (setq org-babel-sh-command "bash")
 	     (setq org-babel-default-header-args
 		   '((:session . "none")
 		     (:results . "output replace")
@@ -46,6 +58,13 @@
 		     (:tangle . "no")
 		     (:padnewline . "yes")
 		     ))
+	     ;; explicitly set the PATH in sh code blocks; note that
+	     ;; `list`, the backtick, and the comma are required to
+	     ;; dereference sh-src-prologue as a variable; see
+	     ;; http://stackoverflow.com/questions/24188100
+	     (setq org-babel-default-header-args:sh
+		   (list `(:prologue . ,sh-src-prologue)))
+
 	     ;; (setq org-export-htmlize-output-type 'css)
 	     (org-babel-do-load-languages
 	      (quote org-babel-load-languages)
@@ -131,3 +150,4 @@ highlighting"
 ;; clean up
 (setq default-directory cwd)
 (delete-file infile-temp)
+
