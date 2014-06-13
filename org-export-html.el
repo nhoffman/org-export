@@ -15,6 +15,8 @@
 (setq args (cli-parse-args options-alist))
 (defun getopt (name) (gethash name args))
 (cli-package-setup (getopt "package-dir") '(ess htmlize org))
+(require 'ox)
+(require 'ox-html)
 
 ;; general configuration
 (setq make-backup-files nil)
@@ -57,6 +59,17 @@
 	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />" css-url))))
 
 ;; org-mode and export configuration
+
+;; store the execution path for the current environment and provide it
+;; to sh code blocks - otherwise, some system directories are
+;; prepended in the code block's environment. Would be nice to figure
+;; out where these are coming from. This solves the problem for shell
+;; code blocks, but not for other languages (like python).
+(defvar exec-path-str
+  (mapconcat 'identity exec-path ":"))
+(defvar sh-src-prologue
+  (format "export PATH=\"%s\"" exec-path-str))
+
 (add-hook 'org-mode-hook
 	  '(lambda ()
 	     (font-lock-mode)
@@ -70,6 +83,7 @@
 	     (setq org-html-doctype "html5")
 	     (setq org-html-head my-html-head)
 	     ;; (setq org-html-head-extra my-html-head-extra)
+	     (setq org-babel-sh-command "bash")
 	     (setq org-babel-default-header-args
 		   '((:session . "none")
 		     (:results . "output replace")
@@ -80,6 +94,13 @@
 		     (:tangle . "no")
 		     (:padnewline . "yes")
 		     ))
+	     ;; explicitly set the PATH in sh code blocks; note that
+	     ;; `list`, the backtick, and the comma are required to
+	     ;; dereference sh-src-prologue as a variable; see
+	     ;; http://stackoverflow.com/questions/24188100
+	     (setq org-babel-default-header-args:sh
+		   (list `(:prologue . ,sh-src-prologue)))
+
 	     ;; (setq org-export-htmlize-output-type 'css)
 	     (org-babel-do-load-languages
 	      (quote org-babel-load-languages)
@@ -90,7 +111,7 @@
 		      (sql . t)
 		      (sqlite . t)
 		      (emacs-lisp . t)
-		      ;; (pygment . t)
+		      (dot . t)
 		      )))
 	     ))
 
@@ -105,7 +126,10 @@
 
 ;; remember the current directory; find-file changes it
 (defvar cwd default-directory)
-(defvar infile-temp (make-temp-name outfile))
+;; copy the source file to a temporary file; note that using the
+;; infile as the base name defines the working directory as the same
+;; as the input file
+(defvar infile-temp (make-temp-name (format "%s.temp." infile)))
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
