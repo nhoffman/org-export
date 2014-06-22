@@ -40,6 +40,9 @@ missing and a default value is defined, 'option' will be given a
 value of t (this is useful for defining boolean command line
 parameters).
 
+Command line arguments already defined by emacs (see 'emacs
+--help') are reserved and cannot be used.
+
 Note that this function has a side effect: arbitrary command line
 arguments are allowed by assigning `command-line-functions` a
 value of `cli-do-nothing'.
@@ -101,13 +104,13 @@ value of `cli-do-nothing'.
 	 (apply 'max (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
 	(fstr nil))
 
-    (if docstring (princ docstring))
-
     (princ "Command line options:\n\n")
     (setq fstr (format " %%-%ss  %%s\n" max-width))
     (mapc #'(lambda (opt)
 	      (princ (format fstr (nth 0 opt) (nth 1 opt))))
 	  options-alist)
+    (princ "\n")
+    (if docstring (princ docstring))
     (princ "\n")))
 
 ;; package management
