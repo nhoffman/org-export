@@ -5,18 +5,32 @@
       '(("--infile" "path to input .org file")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
+	("--evaluate" "evaluate source code blocks by default" nil)
 	("--css" "path or URL of css" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
 	("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
 	("--package-dir" "directory containing elpa packages" "~/.org-export")
+	("--verbose" "enable debugging message on error" nil)
 	))
 
-(setq args (cli-parse-args options-alist))
+(setq args (cli-parse-args options-alist "
+Options --infile and --outfile are required. Note that code block
+evaluation is disabled by default; use '--evaluate' to set a
+default value of ':eval yes' for all code blocks. If you would
+like to evaluate by default without requiring this option,
+include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using
+':eval yes' in the block header.
+"))
 (defun getopt (name) (gethash name args))
-(cli-package-setup (getopt "package-dir") '(ess htmlize org))
+;; (cli-package-setup (getopt "package-dir") '(ess htmlize org))
+(cli-package-setup (getopt "package-dir") '(ess org))
 (require 'ox)
 (require 'ox-html)
+
+(setq debug-on-error (getopt "verbose"))
+;; (setq debug-on-signal (getopt "debug"))
 
 ;; general configuration
 (setq make-backup-files nil)
@@ -72,8 +86,8 @@
 
 (add-hook 'org-mode-hook
 	  '(lambda ()
-	     (font-lock-mode)
-	     (setq org-src-fontify-natively t)
+	     ;; (font-lock-mode)
+	     ;; (setq org-src-fontify-natively t)
 	     ;; (setq org-pygment-path "/usr/local/bin/pygmentize")
 	     (setq org-confirm-babel-evaluate nil)
 	     (setq org-export-allow-BIND 1)
@@ -85,15 +99,17 @@
 	     ;; (setq org-html-head-extra my-html-head-extra)
 	     (setq org-babel-sh-command "bash")
 	     (setq org-babel-default-header-args
-		   '((:session . "none")
-		     (:results . "output replace")
-		     (:exports . "both")
-		     (:cache . "no")
-		     (:noweb . "no")
-		     (:hlines . "no")
-		     (:tangle . "no")
-		     (:padnewline . "yes")
-		     ))
+		   (list `(:session . "none")
+			 `(:eval . ,(if (getopt "evaluate") "yes" "no"))
+			 `(:results . "output replace")
+			 `(:exports . "both")
+			 `(:cache . "no")
+			 `(:noweb . "no")
+			 `(:hlines . "no")
+			 `(:tangle . "no")
+			 `(:padnewline . "yes")
+			 ))
+
 	     ;; explicitly set the PATH in sh code blocks; note that
 	     ;; `list`, the backtick, and the comma are required to
 	     ;; dereference sh-src-prologue as a variable; see
@@ -133,6 +149,7 @@
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
+(message (format "org-mode version %s" org-version))
 (org-html-export-as-html)
 
 ;; It is not possible to add attributes to certain elements (eg,

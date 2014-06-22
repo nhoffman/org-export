@@ -41,7 +41,7 @@ the same directory as the other scripts.
 
 Execute the script with =-h= to see usage and available commands:
 
-#+BEGIN_SRC sh :results output :exports both
+#+BEGIN_SRC sh :results output :exports both :eval yes
 ./org-export -h
 #+END_SRC
 
@@ -49,7 +49,9 @@ Execute the script with =-h= to see usage and available commands:
 : Usage: org-export command options...
 :
 : Available commands include:
+:   cli
 :   html
+:   pelican
 :   tangle
 
 If all of the scripts are on your $PATH, you should be able to execute using:
@@ -68,19 +70,34 @@ Exports org-mode to html
 
 Command line arguments:
 
-#+BEGIN_SRC sh :results output :exports both
+#+BEGIN_SRC sh :results output :exports both :eval yes
 ./org-export html -h
 #+END_SRC
 
 #+RESULTS:
-:  --infile           path to input .org file
-:  --outfile          path to output .html file (use base name of infile by default)
-:  --css              path or URL of css
-:  --embed-css        Include contents of css in a <style> block
-:  --bootstrap        make Bootstrap-specific modifications to html output;
-:                         if selected, link to Bootstrap CDN by default
-:  --package-dir      directory containing elpa packages
-:  --package-upgrade  Perform package upgrade
+#+begin_example
+Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 24.3.1
+Command line options:
+
+ --infile       path to input .org file
+ --outfile      path to output .html file (use base name of infile by default)
+ --evaluate     evaluate source code blocks by default
+ --css          path or URL of css
+ --embed-css    Include contents of css in a <style> block
+ --bootstrap    make Bootstrap-specific modifications to html output;
+                        if selected, link to Bootstrap CDN by default
+ --package-dir  directory containing elpa packages
+
+
+Options --infile and --outfile are required. Note that code block
+evaluation is disabled by default; use '--evaluate' to set a
+default value of ':eval yes' for all code blocks. If you would
+like to evaluate by default without requiring this option,
+include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using
+':eval yes' in the block header.
+
+#+end_example
 
 The simplest invocation is as follows (you can test this out using this document):
 
