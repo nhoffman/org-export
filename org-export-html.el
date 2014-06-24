@@ -24,10 +24,15 @@ header. Individual blocks can be selectively evaluated using
 ':eval yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
-(cli-package-setup (getopt "package-dir") '(ess htmlize org))
+(cli-package-setup
+ (getopt "package-dir") '(ess htmlize org color-theme color-theme-github))
 ;; (cli-package-setup (getopt "package-dir") '(ess org))
 (require 'ox)
 (require 'ox-html)
+
+;; provides colored syntax highlighting
+(require 'color-theme)
+(require 'color-theme-github)
 
 (setq debug-on-error (getopt "verbose"))
 ;; (setq debug-on-signal (getopt "debug"))
