@@ -24,8 +24,8 @@ header. Individual blocks can be selectively evaluated using
 ':eval yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
-;; (cli-package-setup (getopt "package-dir") '(ess htmlize org))
-(cli-package-setup (getopt "package-dir") '(ess org))
+(cli-package-setup (getopt "package-dir") '(ess htmlize org))
+;; (cli-package-setup (getopt "package-dir") '(ess org))
 (require 'ox)
 (require 'ox-html)
 
@@ -88,7 +88,7 @@ header. Individual blocks can be selectively evaluated using
 	  '(lambda ()
 	     ;; (font-lock-mode)
 	     ;; (setq org-src-fontify-natively t)
-	     ;; (setq org-pygment-path "/usr/local/bin/pygmentize")
+	     ;; (setq htmlize-output-type 'inline-css)
 	     (setq org-confirm-babel-evaluate nil)
 	     (setq org-export-allow-BIND 1)
 	     ;; (setq org-export-preserve-breaks t)
@@ -117,7 +117,6 @@ header. Individual blocks can be selectively evaluated using
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
-	     ;; (setq org-export-htmlize-output-type 'css)
 	     (org-babel-do-load-languages
 	      (quote org-babel-load-languages)
 	      (quote ((R . t)
