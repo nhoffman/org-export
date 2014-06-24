@@ -2,7 +2,7 @@
 #+AUTHOR: Noah Hoffman
 #+OPTIONS: toc:nil ^:nil
 
-* org-export: scripted, standalone processing of org-mode files
+* org-export: batch export of org-mode files from the command line
 
 ** Overview
 
