@@ -76,7 +76,7 @@ Command line arguments:
 
 #+RESULTS:
 #+begin_example
-Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 24.3.1
+Using /usr/local/bin/emacs, GNU Emacs 24.3.1
 Command line options:
 
  --infile       path to input .org file
@@ -87,6 +87,7 @@ Command line options:
  --bootstrap    make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default
  --package-dir  directory containing elpa packages
+ --verbose      enable debugging message on error
 
 
 Options --infile and --outfile are required. Note that code block
