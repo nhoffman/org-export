@@ -5,6 +5,7 @@
       '(("--infile" "path to input .org file")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
+	("--setwd" "evaluate infile in this directory (use dir containing infile by default)" nil)
 	("--evaluate" "evaluate source code blocks by default" nil)
 	("--css" "path or URL of css" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
@@ -15,10 +16,14 @@
 	))
 
 (setq args (cli-parse-args options-alist "
-Options --infile and --outfile are required. Note that code block
-evaluation is disabled by default; use '--evaluate' to set a
-default value of ':eval yes' for all code blocks. If you would
-like to evaluate by default without requiring this option,
+Options --infile and --outfile are required.
+
+Evaluation occurs in the directory containing infile by default;
+use '--setwd' to change the working directory.
+
+Code block evaluation is disabled by default; use '--evaluate' to
+set a default value of ':eval yes' for all code blocks. If you
+would like to evaluate by default without requiring this option,
 include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using
 ':eval yes' in the block header.
@@ -145,12 +150,21 @@ header. Individual blocks can be selectively evaluated using
    (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".html" infile))))
 
 ;; remember the current directory; find-file changes it
-(defvar cwd default-directory)
-;; copy the source file to a temporary file; note that using the
-;; infile as the base name defines the working directory as the same
-;; as the input file
-(defvar infile-temp (make-temp-name (format "%s.temp." infile)))
+;; (defvar cwd default-directory)
+
+;; Copy the source file to a temporary file; note that the prefix
+;; defines the working directory. Use the absolute path of the input
+;; file by default. And alternative working directory is specified by
+;; --setwd
+(defvar infile-temp
+  (make-temp-file
+   (if (getopt "setwd")
+       (format "%s/%s.temp" (file-truename (getopt "setwd")) (file-name-nondirectory infile))
+     (format "%s.temp." (file-truename infile)))))
+
 (copy-file infile infile-temp t)
+(if (getopt "setwd") (cd (getopt "setwd")))
+
 (find-file infile-temp)
 (org-mode)
 (message (format "org-mode version %s" org-version))
@@ -171,5 +185,5 @@ header. Individual blocks can be selectively evaluated using
 (write-file outfile)
 
 ;; clean up
-(setq default-directory cwd)
+;; (setq default-directory cwd)
 (delete-file infile-temp)
