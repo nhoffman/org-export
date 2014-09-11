@@ -22,7 +22,7 @@ if [[ ! -f $scriptname ]]; then
 fi
 
 if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
-    emacs=/Applications/Emacs.app/Contents/MacOS/Emacs
+    emacs="${EMACS-/Applications/Emacs.app/Contents/MacOS/Emacs}"
 else
     emacs="${EMACS-$(which emacs)}"
 fi
