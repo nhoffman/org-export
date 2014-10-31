@@ -98,6 +98,7 @@
 (copy-file infile infile-temp t)
 (find-file infile-temp)
 (org-mode)
+(message (format "org-mode version %s" org-version))
 
 (defun org-html-fontify-code (code lang)
   "Replaces the original function to suppress syntax
