@@ -114,16 +114,23 @@ value of `cli-do-nothing'.
     (princ "\n")))
 
 ;; package management
-
 (defun cli-package-installed-p (package &optional min-version)
-  "Return true if PACKAGE, of MIN-VERSION or newer, is installed (ignoring built-in versions).
-MIN-VERSION should be a version list."
+  "Return true if PACKAGE, of MIN-VERSION or newer, is installed
+(ignoring built-in versions).  MIN-VERSION should be a version list"
+
   (unless package--initialized (error "package.el is not yet initialized!"))
-  (let ((pkg-desc (assq package package-alist)))
-    (if pkg-desc
-	(version-list-<= min-version
-			 (package-desc-vers (cdr pkg-desc)))
-      )))
+(if (< emacs-major-version 4)
+    ;; < emacs 24.4
+    (let ((pkg-desc (assq package package-alist)))
+      (if pkg-desc
+	  (version-list-<= min-version
+			   (package-desc-vers (cdr pkg-desc)))))
+  ;; >= emacs 24.4
+  (let ((pkg-descs (cdr (assq package package-alist))))
+    (and pkg-descs
+	 (version-list-<= min-version
+			  (package-desc-version (car pkg-descs)))))
+  ))
 
 (defun cli-install-packages (package-list)
   "Install each package named in PACKAGE-LIST using elpa if not
@@ -137,6 +144,7 @@ already installed."
 (defvar cli-default-package-archives
   '(("gnu" . "http://elpa.gnu.org/packages/")
     ("marmalade" . "http://marmalade-repo.org/packages/")
+    ("org" . "http://orgmode.org/elpa/")
     ))
 
 (defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
