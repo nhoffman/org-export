@@ -137,30 +137,42 @@ value of `cli-do-nothing'.
 already installed."
   (mapc #'(lambda (pkg)
 	    (unless (cli-package-installed-p pkg)
-	      (package-menu-refresh)
-	      (package-install pkg))
+	      (message "installing %s..." pkg)
+	      (unless package-archive-contents
+		(package-refresh-contents))
+	      ;; (package-menu-refresh)
+	      (package-install pkg)
+	      (message "done installing %s" pkg))
 	    ) package-list))
 
 (defvar cli-default-package-archives
   '(("gnu" . "http://elpa.gnu.org/packages/")
     ("marmalade" . "http://marmalade-repo.org/packages/")
-    ("org" . "http://orgmode.org/elpa/")
-    ))
+    ("melpa" . "http://melpa.org/packages/")
+    ("org" . "http://orgmode.org/elpa/")))
 
 (defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
   (unless (file-readable-p emacs-directory)
     (message (format "Creating directory %s" emacs-directory))
     (make-directory emacs-directory t))
+
+  ;; must assign `user-emacs-directory' *before* requiring `package'
   (setq user-emacs-directory emacs-directory)
-  ;; make sure to initialize package *after* user-emacs-directory is defined
+
+  ;; also seems to be necessary to define `package-archives' before
+  ;; requiring `package'
+  (setq package-archives (or archives cli-default-package-archives))
+
   (require 'package)
   (package-initialize)
-  (setq package-archives (or archives cli-default-package-archives))
-  (package-list-packages-no-fetch)
+
   (if upgrade
       (progn
-	(package-menu-mark-upgrades)
-	(package-menu-execute)))
+	(package-list-packages)
+  	(package-menu-mark-upgrades)
+  	(package-menu-execute))
+    (package-list-packages-no-fetch))
+
   (cli-install-packages package-list))
 
 ;; other utilities
@@ -190,5 +202,5 @@ Manage elpa packages
       (defun getopt (name) (gethash name args))
 
       (cli-package-setup
-       (getopt "package-dir") '(ess htmlize org) (getopt "package-upgrade"))
+       (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))
       ))
