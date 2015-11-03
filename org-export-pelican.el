@@ -9,7 +9,7 @@
 
 (setq args (cli-parse-args options-alist))
 (defun getopt (name) (gethash name args))
-(cli-package-setup (getopt "package-dir") '(org htmlize))
+(cli-package-setup (getopt "package-dir") '(org htmlize ess))
 (require 'ox)
 (require 'ox-html)
 
