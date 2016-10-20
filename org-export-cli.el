@@ -1,5 +1,5 @@
-(unless (>= emacs-major-version 24)
-  (error "Error: emacs version 24 or greater is required"))
+(unless (>= emacs-major-version 25)
+  (error "Error: emacs version 25 or greater is required"))
 
 (setq lexical-binding t)
 (provide 'cli)
@@ -119,7 +119,8 @@ value of `cli-do-nothing'.
 (ignoring built-in versions).  MIN-VERSION should be a version list"
 
   (unless package--initialized (error "package.el is not yet initialized!"))
-(if (< emacs-major-version 4)
+
+(if (and (< emacs-major-version 24) (< emacs-minor-version 4))
     ;; < emacs 24.4
     (let ((pkg-desc (assq package package-alist)))
       (if pkg-desc
