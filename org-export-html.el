@@ -25,14 +25,14 @@ header. Individual blocks can be selectively evaluated using
 "))
 (defun getopt (name) (gethash name args))
 (cli-package-setup
- (getopt "package-dir") '(ess htmlize org color-theme color-theme-github))
+ (getopt "package-dir") '(ess htmlize org color-theme))
 ;; (cli-package-setup (getopt "package-dir") '(ess org))
 (require 'ox)
 (require 'ox-html)
 
 ;; provides colored syntax highlighting
 (require 'color-theme)
-(require 'color-theme-github)
+;BG: this does not work: (require 'color-theme-github)
 
 (setq debug-on-error (getopt "verbose"))
 ;; (setq debug-on-signal (getopt "debug"))
