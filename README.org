@@ -65,7 +65,8 @@ environment variable; for example on OS X:
 
 *** org-mode, el-get, and certificate errors
 
-*tl;dr*: install libressl using homebrew if you see errors about TLS certificates.
+*tl;dr*: install libressl using homebrew if you see errors on a Mac
+about TLS certificates.
 
 The full story:
 
@@ -90,8 +91,9 @@ are the lines in =cli-el-get-setup()= that implement the fix:
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")
 #+END_SRC
 
-In the end, installation of dependencies doesn't rely on =package.el=
-any more.
+I haven't seen the error using Ubuntu 16.04 (although there are
+certificate warnings). In the end, installation of dependencies
+doesn't rely on =package.el= any more.
 
 ** Commands
 *** org-export html
