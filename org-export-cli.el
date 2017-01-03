@@ -248,6 +248,6 @@ Manage elpa packages
       (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
 
-      (cli-package-setup
+      (cli-el-get-setup
        (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))
       ))
