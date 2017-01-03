@@ -1,5 +1,5 @@
-(unless (>= emacs-major-version 25)
-  (error "Error: emacs version 25 or greater is required"))
+(unless (>= emacs-major-version 24)
+  (error "Error: emacs version 24 or greater is required"))
 
 (setq lexical-binding t)
 (provide 'cli)
