@@ -126,7 +126,7 @@ header. Individual blocks can be selectively evaluated using
 	      (quote ((R . t)
 		      (latex . t)
 		      (python . t)
-		      (sh . t)
+		      (shell . t)
 		      (sql . t)
 		      (sqlite . t)
 		      (emacs-lisp . t)
