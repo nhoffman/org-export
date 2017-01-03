@@ -11,7 +11,7 @@
 Option --infile is required.
 "))
 (defun getopt (name) (gethash name args))
-(cli-package-setup
+(cli-el-get-setup
  (getopt "package-dir") '(ess org))
 
 (setq debug-on-error (getopt "verbose"))

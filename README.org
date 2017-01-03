@@ -25,10 +25,9 @@ useful?
   emacs configuration, which can produce different results for
   different users; these scripts manage all dependencies from elpa
   independently of the users' own emacs config. By default, a new
-  folder is created in ~/.org-export the first time a script is
+  folder is created in =~/.org-export= the first time a script is
   executed, and dependencies (such as the most recent version of
-  org-mode) are installed using elpa. Therefore *the only requirement
-  should be emacs 24+* (tested primarily with 24.3).
+  org-mode) are installed.
 - These scripts also provide some conveniences with respect to
   providing css styles.
 
