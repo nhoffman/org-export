@@ -28,7 +28,7 @@ install:
 ###
 
 script:
-  $EMACS --version && env
+  $EMACS --version && rm -rf ~/.org-export && ./test.sh
 
 ###
 ### settings

@@ -2,11 +2,11 @@
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
-      '(("--infile" "path to input .org file")
+      '(("--infile" "path to input .org file (required)")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
-	("--evaluate" "evaluate source code blocks by default" nil)
-	("--css" "path or URL of css" nil)
+	("--evaluate" "evaluate source code blocks" nil)
+	("--css" "path or URL of css stylesheet" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
 	("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
@@ -15,13 +15,12 @@
 	))
 
 (setq args (cli-parse-args options-alist "
-Options --infile and --outfile are required. Note that code block
-evaluation is disabled by default; use '--evaluate' to set a
-default value of ':eval yes' for all code blocks. If you would
-like to evaluate by default without requiring this option,
-include '#+PROPERTY: header-args :eval yes' in the file
-header. Individual blocks can be selectively evaluated using
-':eval yes' in the block header.
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup
