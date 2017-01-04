@@ -1,6 +1,6 @@
-# os:
-#   - linux
-#   - osx
+os:
+  - linux
+  - osx
 
 env:
   matrix:
