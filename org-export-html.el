@@ -129,8 +129,10 @@ yes' in the block header.
 		     (emacs-lisp . t)
 		     (dot . t)))
 
-	     (add-to-list 'cli-org-babel-load-languages
-			  (if (<= emacs-major-version 24) '(sh . t) '(shell . t)))
+	     ;; (add-to-list 'cli-org-babel-load-languages
+	     ;; 		  (if (<= emacs-major-version 24) '(sh . t) '(shell . t)))
+
+	     ;; (print cli-org-babel-load-languages)
 
 	     (org-babel-do-load-languages
 	      'org-babel-load-languages cli-org-babel-load-languages)
