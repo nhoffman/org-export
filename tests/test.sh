@@ -2,7 +2,7 @@
 
 set -e
 
-ls ~/.org-export/el-get/org/ob-sh*.el
+find ~/.org-export -name 'ob-*.el'
 
 ./org-export html --infile README.org
 ./org-export html --infile tests/test_python.org
