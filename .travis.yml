@@ -1,3 +1,7 @@
+# os:
+#   - linux
+#   - osx
+
 env:
   matrix:
     - EMACS=emacs24
@@ -6,19 +10,17 @@ env:
     - SOME_TOKEN=some_value
 
 install:
-  - if [ "$EMACS" = 'emacs24' ]; then
+  - if [[ "$EMACS" == "emacs24" ]]; then
         sudo add-apt-repository -y ppa:cassou/emacs &&
         sudo apt-get -qq update &&
         sudo apt-get -qq -f install &&
         sudo apt-get -qq install emacs24;
-    fi
-  - if [ "$EMACS" = 'emacs25' ]; then
+    elif [[ "$EMACS" == "emacs25" ]]; then
         sudo add-apt-repository -y ppa:kelleyk/emacs &&
         sudo apt-get -qq update &&
         sudo apt-get -qq -f install &&
         sudo apt-get -qq install emacs25;
     fi
-
 
 ###
 ### the actual build/test command
