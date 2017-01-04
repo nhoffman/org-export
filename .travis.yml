@@ -1,24 +1,19 @@
 language: generic
 
 os:
+  - linux
   - osx
+
+env:
+  matrix:
+    - EMACS=emacs24
+    - EMACS=emacs25
 
 install:
   - tests/install.sh
 
-###
-### the actual build/test command
-###
-### Use "make test-batch" to test without byte-compiling.
-### The default command avoids byte-compiling on Emacs 22.
-###
-
 script:
   emacs --version
-
-###
-### settings
-###
 
 notifications:
   email: noah.hoffman@gmail.com
