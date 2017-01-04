@@ -130,7 +130,7 @@ yes' in the block header.
 		     (dot . t)))
 
 	     (add-to-list 'cli-org-babel-load-languages
-	     		  (if (<= emacs-major-version 24) '(sh . t) '(shell . t)))
+	     		  (if (<= emacs-major-version 24) '(shell . t) '(sh . t)))
 
 	     (print cli-org-babel-load-languages)
 
