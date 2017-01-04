@@ -13,7 +13,7 @@ install:
   - tests/install.sh
 
 script:
-  emacs --version
+  emacs --version && tests/test.sh
 
 notifications:
   email: noah.hoffman@gmail.com
