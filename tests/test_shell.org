@@ -1,9 +1,9 @@
 #+BEGIN_SRC sh :results output
-echo $(for i in {1..5}; do echo $i; done)
+python -c 'print("X" * 5)'
 #+END_SRC
 
 #+BEGIN_SRC sh :results output :eval yes
-echo $(for i in {6..10}; do echo $i; done)
+python -c 'print("Y" * 5)'
 #+END_SRC
 
 
