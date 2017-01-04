@@ -2,7 +2,8 @@
 
 set -e
 
-find ~/.org-export -name 'ob-*.el'
+# find ~/.org-export -name 'ob-*.el'
+ls -a ~
 
 ./org-export html --infile README.org
 ./org-export html --infile tests/test_python.org
