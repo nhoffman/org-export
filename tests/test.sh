@@ -2,10 +2,10 @@
 
 set -e
 
-# find ~/.org-export -name 'ob-*.el'
-ls -a ~
-
 ./org-export html --infile README.org
+
+find ~/.org-export -name 'ob-*.el'
+
 ./org-export html --infile tests/test_python.org
 
 # code block producing XXXXX should not have been evaluated...
