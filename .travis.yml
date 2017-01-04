@@ -11,9 +11,9 @@ env:
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
-        brew update
-        brew install emacs
-        brew linkapps emacs
+        brew update &&
+        brew install emacs &&
+        brew linkapps emacs;
     fi
     if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         if [[ "$EMACS" == "emacs24" ]]; then
