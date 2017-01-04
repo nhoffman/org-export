@@ -120,19 +120,22 @@ yes' in the block header.
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
+	     (setq cli-org-babel-load-languages
+		   '((R . t)
+		     (latex . t)
+		     (python . t)
+		     (sql . t)
+		     (sqlite . t)
+		     (emacs-lisp . t)
+		     (dot . t)))
+
+	     (add-to-list 'cli-org-babel-load-languages
+			  (if (<= emacs-major-version 24) '(sh . t) '(shell . t)))
+
 	     (org-babel-do-load-languages
-	      (quote org-babel-load-languages)
-	      (quote ((R . t)
-		      (latex . t)
-		      (python . t)
-		      ;; (shell . t)
-		      (sh . t)
-		      (sql . t)
-		      (sqlite . t)
-		      (emacs-lisp . t)
-		      (dot . t)
-		      )))
-	     ))
+	      'org-babel-load-languages cli-org-babel-load-languages)
+
+	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
