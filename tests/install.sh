@@ -13,7 +13,7 @@ elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         sudo apt-get -qq -f install
         sudo apt-get -qq install emacs24
     elif [[ "$EMACS_VERSION" == "25" ]]; then
-        sudo add-apt-repository -y --force-yes ppa:kelleyk/emacs
+        sudo add-apt-repository -y ppa:kelleyk/emacs
         sudo apt-get -qq update
         sudo apt-get -qq -f install
         sudo apt-get -qq install emacs25
