@@ -6,8 +6,8 @@ os:
 
 env:
   matrix:
-    - EMACS=emacs24
-    - EMACS=emacs25
+    - EMACS_VERSION=24
+    - EMACS_VERSION=25
 
 install:
   - tests/install.sh

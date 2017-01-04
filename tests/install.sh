@@ -7,12 +7,12 @@ if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     brew install emacs
     brew linkapps emacs
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-    if [[ "$EMACS" == "emacs24" ]]; then
+    if [[ "$EMACS_VERSION" == "24" ]]; then
         sudo add-apt-repository -y ppa:cassou/emacs
         sudo apt-get -qq update
         sudo apt-get -qq -f install
         sudo apt-get -qq install emacs24
-    elif [[ "$EMACS" == "emacs25" ]]; then
+    elif [[ "$EMACS_VERSION" == "25" ]]; then
         sudo add-apt-repository -y ppa:kelleyk/emacs
         sudo apt-get -qq update
         sudo apt-get -qq -f install
