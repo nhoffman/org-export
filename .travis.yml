@@ -3,13 +3,13 @@ dist: trusty
 sudo: required
 
 os:
-  # - linux
+  - linux
   - osx
 
 env:
   matrix:
     - EMACS_VERSION=24
-    # - EMACS_VERSION=25
+    - EMACS_VERSION=25
 
 install:
   - tests/install.sh

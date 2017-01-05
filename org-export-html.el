@@ -134,9 +134,6 @@ yes' in the block header.
 	     		  (if (>= (string-to-number (substring (org-version) 0 1)) 9)
 			      '(shell . t) '(sh . t)))
 
-	     ;; TODO: remove me
-	     (print cli-org-babel-load-languages)
-
 	     (org-babel-do-load-languages
 	      'org-babel-load-languages cli-org-babel-load-languages)
 
