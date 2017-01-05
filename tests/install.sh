@@ -4,6 +4,7 @@ set -e
 
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     brew update
+    brew install libressl
     brew install emacs
     brew linkapps emacs
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
