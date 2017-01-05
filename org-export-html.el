@@ -2,11 +2,11 @@
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
-      '(("--infile" "path to input .org file")
+      '(("--infile" "path to input .org file (required)")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
-	("--evaluate" "evaluate source code blocks by default" nil)
-	("--css" "path or URL of css" nil)
+	("--evaluate" "evaluate source code blocks" nil)
+	("--css" "path or URL of css stylesheet" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
 	("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
@@ -15,24 +15,22 @@
 	))
 
 (setq args (cli-parse-args options-alist "
-Options --infile and --outfile are required. Note that code block
-evaluation is disabled by default; use '--evaluate' to set a
-default value of ':eval yes' for all code blocks. If you would
-like to evaluate by default without requiring this option,
-include '#+PROPERTY: header-args :eval yes' in the file
-header. Individual blocks can be selectively evaluated using
-':eval yes' in the block header.
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
-(cli-package-setup
- (getopt "package-dir") '(ess htmlize org color-theme color-theme-github))
-;; (cli-package-setup (getopt "package-dir") '(ess org))
+(cli-el-get-setup
+ (getopt "package-dir") '(ess htmlize org color-theme))
+
 (require 'ox)
 (require 'ox-html)
 
 ;; provides colored syntax highlighting
 (require 'color-theme)
-(require 'color-theme-github)
 
 (setq debug-on-error (getopt "verbose"))
 ;; (setq debug-on-signal (getopt "debug"))
@@ -43,8 +41,7 @@ header. Individual blocks can be selectively evaluated using
 ;; ess configuration
 (add-hook 'ess-mode-hook
 	  '(lambda ()
-	     (setq ess-ask-for-ess-directory nil)
-	     ))
+	     (setq ess-ask-for-ess-directory nil)))
 
 ;; css configuration
 (defvar bootstrap-url
@@ -122,18 +119,25 @@ header. Individual blocks can be selectively evaluated using
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
+	     ;; enable a subset of languages for evaluation in code blocks
+	     (setq cli-org-babel-load-languages
+		   '((R . t)
+		     (latex . t)
+		     (python . t)
+		     (sql . t)
+		     (sqlite . t)
+		     (emacs-lisp . t)
+		     (dot . t)))
+
+	     ;; use "shell" for org-mode versions 9 and above
+	     (add-to-list 'cli-org-babel-load-languages
+	     		  (if (>= (string-to-number (substring (org-version) 0 1)) 9)
+			      '(shell . t) '(sh . t)))
+
 	     (org-babel-do-load-languages
-	      (quote org-babel-load-languages)
-	      (quote ((R . t)
-		      (latex . t)
-		      (python . t)
-		      (sh . t)
-		      (sql . t)
-		      (sqlite . t)
-		      (emacs-lisp . t)
-		      (dot . t)
-		      )))
-	     ))
+	      'org-babel-load-languages cli-org-babel-load-languages)
+
+	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;

@@ -1,5 +1,5 @@
-(unless (>= emacs-major-version 25)
-  (error "Error: emacs version 25 or greater is required"))
+(unless (>= emacs-major-version 24)
+  (error "Error: emacs version 24 or greater is required"))
 
 (setq lexical-binding t)
 (provide 'cli)
@@ -176,6 +176,53 @@ already installed."
 
   (cli-install-packages package-list))
 
+(defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
+  (unless (file-readable-p emacs-directory)
+    (message (format "Creating directory %s" emacs-directory))
+    (make-directory emacs-directory t))
+
+  ;; must assign `user-emacs-directory' *before* requiring `package'
+  (setq user-emacs-directory emacs-directory)
+
+  ;; fix TLS certificate errors
+  ;; http://emacs.stackexchange.com/questions/18045/how-can-i-retrieve-an-https-url-on-mac-os-x-without-warnings-about-an-untrusted
+  (if (and (eq system-type 'darwin)
+	   (file-exists-p "/usr/local/etc/libressl/cert.pem"))
+      (progn
+	(require 'gnutls)
+	(setq gnutls-verify-error t)
+	(add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")))
+
+  ;; install el-get if necessary
+  (setq cli-el-get-repo
+  	(concat (file-name-as-directory user-emacs-directory) "el-get"))
+  (unless (file-exists-p cli-el-get-repo)
+    (with-current-buffer
+  	(url-retrieve-synchronously
+  	 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+      (eval-region url-http-end-of-headers (point-max))
+      ))
+  (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
+
+  (require 'el-get)
+
+  ;; Use el-get to install packages in 'package-list' using a while
+  ;; loop and evaluating an expanded macro for each.
+  (let ((pkg nil)
+  	(pkg-list package-list))
+    (while pkg-list
+      (setq pkg (car pkg-list))
+      (setq pkg-list (cdr pkg-list))
+      (eval (macroexpand `(el-get-bundle ,pkg)))))
+
+  (if upgrade
+      (progn
+	(package-list-packages)
+  	(package-menu-mark-upgrades)
+  	(package-menu-execute))
+    (package-list-packages-no-fetch))
+  )
+
 ;; other utilities
 
 (defun cli-replace-all (from-str to-str)
@@ -202,6 +249,6 @@ Manage elpa packages
       (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
 
-      (cli-package-setup
+      (cli-el-get-setup
        (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))
       ))

@@ -1,0 +1,12 @@
+#+BEGIN_SRC sh :results output
+python -c 'print("X" * 5)'
+#+END_SRC
+
+#+BEGIN_SRC sh :results output :eval yes
+python -c 'print("Y" * 5)'
+#+END_SRC
+
+
+
+
+

@@ -2,9 +2,9 @@
 #+AUTHOR: Noah Hoffman
 #+OPTIONS: toc:nil ^:nil
 
-* org-export: batch export of org-mode files from the command line
+*org-export*: batch export of org-mode files from the command line
 
-** Overview
+* Overview
 
 Emacs [[http://orgmode.org/][org-mode]] is a markup language for "keeping notes, maintaining
 TODO lists, planning projects, and authoring documents" - but most
@@ -25,14 +25,13 @@ useful?
   emacs configuration, which can produce different results for
   different users; these scripts manage all dependencies from elpa
   independently of the users' own emacs config. By default, a new
-  folder is created in ~/.org-export the first time a script is
+  folder is created in =~/.org-export= the first time a script is
   executed, and dependencies (such as the most recent version of
-  org-mode) are installed using elpa. Therefore *the only requirement
-  should be emacs 24+* (tested primarily with 24.3).
+  org-mode) are installed.
 - These scripts also provide some conveniences with respect to
   providing css styles.
 
-** Installation and use
+* Installation and use
 
 Clone this repository. Then either copy all scripts to a directory on
 your =$PATH= (eg, =cp org-export *.el /usr/local/bin=) or invoke using
@@ -63,7 +62,48 @@ environment variable; for example on OS X:
 
 : EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
 
-** Commands
+*** org-mode, el-get, and certificate errors
+
+*tl;dr*: install libressl using homebrew if you see errors on a Mac
+about TLS certificates.
+
+The full story:
+
+As of emacs 25, a few new issues emerged:
+
+=package.el= began to refuse to install =org-mode=
+non-interactively. This may be related to the known issue in which
+=package-installed-p= always returns =t= for built-in packages (see,
+for example [[https://github.com/jwiegley/use-package/issues/319][this issue]]).
+
+In attempting to use =el-get= as an alternative mechanism for
+installing packages, I found that a certificate error (using MacOS
+10.11) prevented downloads from github. Thanks to [[http://emacs.stackexchange.com/questions/18045][this]] answer on
+StackExchange, I was able to provide a workaround. The workaround
+requires installation of libressl using homebrew, and
+assumes the default installation in =/usr/local=:
+
+#+BEGIN_SRC sh
+brew update
+brew install libressl
+brew install emacs --with-gnutls
+brew linkapps emacs
+#+END_SRC
+
+Here are the lines in =cli-el-get-setup()= that implement the fix:
+
+#+BEGIN_SRC elisp
+(require 'gnutls)
+(setq gnutls-verify-error t)
+(add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")
+#+END_SRC
+
+*** known issues
+
+- Installation of org-mode fails on Ubuntu 12.04 using emacs 25.
+- =ess= fails to compile without R installed.
+
+* Commands
 *** org-export html
 
 Exports org-mode to html
@@ -76,13 +116,13 @@ Command line arguments:
 
 #+RESULTS:
 #+begin_example
-Using /usr/local/bin/emacs, GNU Emacs 24.3.1
+Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 25.1.91.1
 Command line options:
 
- --infile       path to input .org file
+ --infile       path to input .org file (required)
  --outfile      path to output .html file (use base name of infile by default)
- --evaluate     evaluate source code blocks by default
- --css          path or URL of css
+ --evaluate     evaluate source code blocks
+ --css          path or URL of css stylesheet
  --embed-css    Include contents of css in a <style> block
  --bootstrap    make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default
@@ -90,13 +130,12 @@ Command line options:
  --verbose      enable debugging message on error
 
 
-Options --infile and --outfile are required. Note that code block
-evaluation is disabled by default; use '--evaluate' to set a
-default value of ':eval yes' for all code blocks. If you would
-like to evaluate by default without requiring this option,
-include '#+PROPERTY: header-args :eval yes' in the file
-header. Individual blocks can be selectively evaluated using
-':eval yes' in the block header.
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
 
 #+end_example
 
