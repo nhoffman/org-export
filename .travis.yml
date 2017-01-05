@@ -1,4 +1,6 @@
 language: generic
+dist: trusty
+sudo: required
 
 os:
   - linux
