@@ -5,7 +5,7 @@ set -e
 if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
     brew update
     brew install libressl
-    brew install emacs
+    brew install emacs --with-gnutls
     brew linkapps emacs
 elif [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     if [[ "$EMACS_VERSION" == "24" ]]; then
