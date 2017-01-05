@@ -4,11 +4,11 @@ sudo: required
 
 os:
   - linux
-  # - osx
+  - osx
 
 env:
   matrix:
-    # - EMACS_VERSION=24
+    - EMACS_VERSION=24
     - EMACS_VERSION=25
 
 install:
