@@ -66,17 +66,9 @@
 
 	     ;; (setq org-export-htmlize-output-type 'css)
 	     (org-babel-do-load-languages
-	      (quote org-babel-load-languages)
-	      (quote ((R . t)
-		      (latex . t)
-		      (python . t)
-		      (sh . t)
-		      (sql . t)
-		      (sqlite . t)
-		      (emacs-lisp . t)
-		      (dot . t)
-		      )))
-	     ))
+	      'org-babel-load-languages (cli-get-org-babel-load-languages))
+
+	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;

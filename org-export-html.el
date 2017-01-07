@@ -119,23 +119,8 @@ yes' in the block header.
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
-	     ;; enable a subset of languages for evaluation in code blocks
-	     (setq cli-org-babel-load-languages
-		   '((R . t)
-		     (latex . t)
-		     (python . t)
-		     (sql . t)
-		     (sqlite . t)
-		     (emacs-lisp . t)
-		     (dot . t)))
-
-	     ;; use "shell" for org-mode versions 9 and above
-	     (add-to-list 'cli-org-babel-load-languages
-	     		  (if (>= (string-to-number (substring (org-version) 0 1)) 9)
-			      '(shell . t) '(sh . t)))
-
 	     (org-babel-do-load-languages
-	      'org-babel-load-languages cli-org-babel-load-languages)
+	      'org-babel-load-languages (cli-get-org-babel-load-languages))
 
 	     )) ;; end org-mode-hook
 

@@ -1,6 +1,8 @@
 (unless (>= emacs-major-version 24)
   (error "Error: emacs version 24 or greater is required"))
 
+(setq debug-on-error t)
+
 (setq lexical-binding t)
 (provide 'cli)
 
@@ -114,67 +116,67 @@ value of `cli-do-nothing'.
     (princ "\n")))
 
 ;; package management
-(defun cli-package-installed-p (package &optional min-version)
-  "Return true if PACKAGE, of MIN-VERSION or newer, is installed
-(ignoring built-in versions).  MIN-VERSION should be a version list"
+;; (defun cli-package-installed-p (package &optional min-version)
+;;   "Return true if PACKAGE, of MIN-VERSION or newer, is installed
+;; (ignoring built-in versions).  MIN-VERSION should be a version list"
 
-  (unless package--initialized (error "package.el is not yet initialized!"))
+;;   (unless package--initialized (error "package.el is not yet initialized!"))
 
-(if (and (< emacs-major-version 24) (< emacs-minor-version 4))
-    ;; < emacs 24.4
-    (let ((pkg-desc (assq package package-alist)))
-      (if pkg-desc
-	  (version-list-<= min-version
-			   (package-desc-vers (cdr pkg-desc)))))
-  ;; >= emacs 24.4
-  (let ((pkg-descs (cdr (assq package package-alist))))
-    (and pkg-descs
-	 (version-list-<= min-version
-			  (package-desc-version (car pkg-descs)))))
-  ))
+;; (if (and (< emacs-major-version 24) (< emacs-minor-version 4))
+;;     ;; < emacs 24.4
+;;     (let ((pkg-desc (assq package package-alist)))
+;;       (if pkg-desc
+;; 	  (version-list-<= min-version
+;; 			   (package-desc-vers (cdr pkg-desc)))))
+;;   ;; >= emacs 24.4
+;;   (let ((pkg-descs (cdr (assq package package-alist))))
+;;     (and pkg-descs
+;; 	 (version-list-<= min-version
+;; 			  (package-desc-version (car pkg-descs)))))
+;;   ))
 
-(defun cli-install-packages (package-list)
-  "Install each package named in PACKAGE-LIST using elpa if not
-already installed."
-  (mapc #'(lambda (pkg)
-	    (unless (cli-package-installed-p pkg)
-	      (message "installing %s..." pkg)
-	      (unless package-archive-contents
-		(package-refresh-contents))
-	      ;; (package-menu-refresh)
-	      (package-install pkg)
-	      (message "done installing %s" pkg))
-	    ) package-list))
+;; (defun cli-install-packages (package-list)
+;;   "Install each package named in PACKAGE-LIST using elpa if not
+;; already installed."
+;;   (mapc #'(lambda (pkg)
+;; 	    (unless (cli-package-installed-p pkg)
+;; 	      (message "installing %s..." pkg)
+;; 	      (unless package-archive-contents
+;; 		(package-refresh-contents))
+;; 	      ;; (package-menu-refresh)
+;; 	      (package-install pkg)
+;; 	      (message "done installing %s" pkg))
+;; 	    ) package-list))
 
-(defvar cli-default-package-archives
-  '(("gnu" . "http://elpa.gnu.org/packages/")
-    ("marmalade" . "http://marmalade-repo.org/packages/")
-    ("melpa" . "http://melpa.org/packages/")
-    ("org" . "http://orgmode.org/elpa/")))
+;; (defvar cli-default-package-archives
+;;   '(("gnu" . "http://elpa.gnu.org/packages/")
+;;     ("marmalade" . "http://marmalade-repo.org/packages/")
+;;     ("melpa" . "http://melpa.org/packages/")
+;;     ("org" . "http://orgmode.org/elpa/")))
 
-(defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
-  (unless (file-readable-p emacs-directory)
-    (message (format "Creating directory %s" emacs-directory))
-    (make-directory emacs-directory t))
+;; (defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
+;;   (unless (file-readable-p emacs-directory)
+;;     (message (format "Creating directory %s" emacs-directory))
+;;     (make-directory emacs-directory t))
 
-  ;; must assign `user-emacs-directory' *before* requiring `package'
-  (setq user-emacs-directory emacs-directory)
+;;   ;; must assign `user-emacs-directory' *before* requiring `package'
+;;   (setq user-emacs-directory emacs-directory)
 
-  ;; also seems to be necessary to define `package-archives' before
-  ;; requiring `package'
-  (setq package-archives (or archives cli-default-package-archives))
+;;   ;; also seems to be necessary to define `package-archives' before
+;;   ;; requiring `package'
+;;   (setq package-archives (or archives cli-default-package-archives))
 
-  (require 'package)
-  (package-initialize)
+;;   (require 'package)
+;;   (package-initialize)
 
-  (if upgrade
-      (progn
-	(package-list-packages)
-  	(package-menu-mark-upgrades)
-  	(package-menu-execute))
-    (package-list-packages-no-fetch))
+;;   (if upgrade
+;;       (progn
+;; 	(package-list-packages)
+;;   	(package-menu-mark-upgrades)
+;;   	(package-menu-execute))
+;;     (package-list-packages-no-fetch))
 
-  (cli-install-packages package-list))
+;;   (cli-install-packages package-list))
 
 (defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
   (unless (file-readable-p emacs-directory)
@@ -203,6 +205,7 @@ already installed."
       (eval-region url-http-end-of-headers (point-max))
       ))
   (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
+  ;; (add-to-list 'load-path cli-el-get-repo)
 
   (require 'el-get)
 
@@ -231,6 +234,24 @@ already installed."
   (while (search-forward from-str nil t)
     (replace-match to-str nil t)))
 
+(defun cli-get-org-babel-load-languages ()
+  "enable a subset of languages for evaluation in code blocks"
+  (let ((lang-list '((R . t)
+		    (latex . t)
+		    (python . t)
+		    (sql . t)
+		    (sqlite . t)
+		    (emacs-lisp . t)
+		    (dot . t))))
+
+    ;; use "shell" for org-mode versions 9 and above
+    (add-to-list
+     'lang-list
+     (if (>= (string-to-number (substring (org-version) 0 1)) 9)
+	 '(shell . t) '(sh . t)))
+
+    lang-list))
+
 ;; only executed if this is the script called from the command line
 ;; (ie, "if __name__ == '__main__'")
 (if (member (file-name-nondirectory load-file-name)
@@ -241,10 +262,7 @@ already installed."
 	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ))
 
-      (defvar docstring "
-Manage elpa packages
-
-")
+      (defvar docstring "\nManage elpa packages\n")
 
       (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
