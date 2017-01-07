@@ -40,6 +40,7 @@ the same directory as the other scripts.
 
 Execute the script with =-h= to see usage and available commands:
 
+#+NAME: cli-help
 #+BEGIN_SRC sh :results output :exports both :eval yes
 ./org-export -h
 #+END_SRC
@@ -83,7 +84,7 @@ StackExchange, I was able to provide a workaround. The workaround
 requires installation of libressl using homebrew, and
 assumes the default installation in =/usr/local=:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :eval no
 brew update
 brew install libressl
 brew install emacs --with-gnutls
@@ -92,7 +93,7 @@ brew linkapps emacs
 
 Here are the lines in =cli-el-get-setup()= that implement the fix:
 
-#+BEGIN_SRC elisp
+#+BEGIN_SRC elisp :eval no
 (require 'gnutls)
 (setq gnutls-verify-error t)
 (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")
@@ -110,6 +111,7 @@ Exports org-mode to html
 
 Command line arguments:
 
+#+NAME: html-help
 #+BEGIN_SRC sh :results output :exports both :eval yes
 ./org-export html -h
 #+END_SRC
