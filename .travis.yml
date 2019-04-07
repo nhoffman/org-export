@@ -1,5 +1,5 @@
 language: generic
-dist: trusty
+dist: xenial
 sudo: required
 
 os:
@@ -10,6 +10,7 @@ env:
   matrix:
     - EMACS_VERSION=24
     - EMACS_VERSION=25
+    - EMACS_VERSION=26
 
 install:
   - tests/install.sh
