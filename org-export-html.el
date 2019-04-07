@@ -24,13 +24,16 @@ yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup
- (getopt "package-dir") '(ess htmlize org color-theme))
+ (getopt "package-dir")
+ '(ess htmlize org color-theme-modern))
 
 (require 'ox)
 (require 'ox-html)
 
 ;; provides colored syntax highlighting
-(require 'color-theme)
+(condition-case nil
+    (require 'color-theme-modern)
+  (error (message "** could not activate color-theme-modern")))
 
 (setq debug-on-error (getopt "verbose"))
 ;; (setq debug-on-signal (getopt "debug"))

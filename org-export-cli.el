@@ -253,7 +253,7 @@ value of `cli-do-nothing'.
     lang-list))
 
 ;; only executed if this is the script called from the command line
-;; (ie, "if __name__ == '__main__'")
+;; (like python's "if __name__ == '__main__'")
 (if (member (file-name-nondirectory load-file-name)
 	    (mapcar 'file-name-nondirectory command-line-args))
     (progn
