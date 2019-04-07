@@ -33,10 +33,24 @@ useful?
 
 * Installation and use
 
-Clone this repository. Then either copy all scripts to a directory on
-your =$PATH= (eg, =cp org-export *.el /usr/local/bin=) or invoke using
-the absolute path to =org-export=. =cli.el= must be present in
-the same directory as the other scripts.
+First, clone this repository and enter the cloned directory. There are
+a few options for installing and invoking the =org-export= entry point
+to a location on your =$PATH= (we'll use =/usr/local/bin= as an example):
+
+Recommended: use a hard link. This method allows you to update
+=org-export= with a git-pull from the git repository:
+
+#+BEGIN_SRC sh
+ln org-export *.el /usr/local/bin
+#+END_SRC
+
+Copy the files:
+
+#+BEGIN_SRC sh
+cp org-export *.el /usr/local/bin
+#+END_SRC
+
+Invoke using the absolute path to =org-export= within the cloned git repository.
 
 Execute the script with =-h= to see usage and available commands:
 
