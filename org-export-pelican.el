@@ -110,8 +110,11 @@ highlighting"
   (let ((title (plist-get-as-text properties :title))
 	(author (plist-get-as-text properties :author))
 	(date (plist-get-as-text properties :date))
-	(category (cdr (assoc "CATEGORY" org-file-properties)))
-	(tags (cdr (assoc "TAGS" org-file-properties))))
+        ;; read category from CATEGORY file header
+        (category (cdr (assoc "CATEGORY" (org-entry-properties))))
+        ;; read tags from FILETAGS file header; expect comma delimited string like
+        ;; #+FILETAGS: mac,notes
+	(tags (car org-file-tags)))
     (format "
 <html>
     <head>
