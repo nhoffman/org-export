@@ -173,3 +173,9 @@ It's also easy to link to or embed alternative css stylesheets, for
 example, the ones used by the org-mode manual:
 
 : org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+
+* Tests
+
+From the top level of this repository:
+
+: tests/test.sh
