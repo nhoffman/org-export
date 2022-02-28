@@ -29,8 +29,8 @@ fi
 
 emacs_version=$($emacs --version | head -1)
 echo "Using $emacs, $emacs_version"
-if ! echo $emacs_version | grep -q -E '(24\.[2345]|2[567]\.[0-9])'; then
-  echo "Error: Emacs version 24.2+ is required"
+if ! echo $emacs_version | grep -q -E '(2[67]\.[0-9])'; then
+  echo "Error: Emacs version 26+ is required"
   exit 1
 fi
 
