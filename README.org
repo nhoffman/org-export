@@ -77,45 +77,8 @@ environment variable; for example on OS X:
 
 : EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
 
-*** org-mode, el-get, and certificate errors
-
-*tl;dr*: install libressl using homebrew if you see errors on a Mac
-about TLS certificates.
-
-The full story:
-
-As of emacs 25, a few new issues emerged:
-
-=package.el= began to refuse to install =org-mode=
-non-interactively. This may be related to the known issue in which
-=package-installed-p= always returns =t= for built-in packages (see,
-for example [[https://github.com/jwiegley/use-package/issues/319][this issue]]).
-
-In attempting to use =el-get= as an alternative mechanism for
-installing packages, I found that a certificate error (using MacOS
-10.11) prevented downloads from github. Thanks to [[http://emacs.stackexchange.com/questions/18045][this]] answer on
-StackExchange, I was able to provide a workaround. The workaround
-requires installation of libressl using homebrew, and
-assumes the default installation in =/usr/local=:
-
-#+BEGIN_SRC sh :eval no
-brew update
-brew install libressl
-brew install emacs --with-gnutls
-brew linkapps emacs
-#+END_SRC
-
-Here are the lines in =cli-el-get-setup()= that implement the fix:
-
-#+BEGIN_SRC elisp :eval no
-(require 'gnutls)
-(setq gnutls-verify-error t)
-(add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")
-#+END_SRC
-
 *** known issues
 
-- Installation of org-mode fails on Ubuntu 12.04 using emacs 25.
 - =ess= fails to compile without R installed.
 
 * Commands
