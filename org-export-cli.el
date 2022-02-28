@@ -12,6 +12,9 @@
           "org-export")
   "Default location to install org-mode and dependencies")
 
+(defvar cli-packages '(htmlize color-theme-modern ess)
+  "elisp packages installed by each script")
+
 (defun cli-do-nothing () t)
 
 (defun cli-option-p (str)
@@ -216,5 +219,4 @@ value of `cli-do-nothing'.
             (print (getopt "package-dir"))
             (kill-emacs 0)))
 
-      (cli-el-get-setup
-       (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))))
+      (cli-el-get-setup (getopt "package-dir") cli-packages (getopt "package-upgrade"))))

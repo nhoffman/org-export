@@ -23,9 +23,7 @@ header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
 "))
 (defun getopt (name) (gethash name args))
-(cli-el-get-setup
- (getopt "package-dir")
- '(ess htmlize org color-theme-modern))
+(cli-el-get-setup (getopt "package-dir") cli-packages)
 
 (require 'ox)
 (require 'ox-html)
