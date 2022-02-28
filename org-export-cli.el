@@ -65,7 +65,7 @@ value of `cli-do-nothing'.
 	(val nil)
 	(hashval nil))
 
-    ;; print help text and exit if command line contains -h or -h-org
+    ;; print help text and exit if command line contains -h
     (if (member "-h" clargs)
 	(progn (cli-show-help options-alist docstring)
 	       (kill-emacs 0)))
@@ -120,69 +120,6 @@ value of `cli-do-nothing'.
     (princ "\n")
     (if docstring (princ docstring))
     (princ "\n")))
-
-;; package management
-;; (defun cli-package-installed-p (package &optional min-version)
-;;   "Return true if PACKAGE, of MIN-VERSION or newer, is installed
-;; (ignoring built-in versions).  MIN-VERSION should be a version list"
-
-;;   (unless package--initialized (error "package.el is not yet initialized!"))
-
-;; (if (and (< emacs-major-version 24) (< emacs-minor-version 4))
-;;     ;; < emacs 24.4
-;;     (let ((pkg-desc (assq package package-alist)))
-;;       (if pkg-desc
-;; 	  (version-list-<= min-version
-;; 			   (package-desc-vers (cdr pkg-desc)))))
-;;   ;; >= emacs 24.4
-;;   (let ((pkg-descs (cdr (assq package package-alist))))
-;;     (and pkg-descs
-;; 	 (version-list-<= min-version
-;; 			  (package-desc-version (car pkg-descs)))))
-;;   ))
-
-;; (defun cli-install-packages (package-list)
-;;   "Install each package named in PACKAGE-LIST using elpa if not
-;; already installed."
-;;   (mapc #'(lambda (pkg)
-;; 	    (unless (cli-package-installed-p pkg)
-;; 	      (message "installing %s..." pkg)
-;; 	      (unless package-archive-contents
-;; 		(package-refresh-contents))
-;; 	      ;; (package-menu-refresh)
-;; 	      (package-install pkg)
-;; 	      (message "done installing %s" pkg))
-;; 	    ) package-list))
-
-;; (defvar cli-default-package-archives
-;;   '(("gnu" . "http://elpa.gnu.org/packages/")
-;;     ("marmalade" . "http://marmalade-repo.org/packages/")
-;;     ("melpa" . "http://melpa.org/packages/")
-;;     ("org" . "http://orgmode.org/elpa/")))
-
-;; (defun cli-package-setup (emacs-directory package-list &optional upgrade archives)
-;;   (unless (file-readable-p emacs-directory)
-;;     (message (format "Creating directory %s" emacs-directory))
-;;     (make-directory emacs-directory t))
-
-;;   ;; must assign `user-emacs-directory' *before* requiring `package'
-;;   (setq user-emacs-directory emacs-directory)
-
-;;   ;; also seems to be necessary to define `package-archives' before
-;;   ;; requiring `package'
-;;   (setq package-archives (or archives cli-default-package-archives))
-
-;;   (require 'package)
-;;   (package-initialize)
-
-;;   (if upgrade
-;;       (progn
-;; 	(package-list-packages)
-;;   	(package-menu-mark-upgrades)
-;;   	(package-menu-execute))
-;;     (package-list-packages-no-fetch))
-
-;;   (cli-install-packages package-list))
 
 (defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
   (unless (file-readable-p emacs-directory)
