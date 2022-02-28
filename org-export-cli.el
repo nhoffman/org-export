@@ -203,6 +203,7 @@ value of `cli-do-nothing'.
       (setq options-alist
 	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	      ("--package-upgrade" "Perform package upgrade" nil)
+	      ("--show-package-dir" "Print the path to package-dir" nil)
 	      ))
 
       (defvar docstring "\nManage elpa packages\n")
@@ -210,6 +211,10 @@ value of `cli-do-nothing'.
       (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
 
+      (if (getopt "show-package-dir")
+          (progn
+            (print (getopt "package-dir"))
+            (kill-emacs 0)))
+
       (cli-el-get-setup
-       (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))
-      ))
+       (getopt "package-dir") '(org htmlize) (getopt "package-upgrade"))))
