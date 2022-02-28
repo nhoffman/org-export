@@ -21,13 +21,13 @@ useful?
   create documents using org-mode!
 - Document generation can be fully scripted (eg, as the final step in
   an analysis pipeline).
-- Interactively-compiled documents depend on an individual user's
-  emacs configuration, which can produce different results for
-  different users; these scripts manage all dependencies from elpa
-  independently of the users' own emacs config. By default, a new
-  folder is created in =~/.org-export= the first time a script is
-  executed, and dependencies (such as the most recent version of
-  org-mode) are installed.
+- Interactively-compiled documents depend on an individual user's emacs
+  configuration, which can produce different results for different users; these
+  scripts manage all dependencies from elpa independently of the users' own
+  emacs config. By default, a new directory is created in
+  =$XDG_DATA_HOME/org-export= (or =~/.local/share/org-export= if
+  =$XDG_DATA_HOME= is undefined) the first time a script is executed, and
+  dependencies (such as the most recent version of org-mode) are installed.
 - These scripts also provide some conveniences with respect to
   providing css styles.
 

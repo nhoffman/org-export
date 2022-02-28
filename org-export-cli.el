@@ -6,6 +6,12 @@
 (setq lexical-binding t)
 (provide 'cli)
 
+(defvar cli-package-dir
+  (concat (file-name-as-directory
+           (or (getenv "XDG_DATA_HOME") "~/.local/share"))
+          "org-export")
+  "Default location to install org-mode and dependencies")
+
 (defun cli-do-nothing () t)
 
 (defun cli-option-p (str)
@@ -198,14 +204,14 @@ value of `cli-do-nothing'.
   ;; install el-get if necessary
   (setq cli-el-get-repo
   	(concat (file-name-as-directory user-emacs-directory) "el-get"))
+
   (unless (file-exists-p cli-el-get-repo)
     (with-current-buffer
   	(url-retrieve-synchronously
   	 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-      (eval-region url-http-end-of-headers (point-max))
-      ))
+      (eval-region url-http-end-of-headers (point-max))))
+
   (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
-  ;; (add-to-list 'load-path cli-el-get-repo)
 
   (require 'el-get)
 
@@ -258,7 +264,7 @@ value of `cli-do-nothing'.
 	    (mapcar 'file-name-nondirectory command-line-args))
     (progn
       (setq options-alist
-	    '(("--package-dir" "directory containing elpa packages" "~/.org-export")
+	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ))
 

@@ -2,11 +2,11 @@
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
-      '(("--infile" "path to input .org file (required)")
+      `(("--infile" "path to input .org file (required)")
 	("--outfile" "path to output .pdf file (use base name of infile by default)"
 	 nil)
 	("--evaluate" "evaluate source code blocks" nil)
-	("--package-dir" "directory containing elpa packages" "~/.org-export")
+	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	("--verbose" "enable debugging message on error" nil)
 	))
 
