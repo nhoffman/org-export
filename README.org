@@ -4,6 +4,8 @@
 
 *org-export*: batch export of org-mode files from the command line
 
+[[https://github.com/nhoffman/org-export/actions/workflows/test.yaml/badge.svg]]
+
 * Overview
 
 Emacs [[http://orgmode.org/][org-mode]] is a markup language for "keeping notes, maintaining
