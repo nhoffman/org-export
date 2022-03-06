@@ -11,7 +11,8 @@ jobs:
           # - 26.1
           # - 26.2
           - 26.3
-          # - snapshot
+          - 27.2
+          - snapshot
     steps:
     - uses: purcell/setup-emacs@master
       with:
