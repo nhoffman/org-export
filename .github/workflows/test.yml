@@ -17,13 +17,15 @@ jobs:
         emacs_version:
           - 26.3
           - 27.2
-          - 28.0
+          # - 28.0
           # - snapshot
     steps:
-    - uses: purcell/setup-emacs@master
-      with:
-        version: ${{ matrix.emacs_version }}
-    - uses: actions/checkout@v1
-    - name: Run tests
-      run: tests/test.sh
-      # run: emacs --version
+      - name: check out repo
+        uses: actions/checkout@v1
+      - name: Run tests
+        uses: purcell/setup-emacs@master
+        with:
+          version: ${{ matrix.emacs_version }}
+        run: |
+          emacs --version
+          tests/test.sh
