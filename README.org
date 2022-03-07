@@ -4,7 +4,7 @@
 
 *org-export*: batch export of org-mode files from the command line
 
-[[https://github.com/nhoffman/org-export/actions/workflows/test.yaml/badge.svg]]
+[[https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg]]
 
 * Overview
 
