@@ -1,22 +1,30 @@
 name: test
 
-on: [push]
+on:
+  push:
+    branches:
+      - master
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
         emacs_version:
           # - 26.1
           # - 26.2
           - 26.3
           - 27.2
-          # - snapshot
+          - snapshot
     steps:
     - uses: purcell/setup-emacs@master
       with:
         version: ${{ matrix.emacs_version }}
     - uses: actions/checkout@v1
     - name: Run tests
-      run: tests/test.sh
+      # run: tests/test.sh
+      run: emacs --version
