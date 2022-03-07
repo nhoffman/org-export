@@ -13,18 +13,17 @@ jobs:
       matrix:
         os:
           - ubuntu-latest
-          - macos-latest
+          # - macos-latest
         emacs_version:
-          # - 26.1
-          # - 26.2
           - 26.3
           - 27.2
-          - snapshot
+          - 28.0
+          # - snapshot
     steps:
     - uses: purcell/setup-emacs@master
       with:
         version: ${{ matrix.emacs_version }}
     - uses: actions/checkout@v1
     - name: Run tests
-      # run: tests/test.sh
-      run: emacs --version
+      run: tests/test.sh
+      # run: emacs --version
