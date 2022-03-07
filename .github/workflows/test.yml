@@ -22,10 +22,11 @@ jobs:
     steps:
       - name: check out repo
         uses: actions/checkout@v1
-      - name: Run tests
+      - name: setup emacs
         uses: purcell/setup-emacs@master
         with:
           version: ${{ matrix.emacs_version }}
+      - name: run tests
         run: |
           emacs --version
           tests/test.sh
