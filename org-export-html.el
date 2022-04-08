@@ -113,6 +113,7 @@ yes' in the block header.
 			 `(:hlines . "no")
 			 `(:tangle . "no")
 			 `(:padnewline . "yes")
+			 `(:output-dir . ,(file-name-directory (getopt "outfile")))
 			 ))
 
 	     ;; explicitly set the PATH in sh code blocks; note that
