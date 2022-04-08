@@ -41,7 +41,7 @@ yes' in the block header.
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
-	  '(lambda ()
+	  #'(lambda ()
 	     (setq ess-ask-for-ess-directory nil)))
 
 ;; css configuration
@@ -88,7 +88,7 @@ yes' in the block header.
   (format "export PATH=\"%s\"" exec-path-str))
 
 (add-hook 'org-mode-hook
-	  '(lambda ()
+	  #'(lambda ()
 	     ;; (font-lock-mode)
 	     ;; (setq org-src-fontify-natively t)
 	     ;; (setq htmlize-output-type 'inline-css)
