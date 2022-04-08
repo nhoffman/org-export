@@ -77,7 +77,6 @@ yes' in the block header.
 	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />" css-url))))
 
 (defvar plantuml-jar (getopt "plantuml"))
-(message "plantum-jar path is %s" plantuml-jar)
 ;; org-mode and export configuration
 
 ;; store the execution path for the current environment and provide it
@@ -125,12 +124,13 @@ yes' in the block header.
 
 	     (org-babel-do-load-languages
 	      'org-babel-load-languages (cli-get-org-babel-load-languages))
+		 ;; if plantuml is set configure path and add to babel languages to enable evaluation
 		 (if plantuml-jar
 			 (progn
 				(setq org-plantuml-jar-path plantuml-jar)
 				(org-babel-do-load-languages
 				  'org-babel-load-languages
-				  '((plantuml . t))) ; this line activates plantuml
+				  '((plantuml . t)))
 			 )
 		   )
 	     )) ;; end org-mode-hook
