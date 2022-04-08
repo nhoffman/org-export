@@ -10,6 +10,7 @@
 	("--embed-css" "Include contents of css in a <style> block" nil)
 	("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
+	("--plantuml" "Enable plantuml export; Path to plantuml.jar" nil)
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	("--verbose" "enable debugging message on error" nil)
 	))
@@ -75,6 +76,8 @@ yes' in the block header.
 	    (format
 	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />" css-url))))
 
+(defvar plantuml-jar (getopt "plantuml"))
+(message "plantum-jar path is %s" plantuml-jar)
 ;; org-mode and export configuration
 
 ;; store the execution path for the current environment and provide it
@@ -122,7 +125,14 @@ yes' in the block header.
 
 	     (org-babel-do-load-languages
 	      'org-babel-load-languages (cli-get-org-babel-load-languages))
-
+		 (if plantuml-jar
+			 (progn
+				(setq org-plantuml-jar-path plantuml-jar)
+				(org-babel-do-load-languages
+				  'org-babel-load-languages
+				  '((plantuml . t))) ; this line activates plantuml
+			 )
+		   )
 	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
