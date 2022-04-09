@@ -180,23 +180,21 @@ value of `cli-do-nothing'.
   (while (search-forward from-str nil t)
     (replace-match to-str nil t)))
 
-(defun cli-get-org-babel-load-languages ()
-  "enable a subset of languages for evaluation in code blocks"
-  (let ((lang-list '((R . t)
-		    (latex . t)
-		    (python . t)
-		    (sql . t)
-		    (sqlite . t)
-		    (emacs-lisp . t)
-		    (dot . t))))
+(defvar cli-org-babel-languages-default
+  '("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
+  "Startng values for list of languages for org-babel code blocks")
 
-    ;; use "shell" for org-mode versions 9 and above
-    (add-to-list
-     'lang-list
-     (if (>= (string-to-number (substring (org-version) 0 1)) 9)
-	 '(shell . t) '(sh . t)))
+(defun cli-org-babel-load-languages (extra-langs)
+  "Load languages named in `cli-org-babel-languages-default' plus
+any identified in comma-delimited string `extra-langs'"
+  (let* ((extras (if extra-langs (split-string extra-langs ",")))
+         (language-names
+          (flatten-tree (cons cli-org-babel-languages-default extras))))
 
-    lang-list))
+    (org-babel-do-load-languages
+     'org-babel-load-languages
+     (mapcar #'(lambda (lang) `(,(make-symbol lang) . t)) language-names))
+    ))
 
 ;; only executed if this is the script called from the command line
 ;; (like python's "if __name__ == '__main__'")
