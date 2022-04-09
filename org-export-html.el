@@ -3,16 +3,16 @@
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
       `(("--infile" "path to input .org file (required)")
-	("--outfile" "path to output .html file (use base name of infile by default)"
-	 nil)
-	("--evaluate" "evaluate source code blocks" nil)
-	("--css" "path or URL of css stylesheet" nil)
-	("--embed-css" "Include contents of css in a <style> block" nil)
-	("--bootstrap" "make Bootstrap-specific modifications to html output;
+	    ("--outfile" "path to output .html file (use base name of infile by default)" nil)
+        ("--add-langs" "comma-delimited list of additional languages to enable in code blocks" nil)
+	    ("--evaluate" "evaluate source code blocks" nil)
+	    ("--css" "path or URL of css stylesheet" nil)
+	    ("--embed-css" "Include contents of css in a <style> block" nil)
+	    ("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
-	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	("--verbose" "enable debugging message on error" nil)
-	))
+	    ("--package-dir" "directory containing elpa packages" ,cli-package-dir)
+	    ("--verbose" "enable debugging message on error" nil)
+	    ))
 
 (setq args (cli-parse-args options-alist "
 Note that code block evaluation is disabled by default; use
@@ -120,8 +120,7 @@ yes' in the block header.
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
-	     (org-babel-do-load-languages
-	      'org-babel-load-languages (cli-get-org-babel-load-languages))
+         (cli-org-babel-load-languages (getopt "add-langs"))
 
 	     )) ;; end org-mode-hook
 
