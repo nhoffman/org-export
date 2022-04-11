@@ -1,0 +1,11 @@
+#+BEGIN_SRC shell :results output :eval yes
+echo YYYYY | tr "Y" "X"
+#+END_SRC
+
+#+BEGIN_SRC sh :results output :eval yes
+echo YYYYY | tr "Y" "Z"
+#+END_SRC
+
+#+BEGIN_SRC sh :results output :eval no
+echo YYYYY | tr "Y" "N"
+#+END_SRC

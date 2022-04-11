@@ -1,0 +1,3 @@
+#+begin_src elisp :eval yes
+(print testval)
+#+end_src

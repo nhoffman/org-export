@@ -1,7 +1,0 @@
-#+BEGIN_SRC python
-print('X' * 5)
-#+END_SRC
-
-#+BEGIN_SRC python :eval yes
-print('Y' * 5)
-#+END_SRC
