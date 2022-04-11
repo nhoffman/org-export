@@ -174,6 +174,21 @@ value of `cli-do-nothing'.
 
 ;; other utilities
 
+(defun cli-eval-expr (instr)
+  "evaluate the input string in a temporary buffer for side effects"
+  (if instr
+      (with-temp-buffer
+        (insert instr)
+        (eval-buffer))))
+
+(defun cli-eval-file (file-path)
+  "evaluate the specified file in a temporary buffer for side effects"
+  (if file-path
+      (with-temp-buffer
+        (insert-file-contents file-path)
+        (eval-buffer)
+        )))
+
 (defun cli-replace-all (from-str to-str)
   "Replace all occurrences of from-str with to-str in current buffer"
   (beginning-of-buffer)

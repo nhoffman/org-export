@@ -11,6 +11,8 @@
 	    ("--bootstrap" "make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default" nil)
 	    ("--package-dir" "directory containing elpa packages" ,cli-package-dir)
+        ("--config" "an elisp expression defining additional configuration" nil)
+        ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
 	    ("--verbose" "enable debugging message on error" nil)
 	    ))
 
@@ -127,6 +129,10 @@ yes' in the block header.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; evaluate extra configuration if provided
+(cli-eval-expr (getopt "config"))
+(cli-eval-file (getopt "config-file"))
 
 (defvar infile (getopt "infile"))
 (defvar outfile
