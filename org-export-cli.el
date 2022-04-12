@@ -220,6 +220,7 @@ any identified in comma-delimited string `extra-langs'"
 	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ("--show-package-dir" "Print the path to package-dir" nil)
+              ("--show-default-languages" "list the languages that are activated by default" nil)
 	      ))
 
       (defvar docstring "\nManage elpa packages\n")
@@ -230,6 +231,11 @@ any identified in comma-delimited string `extra-langs'"
       (if (getopt "show-package-dir")
           (progn
             (print (getopt "package-dir"))
+            (kill-emacs 0)))
+
+      (if (getopt "show-default-languages")
+          (progn
+            (print cli-org-babel-languages-default)
             (kill-emacs 0)))
 
       (cli-el-get-setup (getopt "package-dir") cli-packages (getopt "package-upgrade"))))
