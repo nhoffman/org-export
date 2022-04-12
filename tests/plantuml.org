@@ -1,0 +1,13 @@
+#+begin_src emacs-lisp :eval yes
+(setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
+#+end_src
+
+#+begin_src plantuml :file example.png :eval yes
+@startuml
+Alice -> Bob: Authentication Request
+Bob --> Alice: Authentication Response
+
+Alice -> Bob: Another authentication Request
+Alice <-- Bob: Another authentication Response
+@enduml
+#+end_src

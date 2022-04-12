@@ -19,8 +19,8 @@ interactive compilation of documents via emacs. This project provides
 tools for non-interactive compilation of org-mode files. Why is this
 useful?
 
-- Not everyone uses emacs (/gasp!/), but everyone should be able to
-  create documents using org-mode!
+- Not everyone uses emacs, but everyone should be able to create
+  documents using org-mode!
 - Document generation can be fully scripted (eg, as the final step in
   an analysis pipeline).
 - Interactively-compiled documents depend on an individual user's emacs
@@ -61,12 +61,13 @@ Execute the script with =-h= to see usage and available commands:
 ./org-export -h
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: cli-help
 : Usage: org-export command options...
 :
 : Available commands include:
 :   cli
 :   html
+:   pdf
 :   pelican
 :   tangle
 
@@ -95,19 +96,22 @@ Command line arguments:
 ./org-export html -h
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: html-help
 #+begin_example
-Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 25.1.91.1
+Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 28.1
 Command line options:
 
  --infile       path to input .org file (required)
  --outfile      path to output .html file (use base name of infile by default)
+ --add-langs    comma-delimited list of additional languages to enable in code blocks
  --evaluate     evaluate source code blocks
  --css          path or URL of css stylesheet
  --embed-css    Include contents of css in a <style> block
  --bootstrap    make Bootstrap-specific modifications to html output;
                         if selected, link to Bootstrap CDN by default
  --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
  --verbose      enable debugging message on error
 
 
@@ -138,6 +142,35 @@ It's also easy to link to or embed alternative css stylesheets, for
 example, the ones used by the org-mode manual:
 
 : org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+
+* Org-babel language support
+
+By default, the following languages are activated for use in code blocks:
+
+#+begin_src sh :results output
+./org-export cli --show-default-languages
+#+end_src
+
+#+RESULTS:
+:
+: ("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
+
+Additional languages may be activated using the argument =--add-langs=. In
+addition, language-specific configuration may be provided as elisp expressions
+via =--config= and =--config-file=. For example, to compile a document including =plantuml= code blocks (assuming a java runtime is installed):
+
+: ./org-export html --infile tests/plantuml.org --add-langs plantuml --config '(setq org-plantuml-jar-path (expand-file-name "plantuml-1.2022.3.jar"))'
+
+Note that you may also provide language-specific configuration in an elisp code block, for example
+
+#+begin_src sh :results output
+head -n3 tests/plantuml.org
+#+end_src
+
+#+RESULTS:
+: #+begin_src emacs-lisp :eval yes
+: (setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
+: #+end_src
 
 * Tests
 
