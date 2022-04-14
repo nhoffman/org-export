@@ -166,11 +166,12 @@ value of `cli-do-nothing'.
 
   (if upgrade
       (progn
-	(package-list-packages)
-  	(package-menu-mark-upgrades)
-  	(package-menu-execute))
-    (package-list-packages-no-fetch))
-  )
+        (package-list-packages)
+	(package-menu-mark-upgrades)
+        (condition-case nil
+            (package-menu-execute t)
+          (error (message "No package updates available"))))
+    (package-list-packages-no-fetch)))
 
 ;; other utilities
 
