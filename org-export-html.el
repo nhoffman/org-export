@@ -131,6 +131,7 @@ yes' in the block header.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; evaluate extra configuration if provided
+(cli-eval-file cli-config-file)
 (cli-eval-expr (getopt "config"))
 (cli-eval-file (getopt "config-file"))
 

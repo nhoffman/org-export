@@ -6,11 +6,26 @@
 (setq lexical-binding t)
 (provide 'cli)
 
+(defun cli-path-join (&rest x)
+  "Join elements of x with a path separator and apply `expand-file-name'"
+  (expand-file-name
+   (concat
+    (mapconcat 'file-name-as-directory (seq-take x (- (length x) 1)) "")
+    (elt x (- (length x) 1)))))
+
 (defvar cli-package-dir
-  (concat (file-name-as-directory
-           (or (getenv "XDG_DATA_HOME") "~/.local/share"))
-          "org-export")
-  "Default location to install org-mode and dependencies")
+  (cli-path-join
+   (or (getenv "XDG_DATA_HOME") "~/.local/share") "org-export")
+  "Location to install org-mode and dependencies")
+
+(defvar cli-config-dir
+  (cli-path-join
+   (or (getenv "XDG_CONFIG_HOME") "~/.config") "org-export")
+  "Directory for config files")
+
+(defvar cli-config-file
+  (cli-path-join cli-config-dir "config.el")
+  "File for user config")
 
 (defvar cli-packages '(htmlize color-theme-modern ess)
   "elisp packages installed by each script")
@@ -132,23 +147,18 @@ value of `cli-do-nothing'.
   ;; must assign `user-emacs-directory' *before* requiring `package'
   (setq user-emacs-directory emacs-directory)
 
-  ;; fix TLS certificate errors
-  ;; http://emacs.stackexchange.com/questions/18045/how-can-i-retrieve-an-https-url-on-mac-os-x-without-warnings-about-an-untrusted
-  ;; (if (and (eq system-type 'darwin)
-  ;;          (file-exists-p "/usr/local/etc/libressl/cert.pem"))
-  ;;     (progn
-  ;;       (require 'gnutls)
-  ;;       (setq gnutls-verify-error t)
-  ;;       (add-to-list 'gnutls-trustfiles "/usr/local/etc/libressl/cert.pem")))
+  (unless (file-readable-p cli-config-dir)
+    (message (format "Creating directory %s" cli-config-dir))
+    (make-directory cli-config-dir t))
 
   ;; install el-get if necessary
   (setq cli-el-get-repo
-  	(concat (file-name-as-directory user-emacs-directory) "el-get"))
+	(concat (file-name-as-directory user-emacs-directory) "el-get"))
 
   (unless (file-exists-p cli-el-get-repo)
     (with-current-buffer
-  	(url-retrieve-synchronously
-  	 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+	(url-retrieve-synchronously
+	 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
       (eval-region url-http-end-of-headers (point-max))))
 
   (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
@@ -158,7 +168,7 @@ value of `cli-do-nothing'.
   ;; Use el-get to install packages in 'package-list' using a while
   ;; loop and evaluating an expanded macro for each.
   (let ((pkg nil)
-  	(pkg-list package-list))
+	(pkg-list package-list))
     (while pkg-list
       (setq pkg (car pkg-list))
       (setq pkg-list (cdr pkg-list))
@@ -184,11 +194,11 @@ value of `cli-do-nothing'.
 
 (defun cli-eval-file (file-path)
   "evaluate the specified file in a temporary buffer for side effects"
-  (if file-path
+  (if (and file-path (file-exists-p file-path))
       (with-temp-buffer
+        (message "loading %s" file-path)
         (insert-file-contents file-path)
-        (eval-buffer)
-        )))
+        (eval-buffer))))
 
 (defun cli-replace-all (from-str to-str)
   "Replace all occurrences of from-str with to-str in current buffer"
@@ -228,6 +238,7 @@ any identified in comma-delimited string `extra-langs'"
 
       (setq args (cli-parse-args options-alist docstring))
       (defun getopt (name) (gethash name args))
+      (cli-eval-file cli-config-file)
 
       (if (getopt "show-package-dir")
           (progn
@@ -239,4 +250,7 @@ any identified in comma-delimited string `extra-langs'"
             (print cli-org-babel-languages-default)
             (kill-emacs 0)))
 
-      (cli-el-get-setup (getopt "package-dir") cli-packages (getopt "package-upgrade"))))
+      (cli-el-get-setup
+       (getopt "package-dir") cli-packages (getopt "package-upgrade"))
+
+      ))

@@ -155,13 +155,22 @@ By default, the following languages are activated for use in code blocks:
 :
 : ("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
 
-Additional languages may be activated using the argument =--add-langs=. In
-addition, language-specific configuration may be provided as elisp expressions
-via =--config= and =--config-file=. For example, to compile a document including =plantuml= code blocks (assuming a java runtime is installed):
+Additional languages may be activated using the argument =--add-langs=.
+
+* Additional configuration
+
+Additional configuration may be provided as elisp commands in
+=$XDG_CONFIG_HOME/org-export/config.el= (defaulting to
+=~/.config/org-export/config.el=)
+
+Configuration may also be provided as elisp expressions using the arguments
+=--config= and =--config-file=. For example, to compile a document including
+=plantuml= code blocks (assuming a java runtime is installed):
 
 : ./org-export html --infile tests/plantuml.org --add-langs plantuml --config '(setq org-plantuml-jar-path (expand-file-name "plantuml-1.2022.3.jar"))'
 
-Note that you may also provide language-specific configuration in an elisp code block, for example
+Note that you may also provide language-specific configuration in elisp code
+blocks, for example:
 
 #+begin_src sh :results output
 head -n3 tests/plantuml.org
