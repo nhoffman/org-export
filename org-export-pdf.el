@@ -7,6 +7,8 @@
 	 nil)
 	("--evaluate" "evaluate source code blocks" nil)
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
+        ("--config" "an elisp expression defining additional configuration" nil)
+        ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
 	("--verbose" "enable debugging message on error" nil)
 	))
 
@@ -18,6 +20,7 @@ this option, include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
 "))
+
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
 
@@ -54,7 +57,7 @@ yes' in the block header.
   (format "export PATH=\"%s\"" exec-path-str))
 
 (add-hook 'org-mode-hook
-	  '(lambda ()
+	  #'(lambda ()
 	     ;; (font-lock-mode)
 	     ;; (setq org-src-fontify-natively t)
 	     ;; (setq htmlize-output-type 'inline-css)
@@ -84,14 +87,18 @@ yes' in the block header.
 	     (setq org-babel-default-header-args:sh
 		   (list `(:prologue . ,sh-src-prologue)))
 
-	     (org-babel-do-load-languages
-	      'org-babel-load-languages (cli-get-org-babel-load-languages))
+             (cli-org-babel-load-languages (getopt "add-langs"))
 
 	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; evaluate extra configuration if provided
+(cli-eval-file cli-config-file)
+(cli-eval-expr (getopt "config"))
+(cli-eval-file (getopt "config-file"))
 
 (defvar infile (getopt "infile"))
 (defvar outfile

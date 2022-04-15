@@ -5,6 +5,7 @@
       `(("--infile" "path to input .org file")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
+        ("--add-langs" "comma-delimited list of additional languages to enable in code blocks" nil)
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)))
 
 (setq args (cli-parse-args options-alist))
@@ -18,9 +19,9 @@
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
-	  '(lambda ()
-	     (setq ess-ask-for-ess-directory nil)
-	     ))
+	  #'(lambda ()
+	      (setq ess-ask-for-ess-directory nil)
+	      ))
 
 ;; org-mode and export configuration
 
@@ -35,7 +36,7 @@
   (format "export PATH=\"%s\"" exec-path-str))
 
 (add-hook 'org-mode-hook
-	  '(lambda ()
+	  #'(lambda ()
 	     ;; (font-lock-mode)
 	     (setq org-src-fontify-natively nil)
 	     (setq org-confirm-babel-evaluate nil)
@@ -65,14 +66,16 @@
 		   (list `(:prologue . ,sh-src-prologue)))
 
 	     ;; (setq org-export-htmlize-output-type 'css)
-	     (org-babel-do-load-languages
-	      'org-babel-load-languages (cli-get-org-babel-load-languages))
+             (cli-org-babel-load-languages (getopt "add-langs"))
 
 	     )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; evaluate extra configuration if provided
+(cli-eval-file cli-config-file)
 
 (defvar infile (getopt "infile"))
 (defvar outfile
