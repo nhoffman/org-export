@@ -5,7 +5,6 @@
       `(("--infile" "path to input .org file")
         ("--add-langs" "comma-delimited list of additional languages to enable in code blocks" nil)
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	("--verbose" "enable debugging message on error" nil)
 	))
 
 (setq args (cli-parse-args options-alist "
@@ -13,10 +12,6 @@ Option --infile is required.
 "))
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
-
-(setq debug-on-error (getopt "verbose"))
-;; (setq debug-on-signal (getopt "debug"))
-
 
 ;; ess configuration
 (add-hook 'ess-mode-hook

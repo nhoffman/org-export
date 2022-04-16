@@ -1,10 +1,12 @@
 (unless (>= emacs-major-version 26)
   (error "Error: emacs version 26 or greater is required"))
 
-;; (setq debug-on-error t)
-
-(setq lexical-binding t)
 (provide 'cli)
+
+;; configuration applying to all commands
+(setq lexical-binding t)
+(setq make-backup-files nil)
+(setq debug-on-error t)
 
 (defun cli-path-join (&rest x)
   "Join elements of x with a path separator and apply `expand-file-name'"
@@ -229,9 +231,6 @@ any identified in comma-delimited string `extra-langs'"
      'org-babel-load-languages
      (mapcar #'(lambda (lang) `(,(make-symbol lang) . t)) language-names))
     ))
-
-;; configuration applying to all commands
-(setq make-backup-files nil)
 
 ;; only executed if this is the script called from the command line
 ;; (like python's "if __name__ == '__main__'")

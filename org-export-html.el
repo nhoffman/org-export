@@ -13,7 +13,6 @@
 	    ("--package-dir" "directory containing elpa packages" ,cli-package-dir)
         ("--config" "an elisp expression defining additional configuration" nil)
         ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
-	    ("--verbose" "enable debugging message on error" nil)
 	    ))
 
 (setq args (cli-parse-args options-alist "
@@ -34,9 +33,6 @@ yes' in the block header.
 (condition-case nil
     (require 'color-theme-modern)
   (error (message "** could not activate color-theme-modern")))
-
-(setq debug-on-error (getopt "verbose"))
-;; (setq debug-on-signal (getopt "debug"))
 
 ;; ess configuration
 (add-hook 'ess-mode-hook

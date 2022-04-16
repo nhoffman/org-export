@@ -98,7 +98,6 @@ Command line arguments:
 
 #+RESULTS: html-help
 #+begin_example
-Using /Applications/Emacs.app/Contents/MacOS/Emacs, GNU Emacs 28.1
 Command line options:
 
  --infile       path to input .org file (required)
@@ -112,7 +111,6 @@ Command line options:
  --package-dir  directory containing elpa packages
  --config       an elisp expression defining additional configuration
  --config-file  a file path containing elisp expressions defining additional configuration
- --verbose      enable debugging message on error
 
 
 Note that code block evaluation is disabled by default; use
