@@ -14,9 +14,6 @@
 (require 'ox)
 (require 'ox-html)
 
-;; general configuration
-(setq make-backup-files nil)
-
 ;; ess configuration
 (add-hook 'ess-mode-hook
 	  #'(lambda ()

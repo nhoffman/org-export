@@ -230,6 +230,9 @@ any identified in comma-delimited string `extra-langs'"
      (mapcar #'(lambda (lang) `(,(make-symbol lang) . t)) language-names))
     ))
 
+;; configuration applying to all commands
+(setq make-backup-files nil)
+
 ;; only executed if this is the script called from the command line
 ;; (like python's "if __name__ == '__main__'")
 (if (member (file-name-nondirectory load-file-name)

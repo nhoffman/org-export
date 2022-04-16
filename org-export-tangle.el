@@ -17,8 +17,6 @@ Option --infile is required.
 (setq debug-on-error (getopt "verbose"))
 ;; (setq debug-on-signal (getopt "debug"))
 
-;; general configuration
-(setq make-backup-files nil)
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
