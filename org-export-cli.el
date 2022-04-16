@@ -30,6 +30,14 @@
 (defvar cli-packages '(htmlize color-theme-modern ess)
   "elisp packages installed by each script")
 
+;; store the execution path for the current environment and provide it
+;; to sh code blocks - otherwise, some system directories are
+;; prepended in the code block's environment. Would be nice to figure
+;; out where these are coming from. This solves the problem for shell
+;; code blocks, but not for other languages (like python).
+(defvar cli-sh-src-prologue
+  (format "export PATH=\"%s\"" (mapconcat 'identity exec-path ":")))
+
 (defun cli-do-nothing () t)
 
 (defun cli-option-p (str)
