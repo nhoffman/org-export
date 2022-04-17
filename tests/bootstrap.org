@@ -1,0 +1,42 @@
+#+TITLE: Bootstrap Test
+#+AUTHOR: Noah Hoffman
+#+OPTIONS: toc:2 ^:nil
+
+* Basic formatting
+
+- one
+- two
+  - a
+  - b
+- three
+
+From the [[https://orgmode.org/guide/Plain-Lists.html][org-mode manual]]:
+
+1. The attack of the Rohirrim
+2. Eowyn's fight with the witch king
+   + this was already my favorite scene in the book
+   + I really like Miranda Otto.
+Important actors in this film are:
+- Elijah Wood :: He plays Frodo
+- Sean Astin :: He plays Sam, Frodo's friend.
+
+* Tables
+
+| one   | two   | three |
+|-------+-------+-------|
+| four  | five  | six   |
+| seven | eight | nine  |
+
+* Code Blocks
+
+#+begin_src sh :results output
+emacs --version
+git --no-pager log -n1
+#+end_src
+
+* Version info
+
+#+begin_src sh :results output
+emacs --version
+git --no-pager log -n1
+#+end_src
