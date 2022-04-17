@@ -1,0 +1,37 @@
+#!/bin/bash
+
+scriptdir=$(dirname $0)
+
+if [[ -z $1 || $1 == "-h" ]]; then
+    echo "Usage: org-export command options..."
+    echo
+    echo "Available commands include:"
+    for fname in $scriptdir/org-export*.el; do
+	echo -n "  "
+	basename $fname | sed -e 's/^org-export-//' -e 's/.el$//'
+    done
+    exit
+fi
+
+command=$1
+scriptname=$scriptdir/org-export-${command}.el
+
+if [[ ! -f $scriptname ]]; then
+    echo "Error: $command is not a valid command"
+    exit 1
+fi
+
+if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
+    emacs="${EMACS-/Applications/Emacs.app/Contents/MacOS/Emacs}"
+else
+    emacs="${EMACS-$(which emacs)}"
+fi
+
+emacs_version=$($emacs --version | head -1)
+# echo "Using $emacs, $emacs_version"
+if ! echo $emacs_version | grep -q -E '(2[678]\.[0-9])'; then
+  echo "Error: Emacs version 26 - 28 is required"
+  exit 1
+fi
+
+"$emacs" --no-site-file --script $scriptname echo "${@:2}"

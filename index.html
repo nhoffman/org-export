@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- 2022-04-17 Sun 22:14 -->
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>org-export</title>
+<meta name="author" content="Noah Hoffman" />
+<meta name="generator" content="Org Mode" />
+<style>
+  #content { max-width: 60em; margin: auto; }
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #e6e6e6;
+    border-radius: 3px;
+    background-color: #f2f2f2;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: auto;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    padding: 3px;
+    color: #555;
+    background-color: #f2f2f299;
+  }
+  pre.src:hover:before { display: inline; margin-top: 14px;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-authinfo::before { content: 'Authinfo'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+</style>
+<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" />
+</head>
+<body class="container">
+<div id="content" class="content">
+<h1 class="title">org-export</h1>
+<p>
+<b>org-export</b>: batch export of Emacs org-mode files from the command line
+</p>
+
+
+<div id="org95d7511" class="figure">
+<p><img src="https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg" alt="badge.svg" class="org-svg" style="width: 100px">
+</p>
+</div>
+
+<div id="table-of-contents" role="doc-toc">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents" role="doc-toc">
+<ul>
+<li><a href="#orgc2dbcab">1. Overview</a></li>
+<li><a href="#org1824430">2. Installation and use</a>
+<ul>
+<li><a href="#org54b9879">2.1. known issues</a></li>
+</ul>
+</li>
+<li><a href="#org33920aa">3. Commands</a>
+<ul>
+<li><a href="#orgfe4c91a">3.1. org-export html</a></li>
+<li><a href="#org6992a57">3.2. org-export pdf</a></li>
+<li><a href="#orgb5a7b35">3.3. org-export pelican</a></li>
+<li><a href="#org0b983b2">3.4. org-export tangle</a></li>
+</ul>
+</li>
+<li><a href="#org629f7d4">4. Org-babel language support</a></li>
+<li><a href="#org1379aa9">5. Additional configuration</a></li>
+<li><a href="#org38721fe">6. Tests</a></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-orgc2dbcab" class="outline-2">
+<h2 id="orgc2dbcab"><span class="section-number-2">1.</span> Overview</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Emacs <a href="http://orgmode.org/">org-mode</a> is a markup language for "keeping notes, maintaining
+TODO lists, planning projects, and authoring documents" - but most
+importantly (to me) it's a platform for literate programming and
+reproducible research. <a href="http://orgmode.org/worg/org-contrib/babel/">Babel</a> supports the creation of documents with
+interleaved code (eg, R, Python, shell, sqlite, elisp, etc) and
+text. The code may be evaluated and the results incorporated into the
+document. One limitation is that org-mode is primarily oriented toward
+interactive compilation of documents via emacs. This project provides
+tools for non-interactive compilation of org-mode files. Why is this
+useful?
+</p>
+
+<ul class="org-ul">
+<li>Not everyone uses emacs, but everyone should be able to create
+documents using org-mode!</li>
+<li>Document generation can be fully scripted (eg, as the final step in
+an analysis pipeline).</li>
+<li>Interactively-compiled documents depend on an individual user's
+emacs configuration, which can produce different results for
+different users; these scripts manage all dependencies from elpa
+independently of the users' own emacs config.</li>
+<li>These scripts also provide some conveniences with respect to
+providing css styles.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org1824430" class="outline-2">
+<h2 id="org1824430"><span class="section-number-2">2.</span> Installation and use</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+First, clone this repository and enter the cloned directory. There are
+a few options for installing and invoking the <code>org-export</code> entry point
+to a location on your <code>$PATH</code> (we'll use <code>/usr/local/bin</code> as an example):
+</p>
+
+<p>
+Recommended: use a hard link. This method allows you to update
+<code>org-export</code> with a git-pull from the git repository:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">ln org-export *.el /usr/local/bin
+</pre>
+</div>
+
+<p>
+Copy the files:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">cp org-export *.el /usr/local/bin
+</pre>
+</div>
+
+<p>
+Invoke using the absolute path to <code>org-export</code> within the cloned git repository.
+</p>
+
+<p>
+Execute the script with <code>-h</code> to see usage and available commands:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="orgf25c81e">./org-export -h
+</pre>
+</div>
+
+<pre class="example">
+Usage: org-export command options...
+
+Available commands include:
+  cli
+  html
+  pdf
+  pelican
+  tangle
+</pre>
+
+
+<p>
+If all of the scripts are on your $PATH, you should be able to execute
+using:
+</p>
+
+<pre class="example">
+org-export html --infile ...
+</pre>
+
+
+<p>
+You may need to explicitly identify the emacs binary using the <code>EMACS</code>
+environment variable; for example on OS X:
+</p>
+
+<pre class="example">
+EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
+</pre>
+
+
+<p>
+By default, a new directory is created in <code>$XDG_DATA_HOME/org-export</code>
+(or <code>~/.local/share/org-export</code> if <code>$XDG_DATA_HOME</code> is undefined) the
+first time a script is executed, and dependencies (such as the most
+recent version of org-mode) are installed.
+</p>
+
+<p>
+Note that source code blocks are evaluated with the working directory
+set to be the parent directory of the input file.
+</p>
+</div>
+
+<div id="outline-container-org54b9879" class="outline-3">
+<h3 id="org54b9879"><span class="section-number-3">2.1.</span> known issues</h3>
+<div class="outline-text-3" id="text-2-1">
+<ul class="org-ul">
+<li><code>ess</code> fails to compile without R installed.</li>
+</ul>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org33920aa" class="outline-2">
+<h2 id="org33920aa"><span class="section-number-2">3.</span> Commands</h2>
+<div class="outline-text-2" id="text-3">
+<div class="org-src-container">
+<pre class="src src-sh" id="org976dea1">./org-export -h
+</pre>
+</div>
+
+<pre class="example">
+Usage: org-export command options...
+
+Available commands include:
+  cli
+  html
+  pdf
+  pelican
+  tangle
+</pre>
+</div>
+
+<div id="outline-container-orgfe4c91a" class="outline-3">
+<h3 id="orgfe4c91a"><span class="section-number-3">3.1.</span> org-export html</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+Exports org-mode to html
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="orgafe0352">./org-export html -h
+</pre>
+</div>
+
+<pre class="example" id="orgdc87b78">
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .html file (use base name of infile by default)
+ --add-langs    comma-delimited list of additional languages to enable in code blocks
+ --evaluate     evaluate source code blocks
+ --css          path or URL of css stylesheet
+ --embed-css    Include contents of css in a &lt;style&gt; block
+ --bootstrap    make Bootstrap-specific modifications to html output;
+                        if selected, link to Bootstrap CDN by default
+ --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
+
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+</pre>
+
+<p>
+The simplest invocation is as follows (you can test this out using this document):
+</p>
+
+<pre class="example">
+org-export html --infile README.org
+</pre>
+
+
+<p>
+If you want to provide css styles using <a href="http://getbootstrap.com/">Bootstrap</a> (inserts a link to the Bootstrap CDN):
+</p>
+
+<pre class="example">
+org-export html --infile README.org --bootstrap
+</pre>
+
+
+<p>
+You can also embed the css content in a <code>&lt;style&gt;</code> block - this is
+useful if you want to distribute a file and don't want to assume that
+the user's environment will support linking to the css file.
+</p>
+
+<pre class="example">
+org-export html --infile README.org --bootstrap --embed-css
+</pre>
+
+
+<p>
+It's also easy to link to or embed alternative css stylesheets, for
+example, the ones used by the org-mode manual:
+</p>
+
+<pre class="example">
+org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+</pre>
+</div>
+</div>
+<div id="outline-container-org6992a57" class="outline-3">
+<h3 id="org6992a57"><span class="section-number-3">3.2.</span> org-export pdf</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+Exports org-mode to pdf using latex
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="orgc995414">./org-export pdf -h
+</pre>
+</div>
+
+<pre class="example" id="org92691cc">
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .pdf file (use base name of infile by default)
+ --evaluate     evaluate source code blocks
+ --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
+
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-orgb5a7b35" class="outline-3">
+<h3 id="orgb5a7b35"><span class="section-number-3">3.3.</span> org-export pelican</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+Export files for use with the <a href="https://docs.getpelican.com/en/latest/">pelican</a> static site generator
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="orgf6c87ff">./org-export pelican -h
+</pre>
+</div>
+
+<pre class="example">
+Command line options:
+
+ --infile       path to input .org file
+ --outfile      path to output .html file (use base name of infile by default)
+ --add-langs    comma-delimited list of additional languages to enable in code blocks
+ --package-dir  directory containing elpa packages
+
+
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org0b983b2" class="outline-3">
+<h3 id="org0b983b2"><span class="section-number-3">3.4.</span> org-export tangle</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+Tangles code blocks in the specified file
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="org5fa0722">./org-export tangle -h
+</pre>
+</div>
+
+<pre class="example">
+Command line options:
+
+ --infile       path to input .org file
+ --add-langs    comma-delimited list of additional languages to enable in code blocks
+ --package-dir  directory containing elpa packages
+
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org629f7d4" class="outline-2">
+<h2 id="org629f7d4"><span class="section-number-2">4.</span> Org-babel language support</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+By default, the following languages are activated for use in code blocks:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">./org-export cli --show-default-languages
+</pre>
+</div>
+
+<pre class="example">
+
+("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
+</pre>
+
+
+<p>
+Additional languages may be activated using the argument <code>--add-langs</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org1379aa9" class="outline-2">
+<h2 id="org1379aa9"><span class="section-number-2">5.</span> Additional configuration</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Additional configuration may be provided as elisp commands in
+<code>$XDG_CONFIG_HOME/org-export/config.el</code> (defaulting to
+<code>~/.config/org-export/config.el</code>)
+</p>
+
+<p>
+Configuration may also be provided as elisp expressions using the
+arguments <code>--config</code> and <code>--config-file</code>. For example, to compile a
+document including <code>plantuml</code> code blocks (assuming a java runtime is
+installed):
+</p>
+
+<pre class="example">
+./org-export html --infile tests/plantuml.org --add-langs plantuml --config '(setq org-plantuml-jar-path (expand-file-name "plantuml-1.2022.3.jar"))'
+</pre>
+
+
+<p>
+Note that you may also provide language-specific configuration in
+elisp code blocks, for example:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh">head -n3 tests/plantuml.org
+</pre>
+</div>
+
+<pre class="example">
+#+begin_src emacs-lisp :eval yes
+(setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
+#+end_src
+</pre>
+</div>
+</div>
+
+<div id="outline-container-org38721fe" class="outline-2">
+<h2 id="org38721fe"><span class="section-number-2">6.</span> Tests</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+From the top level of this repository:
+</p>
+
+<pre class="example">
+tests/test.sh
+</pre>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Noah Hoffman</p>
+<p class="date">Created: 2022-04-17 Sun 22:14</p>
+<p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>

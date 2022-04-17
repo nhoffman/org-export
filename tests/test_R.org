@@ -1,0 +1,10 @@
+#+BEGIN_SRC R :results output
+print(paste(rep('X', 5), collapse=''))
+#+END_SRC
+
+#+BEGIN_SRC R :results output :eval yes
+print(paste(rep('Y', 5), collapse=''))
+#+END_SRC
+
+
+

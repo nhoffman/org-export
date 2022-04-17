@@ -1,0 +1,279 @@
+#+TITLE: org-export
+#+AUTHOR: Noah Hoffman
+#+OPTIONS: toc:nil ^:nil
+
+*org-export*: batch export of Emacs org-mode files from the command line
+
+#+ATTR_HTML: :style width: 100px
+[[https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg]]
+
+#+TOC: headlines 2
+
+* Overview
+
+Emacs [[http://orgmode.org/][org-mode]] is a markup language for "keeping notes, maintaining
+TODO lists, planning projects, and authoring documents" - but most
+importantly (to me) it's a platform for literate programming and
+reproducible research. [[http://orgmode.org/worg/org-contrib/babel/][Babel]] supports the creation of documents with
+interleaved code (eg, R, Python, shell, sqlite, elisp, etc) and
+text. The code may be evaluated and the results incorporated into the
+document. One limitation is that org-mode is primarily oriented toward
+interactive compilation of documents via emacs. This project provides
+tools for non-interactive compilation of org-mode files. Why is this
+useful?
+
+- Not everyone uses emacs, but everyone should be able to create
+  documents using org-mode!
+- Document generation can be fully scripted (eg, as the final step in
+  an analysis pipeline).
+- Interactively-compiled documents depend on an individual user's
+  emacs configuration, which can produce different results for
+  different users; these scripts manage all dependencies from elpa
+  independently of the users' own emacs config.
+- These scripts also provide some conveniences with respect to
+  providing css styles.
+
+* Installation and use
+
+First, clone this repository and enter the cloned directory. There are
+a few options for installing and invoking the =org-export= entry point
+to a location on your =$PATH= (we'll use =/usr/local/bin= as an example):
+
+Recommended: use a hard link. This method allows you to update
+=org-export= with a git-pull from the git repository:
+
+#+BEGIN_SRC sh
+ln org-export *.el /usr/local/bin
+#+END_SRC
+
+Copy the files:
+
+#+BEGIN_SRC sh
+cp org-export *.el /usr/local/bin
+#+END_SRC
+
+Invoke using the absolute path to =org-export= within the cloned git repository.
+
+Execute the script with =-h= to see usage and available commands:
+
+#+NAME: cli-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export -h
+#+END_SRC
+
+#+RESULTS: cli-help
+#+begin_example
+Command line options:
+
+ --package-dir             directory containing elpa packages
+ --package-upgrade         Perform package upgrade
+ --show-package-dir        Print the path to package-dir
+ --show-default-languages  list the languages that are activated by default
+
+
+Manage elpa packages
+
+#+end_example
+
+If all of the scripts are on your $PATH, you should be able to execute
+using:
+
+: org-export html --infile ...
+
+You may need to explicitly identify the emacs binary using the =EMACS=
+environment variable; for example on OS X:
+
+: EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
+
+By default, a new directory is created in =$XDG_DATA_HOME/org-export=
+(or =~/.local/share/org-export= if =$XDG_DATA_HOME= is undefined) the
+first time a script is executed, and dependencies (such as the most
+recent version of org-mode) are installed.
+
+Note that source code blocks are evaluated with the working directory
+set to be the parent directory of the input file.
+
+** known issues
+
+- =ess= fails to compile without R installed.
+
+* Commands
+
+#+NAME: main-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export -h
+#+END_SRC
+
+#+RESULTS: main-help
+: Usage: org-export command options...
+:
+: Available commands include:
+:   cli
+:   html
+:   pdf
+:   pelican
+:   tangle
+
+** org-export html
+
+Exports org-mode to html
+
+#+NAME: html-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export html -h
+#+END_SRC
+
+#+RESULTS: html-help
+#+begin_example
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .html file (use base name of infile by default)
+ --add-langs    comma-delimited list of additional languages to enable in code blocks
+ --evaluate     evaluate source code blocks
+ --css          path or URL of css stylesheet
+ --embed-css    Include contents of css in a <style> block
+ --bootstrap    make Bootstrap-specific modifications to html output;
+                        if selected, link to Bootstrap CDN by default
+ --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
+
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+#+end_example
+
+The simplest invocation is as follows (you can test this out using this document):
+
+: org-export html --infile README.org
+
+If you want to provide css styles using [[http://getbootstrap.com/][Bootstrap]] (inserts a link to the Bootstrap CDN):
+
+: org-export html --infile README.org --bootstrap
+
+You can also embed the css content in a =<style>= block - this is
+useful if you want to distribute a file and don't want to assume that
+the user's environment will support linking to the css file.
+
+: org-export html --infile README.org --bootstrap --embed-css
+
+It's also easy to link to or embed alternative css stylesheets, for
+example, the ones used by the org-mode manual:
+
+: org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+** org-export pdf
+
+Exports org-mode to pdf using latex
+
+#+NAME: pdf-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export pdf -h
+#+END_SRC
+
+#+RESULTS: pdf-help
+#+begin_example
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .pdf file (use base name of infile by default)
+ --evaluate     evaluate source code blocks
+ --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+#+end_example
+
+** org-export pelican
+
+Export files for use with the [[https://docs.getpelican.com/en/latest/][pelican]] static site generator
+
+#+NAME: pelican-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export pelican -h
+#+END_SRC
+
+#+RESULTS: pelican-help
+: Command line options:
+:
+:  --infile       path to input .org file
+:  --outfile      path to output .html file (use base name of infile by default)
+:  --add-langs    comma-delimited list of additional languages to enable in code blocks
+:  --package-dir  directory containing elpa packages
+:
+:
+
+** org-export tangle
+
+Tangles code blocks in the specified file
+
+#+NAME: tangle-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export tangle -h
+#+END_SRC
+
+#+RESULTS: tangle-help
+: Command line options:
+:
+:  --infile       path to input .org file
+:  --add-langs    comma-delimited list of additional languages to enable in code blocks
+:  --package-dir  directory containing elpa packages
+:
+:
+
+* Org-babel language support
+
+By default, the following languages are activated for use in code blocks:
+
+#+begin_src sh :results output
+./org-export cli --show-default-languages
+#+end_src
+
+#+RESULTS:
+:
+: ("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
+
+Additional languages may be activated using the argument =--add-langs=.
+
+* Additional configuration
+
+Additional configuration may be provided as elisp commands in
+=$XDG_CONFIG_HOME/org-export/config.el= (defaulting to
+=~/.config/org-export/config.el=)
+
+Configuration may also be provided as elisp expressions using the
+arguments =--config= and =--config-file=. For example, to compile a
+document including =plantuml= code blocks (assuming a java runtime is
+installed):
+
+: ./org-export html --infile tests/plantuml.org --add-langs plantuml --config '(setq org-plantuml-jar-path (expand-file-name "plantuml-1.2022.3.jar"))'
+
+Note that you may also provide language-specific configuration in
+elisp code blocks, for example:
+
+#+begin_src sh :results output
+head -n3 tests/plantuml.org
+#+end_src
+
+#+RESULTS:
+: #+begin_src emacs-lisp :eval yes
+: (setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
+: #+end_src
+
+* Tests
+
+From the top level of this repository:
+
+: tests/test.sh

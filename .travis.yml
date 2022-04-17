@@ -1,0 +1,24 @@
+language: generic
+dist: focal
+sudo: required
+
+os:
+  - linux
+  - osx
+
+env:
+  matrix:
+    - EMACS_VERSION=24
+    - EMACS_VERSION=25
+    - EMACS_VERSION=26
+    - EMACS_VERSION=27
+
+install:
+  - tests/install.sh
+
+script:
+  emacs --version && tests/test.sh
+
+notifications:
+  email: noah.hoffman@gmail.com
+

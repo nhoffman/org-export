@@ -1,0 +1,30 @@
+#+BEGIN_SRC shell :results output :eval yes
+pwd
+#+END_SRC
+
+#+BEGIN_SRC shell :results output :eval yes
+echo $PATH | tr ':' '\n'
+#+END_SRC
+
+#+BEGIN_SRC shell :results output :eval yes
+echo YYYYY | tr "Y" "X"
+#+END_SRC
+
+#+BEGIN_SRC sh :results output :eval yes
+echo YYYYY | tr "Y" "Z"
+#+END_SRC
+
+#+BEGIN_SRC sh :results output :eval no
+echo YYYYY | tr "Y" "N"
+#+END_SRC
+
+Here's a table:
+
+| one   | two   | three |
+|-------+-------+-------|
+| four  | five  | six   |
+| seven | eight | nine  |
+
+#+BEGIN_SRC sh :tangle sh1-tangled.sh
+echo "hello from sh1.org"
+#+END_SRC
