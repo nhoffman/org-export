@@ -17,7 +17,7 @@ jobs:
       - name: build
         run: |
           ./org-export html \
-          --infile README.html --outfile index.html --bootstrap
+          --infile README.org --outfile index.html --bootstrap
       - name: publish
         uses: peaceiris/actions-gh-pages@v3
         with:
