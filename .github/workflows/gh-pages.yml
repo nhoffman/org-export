@@ -1,0 +1,25 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - master
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: check out repo
+        uses: actions/checkout@v1
+      - name: setup emacs
+        uses: purcell/setup-emacs@master
+        with:
+          version: 28.1
+      - name: build
+        run: |
+          ./org-export html \
+          --infile README.html --outfile index.html --bootstrap
+      - name: publish
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
