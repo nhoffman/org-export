@@ -36,7 +36,7 @@ yes' in the block header.
 
 ;; css configuration
 (defvar bootstrap-url
-  "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
+  "https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css")
 
 (defvar css-url (getopt "css"))
 (if (getopt "bootstrap")
