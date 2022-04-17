@@ -7,6 +7,9 @@
 #+ATTR_HTML: :style width: 100px
 [[https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg]]
 
+- This [[https://github.com/nhoffman/org-export][project repository]] is hosted on GitHub.
+- A [[https://nhoffman.github.io/org-export/][rendered version]] of this file is hosted on GitHub Pages.
+
 #+TOC: headlines 2
 
 * Overview
@@ -277,3 +280,10 @@ head -n3 tests/plantuml.org
 From the top level of this repository:
 
 : tests/test.sh
+
+* Version info
+
+#+begin_src sh :results output
+emacs --version
+git --no-pager log -n1
+#+end_src
