@@ -17,11 +17,9 @@
 ;; ess configuration
 (add-hook 'ess-mode-hook
 	  #'(lambda ()
-	      (setq ess-ask-for-ess-directory nil)
-	      ))
+	      (setq ess-ask-for-ess-directory nil)))
 
 ;; org-mode and export configuration
-
 (add-hook 'org-mode-hook
 	  #'(lambda ()
 	     ;; (font-lock-mode)
@@ -135,4 +133,3 @@ highlighting"
 ;; clean up
 (setq default-directory cwd)
 (delete-file infile-temp)
-

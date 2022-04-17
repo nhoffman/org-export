@@ -24,3 +24,7 @@ Here's a table:
 |-------+-------+-------|
 | four  | five  | six   |
 | seven | eight | nine  |
+
+#+BEGIN_SRC sh :tangle sh1-tangled.sh
+echo "hello from sh1.org"
+#+END_SRC

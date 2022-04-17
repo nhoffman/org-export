@@ -140,4 +140,5 @@ yes' in the block header.
     ;; <body>) using org-mode configuration, so we'll just use string
     ;; replacement as necessary.
     (if (getopt "bootstrap") (html-fix-bootstrap))
-    (write-file outfile)))
+    (write-file outfile)
+    (message "wrote %s" outfile)))
