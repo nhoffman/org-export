@@ -59,19 +59,11 @@ Option --infile is required.
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar infile (getopt "infile"))
-
-;; remember the current directory; find-file changes it
-(defvar cwd default-directory)
-;; copy the source file to a temporary file; note that using the
-;; infile as the base name defines the working directory as the same
-;; as the input file
-(defvar infile-temp (make-temp-name (format "%s.temp." infile)))
-(copy-file infile infile-temp t)
-(find-file infile-temp)
-(org-mode)
-(org-babel-tangle)
-
-;; clean up
-(setq default-directory cwd)
-(delete-file infile-temp)
+(let* ((infile (expand-file-name (getopt "infile")))
+       (infile-temp (make-temp-name (format "%s.temp." infile))))
+  (copy-file infile infile-temp t)
+  (find-file infile-temp)
+  (org-mode)
+  (condition-case t
+      (org-babel-tangle))
+  (delete-file infile-temp))
