@@ -7,9 +7,8 @@
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
 	))
 
-(setq args (cli-parse-args options-alist "
-Option --infile is required.
-"))
+(setq args (cli-parse-args options-alist))
+
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
 

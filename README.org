@@ -2,9 +2,12 @@
 #+AUTHOR: Noah Hoffman
 #+OPTIONS: toc:nil ^:nil
 
-*org-export*: batch export of org-mode files from the command line
+*org-export*: batch export of Emacs org-mode files from the command line
 
+#+ATTR_HTML: :style width: 100px
 [[https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg]]
+
+#+TOC: headlines 2
 
 * Overview
 
@@ -59,14 +62,18 @@ Execute the script with =-h= to see usage and available commands:
 #+END_SRC
 
 #+RESULTS: cli-help
-: Usage: org-export command options...
-:
-: Available commands include:
-:   cli
-:   html
-:   pdf
-:   pelican
-:   tangle
+#+begin_example
+Command line options:
+
+ --package-dir             directory containing elpa packages
+ --package-upgrade         Perform package upgrade
+ --show-package-dir        Print the path to package-dir
+ --show-default-languages  list the languages that are activated by default
+
+
+Manage elpa packages
+
+#+end_example
 
 If all of the scripts are on your $PATH, you should be able to execute
 using:
@@ -86,16 +93,30 @@ recent version of org-mode) are installed.
 Note that source code blocks are evaluated with the working directory
 set to be the parent directory of the input file.
 
-*** known issues
+** known issues
 
 - =ess= fails to compile without R installed.
 
 * Commands
-*** org-export html
+
+#+NAME: main-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export -h
+#+END_SRC
+
+#+RESULTS: main-help
+: Usage: org-export command options...
+:
+: Available commands include:
+:   cli
+:   html
+:   pdf
+:   pelican
+:   tangle
+
+** org-export html
 
 Exports org-mode to html
-
-Command line arguments:
 
 #+NAME: html-help
 #+BEGIN_SRC sh :results output :exports both :eval yes
@@ -146,6 +167,71 @@ It's also easy to link to or embed alternative css stylesheets, for
 example, the ones used by the org-mode manual:
 
 : org-export html --infile README.org --css http://orgmode.org/org-manual.css --embed-css
+** org-export pdf
+
+Exports org-mode to pdf using latex
+
+#+NAME: pdf-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export pdf -h
+#+END_SRC
+
+#+RESULTS: pdf-help
+#+begin_example
+Command line options:
+
+ --infile       path to input .org file (required)
+ --outfile      path to output .pdf file (use base name of infile by default)
+ --evaluate     evaluate source code blocks
+ --package-dir  directory containing elpa packages
+ --config       an elisp expression defining additional configuration
+ --config-file  a file path containing elisp expressions defining additional configuration
+
+Note that code block evaluation is disabled by default; use
+'--evaluate' to set a default value of ':eval yes' for all code
+blocks. If you would like to evaluate by default without requiring
+this option, include '#+PROPERTY: header-args :eval yes' in the file
+header. Individual blocks can be selectively evaluated using ':eval
+yes' in the block header.
+
+#+end_example
+
+** org-export pelican
+
+Export files for use with the [[https://docs.getpelican.com/en/latest/][pelican]] static site generator
+
+#+NAME: pelican-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export pelican -h
+#+END_SRC
+
+#+RESULTS: pelican-help
+: Command line options:
+:
+:  --infile       path to input .org file
+:  --outfile      path to output .html file (use base name of infile by default)
+:  --add-langs    comma-delimited list of additional languages to enable in code blocks
+:  --package-dir  directory containing elpa packages
+:
+:
+
+** org-export tangle
+
+Tangles code blocks in the specified file
+
+#+NAME: tangle-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export tangle -h
+#+END_SRC
+
+#+RESULTS: tangle-help
+: Command line options:
+:
+:  --infile       path to input .org file
+:  --add-langs    comma-delimited list of additional languages to enable in code blocks
+:  --package-dir  directory containing elpa packages
+:
+:
 
 * Org-babel language support
 
