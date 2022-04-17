@@ -115,8 +115,10 @@ value of `cli-do-nothing'.
 		;; If val is provided, add it to args. Otherwise,
 		;; store a value of t unless the option is required.
 		(progn
-		  (unless (cli-option-p (nth 1 clargs)) (setq val (nth 1 clargs)))
-		  (if (not (cli-required-p optiondef)) (setq val (or val t)))
+		  (unless (cli-option-p (nth 1 clargs))
+                    (setq val (nth 1 clargs)))
+		  (if (not (cli-required-p optiondef))
+                      (setq val (or val t)))
 		  (puthash optname val args))
 	      (error (format "Error: the option '%s' is not defined" opt)))
 	    ))
@@ -126,10 +128,11 @@ value of `cli-do-nothing'.
     (mapc #'(lambda (optdef)
 	      (setq hashval (gethash (cli-opt-name (car optdef)) args))
 	      (if (and (eq (length optdef) 2) (not hashval))
-		  (error (format "Error: a value for the option '%s' is required"
-				 (car optdef))))
+		  (error
+                   (format
+                    "Error: a value for the option '%s' is required"
+                    (car optdef))))
 	      ) options-alist)
-
     args
     ))
 
@@ -137,7 +140,8 @@ value of `cli-do-nothing'.
   "Display options, defaults and help text defined in
 `options-alist' (see `cli-parse-args' for specification)"
   (let ((max-width
-	 (apply 'max (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
+	 (apply 'max
+                (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
 	(fstr nil))
 
     (princ "Command line options:\n\n")
