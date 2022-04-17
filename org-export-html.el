@@ -3,16 +3,28 @@
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
       `(("--infile" "path to input .org file (required)")
-	    ("--outfile" "path to output .html file (use base name of infile by default)" nil)
-        ("--add-langs" "comma-delimited list of additional languages to enable in code blocks" nil)
+	    ("--outfile"
+         "path to output .html file (use base name of infile by default)"
+         nil)
+        ("--add-langs"
+         "comma-delimited list of additional languages
+          to enable in code blocks"
+         nil)
 	    ("--evaluate" "evaluate source code blocks" nil)
 	    ("--css" "path or URL of css stylesheet" nil)
+        ("--css-integrity"
+         "optional value for css link integrity attribute" nil)
 	    ("--embed-css" "Include contents of css in a <style> block" nil)
-	    ("--bootstrap" "make Bootstrap-specific modifications to html output;
-                        if selected, link to Bootstrap CDN by default" nil)
-	    ("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-        ("--config" "an elisp expression defining additional configuration" nil)
-        ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
+	    ("--bootstrap"
+         "make Bootstrap-specific modifications to html output;
+          if selected, link to Bootstrap CDN by default"
+         nil)
+	    ("--package-dir"
+         "directory containing elpa packages" ,cli-package-dir)
+        ("--config"
+         "an elisp expression defining additional configuration" nil)
+        ("--config-file"
+         "a file path providing  additional configuration" nil)
 	    ))
 
 (setq args (cli-parse-args options-alist "
@@ -35,45 +47,61 @@ yes' in the block header.
   (error (message "** could not activate color-theme-modern")))
 
 ;; css configuration
+(defvar use-bootstrap
+  (if (getopt "bootstrap") t nil))
+
 (defvar bootstrap-url
-  "https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css")
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css")
+
+(defvar bootstrap-integrity
+  "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC")
 
 (defvar css-url (getopt "css"))
-(if (getopt "bootstrap")
-    (setq css-url (or css-url bootstrap-url)))
+(defvar css-intergrity (getopt "css-integrity"))
+
+(if use-bootstrap
+    (progn
+      (setq css-url bootstrap-url)
+      (setq css-integrity bootstrap-integrity)))
 
 (defun html-fix-bootstrap ()
   "Make adjustments to html in current buffer for bootstrap"
   (cli-replace-all "<body>" "<body class=\"container\">")
   (cli-replace-all
    "<table>"
-   "<table class=\"table table-striped table-bordered table-condensed\"
-         style=\"width: auto;\">")
-  (cli-replace-all "<dl class=\"org-dl\">" "<dl class=\"dl-horizontal\">"))
+   "<table class=\"table table-bordered table-sm\" style=\"width: auto;\">")
+  )
 
 (defvar my-html-head "")
 (if css-url
     (if (getopt "embed-css")
-	;; embed css contents in a <style> block
-	(progn
-	  (setq my-html-head
-		(format "<style type=\"text/css\">\n%s\n</style>\n"
-			(if (string-match "^http" css-url)
-			    ;; use the contents of file at path
-			    (with-current-buffer
-				(url-retrieve-synchronously css-url)
-			      (message (format "Inserting contents of %s" css-url))
-			      (buffer-string))
-			  ;; use the contents of the file at css-url
-			  (with-temp-buffer
-			    (insert-file-contents css-url)
-			    (buffer-string)))
-			)))
+	    ;; embed css contents in a <style> block
+	    (progn
+	      (setq my-html-head
+		        (format "<style type=\"text/css\">\n%s\n</style>\n"
+			            (if (string-match "^http" css-url)
+			                ;; use the contents of file at path
+			                (with-current-buffer
+				                (url-retrieve-synchronously css-url)
+			                  (message
+                               (format "Inserting contents of %s" css-url))
+			                  (buffer-string))
+			              ;; use the contents of the file at css-url
+			              (with-temp-buffer
+			                (insert-file-contents css-url)
+			                (buffer-string)))
+                        )))
       ;; ...or add a link to the css file
       (setq my-html-head
-	    (format
-	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
-         css-url))))
+            (if css-integrity
+	            (format
+                 "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"
+                    integrity=\"%s\" crossorigin=\"anonymous\" />"
+                 css-url css-integrity)
+              (format
+	           "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
+               css-url)))
+      ))
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
@@ -139,6 +167,6 @@ yes' in the block header.
     ;; It is not possible to add attributes to certain elements (eg,
     ;; <body>) using org-mode configuration, so we'll just use string
     ;; replacement as necessary.
-    (if (getopt "bootstrap") (html-fix-bootstrap))
+    (if use-bootstrap (html-fix-bootstrap))
     (write-file outfile)
     (message "wrote %s" outfile)))
