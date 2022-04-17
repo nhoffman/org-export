@@ -47,6 +47,15 @@ yes' in the block header.
 (if (getopt "bootstrap")
     (setq css-url (or css-url bootstrap-url)))
 
+(defun html-fix-bootstrap ()
+  "Make adjustments to html in current buffer for bootstrap"
+  (cli-replace-all "<body>" "<body class=\"container\">")
+  (cli-replace-all
+   "<table>"
+   "<table class=\"table table-striped table-bordered table-condensed\"
+         style=\"width: auto;\">")
+  (cli-replace-all "<dl class=\"org-dl\">" "<dl class=\"dl-horizontal\">"))
+
 (defvar my-html-head "")
 (if css-url
     (if (getopt "embed-css")
@@ -118,37 +127,21 @@ yes' in the block header.
 (cli-eval-expr (getopt "config"))
 (cli-eval-file (getopt "config-file"))
 
-(defvar infile (getopt "infile"))
-(defvar outfile
-  (file-truename
-   (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".html" infile))))
-
-;; remember the current directory; find-file changes it
-(defvar cwd default-directory)
-;; copy the source file to a temporary file; note that using the
-;; infile as the base name defines the working directory as the same
-;; as the input file
-(defvar infile-temp (make-temp-name (format "%s.temp." infile)))
-(copy-file infile infile-temp t)
-(find-file infile-temp)
-(org-mode)
-(message (format "org-mode version %s" org-version))
-(org-html-export-as-html)
-
-;; It is not possible to add attributes to certain elements (eg,
-;; <body>) using org-mode configuration, so we'll just use string
-;; replacement as necessary.
-(if (getopt "bootstrap")
-    (progn
-      (cli-replace-all "<body>" "<body class=\"container\">")
-      (cli-replace-all
-       "<table>"
-       "<table class=\"table table-striped table-bordered table-condensed\"
-         style=\"width: auto;\">")
-      (cli-replace-all "<dl class=\"org-dl\">" "<dl class=\"dl-horizontal\">")))
-
-(write-file outfile)
-
-;; clean up
-(setq default-directory cwd)
-(delete-file infile-temp)
+;; export using a temporary buffer to avoid modifying input file; working
+;; directory contains the input file.
+(let* ((infile (getopt "infile"))
+       (outfile
+        (file-truename
+         (or (getopt "outfile")
+             (replace-regexp-in-string "\.org$" ".html" infile)))))
+  (with-temp-buffer
+    (insert-file-contents-literally infile)
+    (cd (file-name-directory (expand-file-name infile)))
+    (org-mode)
+    (org-html-export-as-html)
+    ;; It is not possible to add attributes to certain elements (eg,
+    ;; <body>) using org-mode configuration, so we'll just use string
+    ;; replacement as necessary.
+    (if (getopt "bootstrap") (html-fix-bootstrap))
+    (write-file outfile)
+    ))

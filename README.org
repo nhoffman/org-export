@@ -23,13 +23,10 @@ useful?
   documents using org-mode!
 - Document generation can be fully scripted (eg, as the final step in
   an analysis pipeline).
-- Interactively-compiled documents depend on an individual user's emacs
-  configuration, which can produce different results for different users; these
-  scripts manage all dependencies from elpa independently of the users' own
-  emacs config. By default, a new directory is created in
-  =$XDG_DATA_HOME/org-export= (or =~/.local/share/org-export= if
-  =$XDG_DATA_HOME= is undefined) the first time a script is executed, and
-  dependencies (such as the most recent version of org-mode) are installed.
+- Interactively-compiled documents depend on an individual user's
+  emacs configuration, which can produce different results for
+  different users; these scripts manage all dependencies from elpa
+  independently of the users' own emacs config.
 - These scripts also provide some conveniences with respect to
   providing css styles.
 
@@ -71,7 +68,8 @@ Execute the script with =-h= to see usage and available commands:
 :   pelican
 :   tangle
 
-If all of the scripts are on your $PATH, you should be able to execute using:
+If all of the scripts are on your $PATH, you should be able to execute
+using:
 
 : org-export html --infile ...
 
@@ -79,6 +77,14 @@ You may need to explicitly identify the emacs binary using the =EMACS=
 environment variable; for example on OS X:
 
 : EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
+
+By default, a new directory is created in =$XDG_DATA_HOME/org-export=
+(or =~/.local/share/org-export= if =$XDG_DATA_HOME= is undefined) the
+first time a script is executed, and dependencies (such as the most
+recent version of org-mode) are installed.
+
+Note that source code blocks are evaluated with the working directory
+set to be the parent directory of the input file.
 
 *** known issues
 
@@ -161,14 +167,15 @@ Additional configuration may be provided as elisp commands in
 =$XDG_CONFIG_HOME/org-export/config.el= (defaulting to
 =~/.config/org-export/config.el=)
 
-Configuration may also be provided as elisp expressions using the arguments
-=--config= and =--config-file=. For example, to compile a document including
-=plantuml= code blocks (assuming a java runtime is installed):
+Configuration may also be provided as elisp expressions using the
+arguments =--config= and =--config-file=. For example, to compile a
+document including =plantuml= code blocks (assuming a java runtime is
+installed):
 
 : ./org-export html --infile tests/plantuml.org --add-langs plantuml --config '(setq org-plantuml-jar-path (expand-file-name "plantuml-1.2022.3.jar"))'
 
-Note that you may also provide language-specific configuration in elisp code
-blocks, for example:
+Note that you may also provide language-specific configuration in
+elisp code blocks, for example:
 
 #+begin_src sh :results output
 head -n3 tests/plantuml.org
