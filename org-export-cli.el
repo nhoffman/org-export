@@ -216,6 +216,13 @@ value of `cli-do-nothing'.
   (while (search-forward from-str nil t)
     (replace-match to-str nil t)))
 
+(defun cli-get-output-file (fname otherfile suffix)
+  "Return expanded, absolute path of `fname', or if `fname' is nil,
+`otherfile' with its suffix replaced by `suffix'"
+  (let ((outfile
+         (or fname (concat (file-name-sans-extension otherfile) suffix))))
+    (expand-file-name outfile)))
+
 (defvar cli-org-babel-languages-default
   '("R" "dot" "emacs-lisp" "latex" "python" "shell" "sql" "sqlite")
   "Startng values for list of languages for org-babel code blocks")

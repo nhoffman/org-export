@@ -34,11 +34,6 @@ yes' in the block header.
     (require 'color-theme-modern)
   (error (message "** could not activate color-theme-modern")))
 
-;; ess configuration
-(add-hook 'ess-mode-hook
-	  #'(lambda ()
-	     (setq ess-ask-for-ess-directory nil)))
-
 ;; css configuration
 (defvar bootstrap-url
   "http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css")
@@ -77,10 +72,15 @@ yes' in the block header.
       ;; ...or add a link to the css file
       (setq my-html-head
 	    (format
-	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />" css-url))))
+	     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
+         css-url))))
+
+;; ess configuration
+(add-hook 'ess-mode-hook
+	  #'(lambda ()
+	     (setq ess-ask-for-ess-directory nil)))
 
 ;; org-mode and export configuration
-
 (add-hook 'org-mode-hook
 	  #'(lambda ()
 	     ;; (font-lock-mode)
@@ -129,19 +129,15 @@ yes' in the block header.
 
 ;; export using a temporary buffer to avoid modifying input file; working
 ;; directory contains the input file.
-(let* ((infile (getopt "infile"))
-       (outfile
-        (file-truename
-         (or (getopt "outfile")
-             (replace-regexp-in-string "\.org$" ".html" infile)))))
+(let* ((infile (expand-file-name (getopt "infile")))
+       (outfile (cli-get-output-file (getopt "outfile") infile ".html")))
   (with-temp-buffer
     (insert-file-contents-literally infile)
-    (cd (file-name-directory (expand-file-name infile)))
+    (cd (file-name-directory infile))
     (org-mode)
     (org-html-export-as-html)
     ;; It is not possible to add attributes to certain elements (eg,
     ;; <body>) using org-mode configuration, so we'll just use string
     ;; replacement as necessary.
     (if (getopt "bootstrap") (html-fix-bootstrap))
-    (write-file outfile)
-    ))
+    (write-file outfile)))

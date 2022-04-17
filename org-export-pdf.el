@@ -32,13 +32,11 @@ yes' in the block header.
   (error (message "** could not activate color-theme-modern")))
 
 ;; ess configuration
-;; (add-hook 'ess-mode-hook
-;; 	  '(lambda ()
-;; 	     (setq ess-ask-for-ess-directory nil)))
-
+(add-hook 'ess-mode-hook
+	  #'(lambda ()
+	      (setq ess-ask-for-ess-directory nil)))
 
 ;; org-mode and export configuration
-
 (add-hook 'org-mode-hook
 	  #'(lambda ()
 	     ;; (font-lock-mode)
@@ -49,7 +47,6 @@ yes' in the block header.
 	     ;; (setq org-export-preserve-breaks t)
 	     ;; (setq org-export-with-sub-superscripts nil)
 	     ;; (setq org-export-with-section-numbers nil)
-	     ;; (setq org-html-head-extra my-html-head-extra)
 	     (setq org-babel-sh-command "bash")
 	     (setq org-babel-default-header-args
 		   (list `(:session . "none")
@@ -83,24 +80,20 @@ yes' in the block header.
 (cli-eval-expr (getopt "config"))
 (cli-eval-file (getopt "config-file"))
 
-(defvar infile (getopt "infile"))
-(defvar outfile
-  (file-truename
-   (or (getopt "outfile") (replace-regexp-in-string "\.org$" ".pdf" infile))))
-
-;; remember the current directory; find-file changes it
-(defvar cwd default-directory)
-;; copy the source file to a temporary file; note that using the
-;; infile as the base name defines the working directory as the same
-;; as the input file
-;(defvar infile-temp (make-temp-name (format "%s.temp." infile)))
-;(copy-file infile infile-temp t)
-(find-file infile)
-(org-mode)
-(message (format "org-mode version %s" org-version))
-(org-latex-export-to-pdf)
-;(write-file outfile)
-
-;; clean up
-(setq default-directory cwd)
-;(delete-file infile-temp)
+;; export using a temporary buffer to avoid modifying input file; working
+;; directory contains the input file.
+(let* ((infile (expand-file-name (getopt "infile")))
+       (outfile (cli-get-output-file (getopt "outfile") infile ".pdf"))
+       (texfile (concat (file-name-sans-extension outfile) ".tex"))
+       (async nil)
+       (subtreep nil)
+       (visible-only nil)
+       (body-only nil)
+       (ext-plist nil))
+  (with-temp-buffer
+    (insert-file-contents-literally infile)
+    (cd (file-name-directory infile))
+    (org-mode)
+    (org-export-to-file 'latex texfile
+      async subtreep visible-only body-only ext-plist #'org-latex-compile)
+    ))
