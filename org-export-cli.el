@@ -237,7 +237,7 @@ value of `cli-do-nothing'.
 any identified in comma-delimited string `extra-langs'"
   (let* ((extras (if extra-langs (split-string extra-langs ",")))
          (language-names
-          (flatten-tree (cons cli-org-babel-languages-default extras))))
+          (append cli-org-babel-languages-default extras)))
 
     (org-babel-do-load-languages
      'org-babel-load-languages

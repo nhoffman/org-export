@@ -98,7 +98,8 @@ set to be the parent directory of the input file.
 
 ** known issues
 
-- =ess= fails to compile without R installed.
+- requires Emacs version 26 or higher
+- =ess= may fail to compile without R installed.
 
 * Commands
 
