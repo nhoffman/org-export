@@ -8,12 +8,13 @@
 (setq make-backup-files nil)
 (setq debug-on-error t)
 
-(defun cli-path-join (&rest x)
-  "Join elements of x with a path separator and apply `expand-file-name'"
+(defun cli-path-join (&rest parts)
+  "Join elements of list `parts' with a path separator and apply
+`expand-file-name'"
   (expand-file-name
-   (concat
-    (mapconcat 'file-name-as-directory (seq-take x (- (length x) 1)) "")
-    (elt x (- (length x) 1)))))
+   (mapconcat 'identity
+              (append (mapcar 'file-name-as-directory (butlast parts)) (last parts))
+              "")))
 
 (defvar cli-package-dir
   (cli-path-join
