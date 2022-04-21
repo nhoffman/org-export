@@ -100,10 +100,10 @@ value of `cli-do-nothing'.
 	       (kill-emacs 0)))
 
     ;; set defaults
-    (mapc #'(lambda (optdef)
-	      (if (eq (length optdef) 3)
-		  (puthash (cli-opt-name (car optdef)) (nth 2 optdef) args))
-	      ) options-alist)
+    (mapc (lambda (optdef)
+	    (if (eq (length optdef) 3)
+		(puthash (cli-opt-name (car optdef)) (nth 2 optdef) args))
+	    ) options-alist)
 
     ;; set options from command line arguments
     (while clargs
@@ -126,14 +126,14 @@ value of `cli-do-nothing'.
       (setq clargs (cdr clargs)))
 
     ;; check for required arguments
-    (mapc #'(lambda (optdef)
-	      (setq hashval (gethash (cli-opt-name (car optdef)) args))
-	      (if (and (eq (length optdef) 2) (not hashval))
-		  (error
-                   (format
-                    "Error: a value for the option '%s' is required"
-                    (car optdef))))
-	      ) options-alist)
+    (mapc (lambda (optdef)
+	    (setq hashval (gethash (cli-opt-name (car optdef)) args))
+	    (if (and (eq (length optdef) 2) (not hashval))
+		(error
+                 (format
+                  "Error: a value for the option '%s' is required"
+                  (car optdef))))
+	    ) options-alist)
     args
     ))
 
@@ -167,7 +167,7 @@ than `maxwidth' characters."
 `options-alist' (see `cli-parse-args' for specification)"
   (let* ((arg-width
 	  (apply 'max
-                 (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
+                 (mapcar (lambda (opt) (length (car opt))) options-alist)))
 	 (fstr (format " %%-%ss  %%s\n" arg-width))
          (doc-width 55))
     (princ "Command line options:\n\n")
@@ -268,7 +268,7 @@ any identified in comma-delimited string `extra-langs'"
 
     (org-babel-do-load-languages
      'org-babel-load-languages
-     (mapcar #'(lambda (lang) `(,(make-symbol lang) . t)) language-names))
+     (mapcar (lambda (lang) `(,(make-symbol lang) . t)) language-names))
     ))
 
 ;; only executed if this is the script called from the command line

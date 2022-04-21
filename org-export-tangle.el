@@ -14,45 +14,45 @@
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
-	  #'(lambda ()
-	     (setq ess-ask-for-ess-directory nil)))
+	  (lambda ()
+	    (setq ess-ask-for-ess-directory nil)))
 
 ;; org-mode and export configuration
 
 (add-hook 'org-mode-hook
-	  #'(lambda ()
-	      ;; (font-lock-mode)
-	      ;; (setq org-src-fontify-natively t)
-	      ;; (setq htmlize-output-type 'inline-css)
-	      (setq org-confirm-babel-evaluate nil)
-	      (setq org-export-allow-BIND 1)
-	      ;; (setq org-export-preserve-breaks t)
-	      ;; (setq org-export-with-sub-superscripts nil)
-	      ;; (setq org-export-with-section-numbers nil)
-	      ;; (setq org-html-head-extra my-html-head-extra)
-	      (setq org-babel-sh-command "bash")
-	      (setq org-babel-default-header-args
-		    (list `(:session . "none")
-			  `(:eval . "no")
-			  `(:results . "output replace")
-			  `(:exports . "both")
-			  `(:cache . "no")
-			  `(:noweb . "no")
-			  `(:hlines . "no")
-			  `(:tangle . "no")
-			  `(:padnewline . "yes")
-			  ))
+	  (lambda ()
+	    ;; (font-lock-mode)
+	    ;; (setq org-src-fontify-natively t)
+	    ;; (setq htmlize-output-type 'inline-css)
+	    (setq org-confirm-babel-evaluate nil)
+	    (setq org-export-allow-BIND 1)
+	    ;; (setq org-export-preserve-breaks t)
+	    ;; (setq org-export-with-sub-superscripts nil)
+	    ;; (setq org-export-with-section-numbers nil)
+	    ;; (setq org-html-head-extra my-html-head-extra)
+	    (setq org-babel-sh-command "bash")
+	    (setq org-babel-default-header-args
+		  (list `(:session . "none")
+			`(:eval . "no")
+			`(:results . "output replace")
+			`(:exports . "both")
+			`(:cache . "no")
+			`(:noweb . "no")
+			`(:hlines . "no")
+			`(:tangle . "no")
+			`(:padnewline . "yes")
+			))
 
-	      ;; explicitly set the PATH in sh code blocks; note that
-	      ;; `list`, the backtick, and the comma are required to
-	      ;; dereference cli-sh-src-prologue as a variable; see
-	      ;; http://stackoverflow.com/questions/24188100
-	      (setq org-babel-default-header-args:sh
-		    (list `(:prologue . ,cli-sh-src-prologue)))
+	    ;; explicitly set the PATH in sh code blocks; note that
+	    ;; `list`, the backtick, and the comma are required to
+	    ;; dereference cli-sh-src-prologue as a variable; see
+	    ;; http://stackoverflow.com/questions/24188100
+	    (setq org-babel-default-header-args:sh
+		  (list `(:prologue . ,cli-sh-src-prologue)))
 
-              (cli-org-babel-load-languages (getopt "add-langs"))
+            (cli-org-babel-load-languages (getopt "add-langs"))
 
-	      ))
+	    ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;

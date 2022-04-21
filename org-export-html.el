@@ -10,22 +10,22 @@
          "Comma-delimited list of additional languages
           to enable in code blocks"
          nil)
-	    ("--evaluate" "Evaluate source code blocks" nil)
-	    ("--css" "Path or URL of css stylesheet" nil)
+	("--evaluate" "Evaluate source code blocks" nil)
+	("--css" "Path or URL of css stylesheet" nil)
         ("--css-integrity"
          "Optional value for css link integrity attribute" nil)
-	    ("--embed-css" "Include contents of css in a <style> block" nil)
-	    ("--bootstrap"
+	("--embed-css" "Include contents of css in a <style> block" nil)
+	("--bootstrap"
          "Make Bootstrap-specific modifications to html output;
           if selected, link to Bootstrap CDN by default"
          nil)
-	    ("--package-dir"
+	("--package-dir"
          "Directory containing elpa packages" ,cli-package-dir)
         ("--config"
          "An elisp expression defining additional configuration" nil)
         ("--config-file"
          "A file path providing  additional configuration" nil)
-	    ))
+	))
 
 (setq args (cli-parse-args options-alist "
 Note that code block evaluation is disabled by default; use
@@ -76,76 +76,76 @@ yes' in the block header.
 (defvar my-html-head "")
 (if css-url
     (if (getopt "embed-css")
-	    ;; embed css contents in a <style> block
-	    (progn
-	      (setq my-html-head
-		        (format "<style type=\"text/css\">\n%s\n</style>\n"
-			            (if (string-match "^http" css-url)
-			                ;; use the contents of file at path
-			                (with-current-buffer
-				                (url-retrieve-synchronously css-url)
-			                  (message
+	;; embed css contents in a <style> block
+	(progn
+	  (setq my-html-head
+		(format "<style type=\"text/css\">\n%s\n</style>\n"
+			(if (string-match "^http" css-url)
+			    ;; use the contents of file at path
+			    (with-current-buffer
+				(url-retrieve-synchronously css-url)
+			      (message
                                (format "Inserting contents of %s" css-url))
-			                  (buffer-string))
-			              ;; use the contents of the file at css-url
-			              (with-temp-buffer
-			                (insert-file-contents css-url)
-			                (buffer-string)))
+			      (buffer-string))
+			  ;; use the contents of the file at css-url
+			  (with-temp-buffer
+			    (insert-file-contents css-url)
+			    (buffer-string)))
                         )))
       ;; ...or add a link to the css file
       (setq my-html-head
             (if css-integrity
-	            (format
+	        (format
                  "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"
                     integrity=\"%s\" crossorigin=\"anonymous\" />"
                  css-url css-integrity)
               (format
-	           "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
+	       "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
                css-url)))
       ))
 
 ;; ess configuration
 (add-hook 'ess-mode-hook
-	  #'(lambda ()
-	     (setq ess-ask-for-ess-directory nil)))
+	  (lambda ()
+	    (setq ess-ask-for-ess-directory nil)))
 
 ;; org-mode and export configuration
 (add-hook 'org-mode-hook
-	  #'(lambda ()
-	     ;; (font-lock-mode)
-	     ;; (setq org-src-fontify-natively t)
-	     ;; (setq htmlize-output-type 'inline-css)
-	     (setq org-confirm-babel-evaluate nil)
-	     (setq org-export-allow-BIND 1)
-	     ;; (setq org-export-preserve-breaks t)
-	     ;; (setq org-export-with-sub-superscripts nil)
-	     ;; (setq org-export-with-section-numbers nil)
-	     (setq org-html-doctype "html5")
-	     (setq org-html-head my-html-head)
-	     ;; (setq org-html-head-extra my-html-head-extra)
-	     (setq org-babel-sh-command "bash")
-	     (setq org-babel-default-header-args
-		   (list `(:session . "none")
-			 `(:eval . ,(if (getopt "evaluate") "yes" "no"))
-			 `(:results . "output replace")
-			 `(:exports . "both")
-			 `(:cache . "no")
-			 `(:noweb . "no")
-			 `(:hlines . "no")
-			 `(:tangle . "no")
-			 `(:padnewline . "yes")
-			 ))
+	  (lambda ()
+	    ;; (font-lock-mode)
+	    ;; (setq org-src-fontify-natively t)
+	    ;; (setq htmlize-output-type 'inline-css)
+	    (setq org-confirm-babel-evaluate nil)
+	    (setq org-export-allow-BIND 1)
+	    ;; (setq org-export-preserve-breaks t)
+	    ;; (setq org-export-with-sub-superscripts nil)
+	    ;; (setq org-export-with-section-numbers nil)
+	    (setq org-html-doctype "html5")
+	    (setq org-html-head my-html-head)
+	    ;; (setq org-html-head-extra my-html-head-extra)
+	    (setq org-babel-sh-command "bash")
+	    (setq org-babel-default-header-args
+		  (list `(:session . "none")
+			`(:eval . ,(if (getopt "evaluate") "yes" "no"))
+			`(:results . "output replace")
+			`(:exports . "both")
+			`(:cache . "no")
+			`(:noweb . "no")
+			`(:hlines . "no")
+			`(:tangle . "no")
+			`(:padnewline . "yes")
+			))
 
-	     ;; explicitly set the PATH in sh code blocks; note that
-	     ;; `list`, the backtick, and the comma are required to
-	     ;; dereference cli-sh-src-prologue as a variable; see
-	     ;; http://stackoverflow.com/questions/24188100
-	     (setq org-babel-default-header-args:sh
-		   (list `(:prologue . ,cli-sh-src-prologue)))
+	    ;; explicitly set the PATH in sh code blocks; note that
+	    ;; `list`, the backtick, and the comma are required to
+	    ;; dereference cli-sh-src-prologue as a variable; see
+	    ;; http://stackoverflow.com/questions/24188100
+	    (setq org-babel-default-header-args:sh
+		  (list `(:prologue . ,cli-sh-src-prologue)))
 
-         (cli-org-babel-load-languages (getopt "add-langs"))
+            (cli-org-babel-load-languages (getopt "add-langs"))
 
-	     )) ;; end org-mode-hook
+	    )) ;; end org-mode-hook
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
