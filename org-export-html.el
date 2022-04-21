@@ -2,29 +2,29 @@
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
-      `(("--infile" "path to input .org file (required)")
-	    ("--outfile"
-         "path to output .html file (use base name of infile by default)"
+      `(("--infile" "Path to input .org file (required)")
+	("--outfile"
+         "Path to output .html file (use base name of infile by default)"
          nil)
         ("--add-langs"
-         "comma-delimited list of additional languages
+         "Comma-delimited list of additional languages
           to enable in code blocks"
          nil)
-	    ("--evaluate" "evaluate source code blocks" nil)
-	    ("--css" "path or URL of css stylesheet" nil)
+	    ("--evaluate" "Evaluate source code blocks" nil)
+	    ("--css" "Path or URL of css stylesheet" nil)
         ("--css-integrity"
-         "optional value for css link integrity attribute" nil)
+         "Optional value for css link integrity attribute" nil)
 	    ("--embed-css" "Include contents of css in a <style> block" nil)
 	    ("--bootstrap"
-         "make Bootstrap-specific modifications to html output;
+         "Make Bootstrap-specific modifications to html output;
           if selected, link to Bootstrap CDN by default"
          nil)
 	    ("--package-dir"
-         "directory containing elpa packages" ,cli-package-dir)
+         "Directory containing elpa packages" ,cli-package-dir)
         ("--config"
-         "an elisp expression defining additional configuration" nil)
+         "An elisp expression defining additional configuration" nil)
         ("--config-file"
-         "a file path providing  additional configuration" nil)
+         "A file path providing  additional configuration" nil)
 	    ))
 
 (setq args (cli-parse-args options-alist "
@@ -35,6 +35,7 @@ this option, include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
 "))
+
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
 
