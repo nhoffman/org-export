@@ -137,22 +137,49 @@ value of `cli-do-nothing'.
     args
     ))
 
+(defun cli-break-string (str maxwidth)
+  "Given a string `str', return a list of substrings, each no more
+than `maxwidth' characters."
+  (let* ((spl (split-string str))
+         (chunks nil)
+         (chunk "")
+         (chars 0)
+         (thislen nil))
+    (while spl
+      (setq thislen (length (car spl)))
+      (if (> (+ chars 1 thislen) maxwidth)
+          (progn
+            (setq chunks (append chunks (ensure-list chunk)))
+            (setq chunk "")
+            (setq chars 0))
+        (setq chunk (concat chunk (if (eq chunk "") "" " ") (pop spl)))
+        (setq chars (length chunk))))
+    (append chunks (ensure-list chunk))))
+
+(defun cli-print-option (fstr option docstring doc-width)
+  (let ((chunks (cli-break-string docstring doc-width)))
+    (princ (format fstr option (car chunks)))
+    (mapc (lambda (chunk) (princ (format fstr "" chunk)))
+          (cdr chunks))))
+
 (defun cli-show-help (options-alist &optional docstring)
   "Display options, defaults and help text defined in
 `options-alist' (see `cli-parse-args' for specification)"
-  (let ((max-width
-	 (apply 'max
-                (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
-	(fstr nil))
-
+  (let* ((arg-width
+	  (apply 'max
+                 (mapcar #'(lambda (opt) (length (car opt))) options-alist)))
+	 (fstr (format " %%-%ss  %%s\n" arg-width))
+         (doc-width 55))
     (princ "Command line options:\n\n")
-    (setq fstr (format " %%-%ss  %%s\n" max-width))
-    (mapc #'(lambda (opt)
-	      (princ (format fstr (nth 0 opt) (nth 1 opt))))
-	  options-alist)
+    (mapc (lambda (opt)
+            (cli-print-option fstr (nth 0 opt) (nth 1 opt) doc-width))
+          options-alist)
+    (if docstring
+        (progn
+          (princ "\n")
+          (princ (mapconcat 'identity (cli-break-string docstring 70) "\n"))))
     (princ "\n")
-    (if docstring (princ docstring))
-    (princ "\n")))
+    ))
 
 (defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
   (unless (file-readable-p emacs-directory)
