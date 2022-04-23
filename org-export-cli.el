@@ -30,7 +30,7 @@
   (cli-path-join cli-config-dir "config.el")
   "File for user config")
 
-(defvar cli-packages '(htmlize color-theme-modern ess)
+(defvar cli-packages '(htmlize color-theme-modern)
   "elisp packages installed by each script")
 
 ;; store the execution path for the current environment and provide it

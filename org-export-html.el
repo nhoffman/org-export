@@ -104,11 +104,6 @@ yes' in the block header.
                css-url)))
       ))
 
-;; ess configuration
-(add-hook 'ess-mode-hook
-	  (lambda ()
-	    (setq ess-ask-for-ess-directory nil)))
-
 ;; org-mode and export configuration
 (add-hook 'org-mode-hook
 	  (lambda ()
