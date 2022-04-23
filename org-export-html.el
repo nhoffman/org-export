@@ -119,6 +119,7 @@ yes' in the block header.
 	    (setq org-html-head my-html-head)
 	    ;; (setq org-html-head-extra my-html-head-extra)
 	    (setq org-babel-sh-command "bash")
+	    (setq org-babel-python-command "python3")
 	    (setq org-babel-default-header-args
 		  (list `(:session . "none")
 			`(:eval . ,(if (getopt "evaluate") "yes" "no"))
@@ -159,6 +160,11 @@ yes' in the block header.
     (insert-file-contents-literally infile)
     (cd (file-name-directory infile))
     (org-mode)
+
+    (setq python-shell-completion-native-enable nil)
+    (setq python-indent-guess-indent-offset t)
+    (setq python-indent-guess-indent-offset-verbose nil)
+
     (org-html-export-as-html)
     ;; It is not possible to add attributes to certain elements (eg,
     ;; <body>) using org-mode configuration, so we'll just use string
