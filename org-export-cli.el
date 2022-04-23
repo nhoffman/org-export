@@ -8,6 +8,10 @@
 (setq make-backup-files nil)
 (setq debug-on-error t)
 
+(setq python-shell-completion-native-enable nil)
+(setq python-indent-guess-indent-offset t)
+(setq python-indent-guess-indent-offset-verbose nil)
+
 (defun cli-path-join (&rest parts)
   "Join elements of list `parts' with a path separator and apply
 `expand-file-name'"

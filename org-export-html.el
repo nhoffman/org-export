@@ -161,9 +161,6 @@ yes' in the block header.
     (cd (file-name-directory infile))
     (org-mode)
 
-    (setq python-shell-completion-native-enable nil)
-    (setq python-indent-guess-indent-offset t)
-    (setq python-indent-guess-indent-offset-verbose nil)
 
     (org-html-export-as-html)
     ;; It is not possible to add attributes to certain elements (eg,
