@@ -1,4 +1,6 @@
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
+(require 'ox)
+(require 'ox-html)
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
@@ -38,14 +40,6 @@ yes' in the block header.
 
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
-
-(require 'ox)
-(require 'ox-html)
-
-;; provides colored syntax highlighting
-(condition-case nil
-    (require 'color-theme-modern)
-  (error (message "** could not activate color-theme-modern")))
 
 ;; css configuration
 (defvar use-bootstrap
@@ -161,8 +155,14 @@ yes' in the block header.
     (cd (file-name-directory infile))
     (org-mode)
 
+    ;; Required for syntax hightlighting
+    (outline-show-all)
+    (htmlize-buffer)
+    (font-lock-flush)
+    (font-lock-fontify-buffer)
 
     (org-html-export-as-html)
+
     ;; It is not possible to add attributes to certain elements (eg,
     ;; <body>) using org-mode configuration, so we'll just use string
     ;; replacement as necessary.
