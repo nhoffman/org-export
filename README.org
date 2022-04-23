@@ -98,8 +98,8 @@ set to be the parent directory of the input file.
 
 ** known issues
 
-- requires Emacs version 26 or higher
-- =ess= may fail to compile without R installed.
+- Requires Emacs version 26 or higher.
+- Use of ~:session~ with Python3 code blocks causes execution to halt.
 
 * Commands
 
@@ -282,6 +282,12 @@ head -n3 tests/plantuml.org
 : #+begin_src emacs-lisp :eval yes
 : (setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
 : #+end_src
+
+* Syntax highlighting
+
+Getting syntax highlighting to work seemed impossible until I came across [[https://emacs.stackexchange.com/questions/38437/org-mode-batch-export-missing-syntax-highlighting][this
+emacs stackexchange post by Tobias]]. Code for enabling syntax highlighting
+included in ~org-export-cli.el~ is taken from that post. Thank you, Tobias!
 
 * Tests
 
