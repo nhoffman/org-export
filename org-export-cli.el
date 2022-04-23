@@ -185,7 +185,7 @@ than `maxwidth' characters."
     (princ "\n")
     ))
 
-(defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
+(defun cli-el-get-setup (emacs-directory package-list)
   (unless (file-readable-p emacs-directory)
     (message (format "Creating directory %s" emacs-directory))
     (make-directory emacs-directory t))
@@ -197,10 +197,10 @@ than `maxwidth' characters."
     (message (format "Creating directory %s" cli-config-dir))
     (make-directory cli-config-dir t))
 
-  ;; install el-get if necessary
   (setq cli-el-get-repo
 	(concat (file-name-as-directory user-emacs-directory) "el-get"))
 
+  ;; install el-get if necessary
   (unless (file-exists-p cli-el-get-repo)
     (with-current-buffer
 	(url-retrieve-synchronously
@@ -209,25 +209,11 @@ than `maxwidth' characters."
 
   (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
 
+  ;; Use el-get to install packages in 'package-list'
   (require 'el-get)
-
-  ;; Use el-get to install packages in 'package-list' using a while
-  ;; loop and evaluating an expanded macro for each.
-  (let ((pkg nil)
-	(pkg-list package-list))
-    (while pkg-list
-      (setq pkg (car pkg-list))
-      (setq pkg-list (cdr pkg-list))
-      (eval (macroexpand `(el-get-bundle ,pkg)))))
-
-  (if upgrade
-      (progn
-        (package-list-packages)
-	(package-menu-mark-upgrades)
-        (condition-case nil
-            (package-menu-execute t)
-          (error (message "No package updates available"))))
-    (package-list-packages-no-fetch)))
+  (mapc (lambda (pkg)
+          (el-get-bundle-el-get `(:name ,pkg) 'sync))
+        package-list))
 
 ;; other utilities
 
@@ -358,7 +344,6 @@ with class 'color and highest min-color value."
     (progn
       (setq options-alist
 	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ("--show-package-dir" "Print the path to package-dir" nil)
               ("--show-default-languages" "list the languages that are activated by default" nil)
 	      ))
@@ -379,7 +364,6 @@ with class 'color and highest min-color value."
             (print cli-org-babel-languages-default)
             (kill-emacs 0)))
 
-      (cli-el-get-setup
-       (getopt "package-dir") cli-packages (getopt "package-upgrade"))
+      (cli-el-get-setup (getopt "package-dir") cli-packages)
 
       ))
