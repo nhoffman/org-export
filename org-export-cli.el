@@ -89,7 +89,7 @@ parameters).
 
     (if (or (member "-h" clargs) (member "--help" clargs))
 	(progn (cli-show-help options-alist docstring)
-	       (error "")))
+	       (signal 'quit nil)))
 
     ;; assign starting values to hash table args; required items in `required'
     ;; have a value of t
@@ -187,6 +187,7 @@ than `maxwidth' characters."
           (princ "\n")
           (princ (mapconcat 'identity (cli-break-string docstring 70) "\n"))
           (princ "\n")))
+    (princ "\n")
     ))
 
 (defun cli-el-get-setup (emacs-directory package-list)
@@ -356,6 +357,7 @@ with class 'color and highest min-color value."
 
       (condition-case err
           (setq args (cli-parse-args options-alist docstring))
+        (quit (kill-emacs 0))
         (error (progn (message (nth 1 err)) (kill-emacs 1))))
 
       (defun getopt (name) (gethash name args))
