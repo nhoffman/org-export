@@ -54,3 +54,10 @@ outfile=$out/el1.2.html
 ./org-export html --infile tests/el1.org --outfile $outfile \
              --config-file tests/test-config.el
 test_pattern_present $outfile YYYYY
+
+if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
+    emacs="${EMACS-/Applications/Emacs.app/Contents/MacOS/Emacs}"
+else
+    emacs="${EMACS-$(which emacs)}"
+fi
+$emacs --batch --load buttercup-tests.el

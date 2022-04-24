@@ -2,6 +2,7 @@
   (error "Error: emacs version 26 or greater is required"))
 
 (provide 'cli)
+(require 'cl-lib)
 
 ;; configuration applying to all commands
 (setq lexical-binding t)
@@ -45,8 +46,6 @@
 (defvar cli-sh-src-prologue
   (format "export PATH=\"%s\"" (mapconcat 'identity exec-path ":")))
 
-(defun cli-do-nothing () t)
-
 (defun cli-option-p (str)
   "Return t if str is not nil and starts with '--'"
   (and str (string-equal (substring str 0 2) "--")))
@@ -55,10 +54,12 @@
   "Return the option name (strips leading '--')"
   (substring str 2 nil))
 
-(defun cli-required-p (optdef)
-  "Return t if the option defined in `optdef` (an element of
-`options-alist') is required."
-  (eq (length optdef) 2))
+(defun cli-get-clargs ()
+  "Return a list of args in `command-line-args' following '--'"
+  (let ((dashpos (cl-position "--" command-line-args :test 'equal)))
+    (if dashpos
+        (nthcdr (+ dashpos 1) command-line-args)
+      (error "Emacs must be invoked with '--' before script arguments."))))
 
 (defun cli-parse-args (options-alist &optional docstring arguments)
   "Parses a list of arguments according to the specifiction
@@ -80,64 +81,56 @@ Arguments are of the form '--option <value>'. If 'value' is
 missing and a default value is defined, 'option' will be given a
 value of t (this is useful for defining boolean command line
 parameters).
-
-Command line arguments already defined by emacs (see 'emacs
---help') are reserved and cannot be used.
-
-Note that this function has a side effect: arbitrary command line
-arguments are allowed by assigning `command-line-functions` a
-value of `cli-do-nothing'.
 "
 
-  (setq command-line-functions '(cli-do-nothing))
-  (let ((clargs (or arguments command-line-args))
-	(args (make-hash-table :test 'equal))
-	(opt nil)
-	(optname nil)
-	(optiondef nil)
-	(val nil)
-	(hashval nil))
+  (let ((clargs (or arguments (cli-get-clargs)))
+        (args (make-hash-table :test 'equal))
+        (required (make-hash-table :test 'equal)))
 
-    ;; print help text and exit if command line contains -h
-    (if (member "-h" clargs)
+    (if (or (member "-h" clargs) (member "--help" clargs))
 	(progn (cli-show-help options-alist docstring)
-	       (kill-emacs 0)))
+	       (error "")))
 
-    ;; set defaults
+    ;; assign starting values to hash table args; required items in `required'
+    ;; have a value of t
     (mapc (lambda (optdef)
-	    (if (eq (length optdef) 3)
-		(puthash (cli-opt-name (car optdef)) (nth 2 optdef) args))
-	    ) options-alist)
+            (let ((name nil))
+              (setq name (cli-opt-name (car optdef)))
+              (puthash name (nth 2 optdef) args)
+              (if (eq (length optdef) 2) (puthash name t required))
+              )) options-alist)
 
-    ;; set options from command line arguments
+    ;; iterate over command line arguments, adding values to args
     (while clargs
-      (setq opt (car clargs))
-      (setq optname (if (cli-option-p opt) (cli-opt-name opt)))
-      (if optname
-	  (progn
-	    (setq optiondef (assoc opt options-alist))
-	    (if optiondef
-		;; If val is provided, add it to args. Otherwise,
-		;; store a value of t unless the option is required.
-		(progn
-		  (unless (cli-option-p (nth 1 clargs))
-                    (setq val (nth 1 clargs)))
-		  (if (not (cli-required-p optiondef))
-                      (setq val (or val t)))
-		  (puthash optname val args))
-	      (error (format "Error: the option '%s' is not defined" opt)))
-	    ))
-      (setq clargs (cdr clargs)))
+      (let ((name nil))
+        (if (cli-option-p (car clargs))
+            (progn
+              ;; consume the first argument and add it to the hashmap
+              (setq name (cli-opt-name (pop clargs)))
+
+              (if (string-equal "invalid" (gethash name args "invalid"))
+                  (error "The option '--%s' is not valid." name))
+
+              (puthash
+               name
+               ;; if the next arg is an option name or this is the end of the
+               ;; arguments, treat as a boolean option and assign a value of t
+               (if (or (cli-option-p (car clargs)) (= (length clargs) 0))
+                   t (pop clargs))
+               args)
+
+              ;; look ahead and raise an error if the next argument is not an option
+              (if (and clargs (not (cli-option-p (car clargs))))
+                  (error "The argument '%s' is not allowed here." (car clargs)))
+              ))
+        ))
 
     ;; check for required arguments
-    (mapc (lambda (optdef)
-	    (setq hashval (gethash (cli-opt-name (car optdef)) args))
-	    (if (and (eq (length optdef) 2) (not hashval))
-		(error
-                 (format
-                  "Error: a value for the option '%s' is required"
-                  (car optdef))))
-	    ) options-alist)
+    (maphash (lambda (key val)
+               (unless (gethash key args)
+                 (error "The option '--%s' is required." key))
+               ) required)
+
     args
     ))
 
@@ -146,18 +139,29 @@ value of `cli-do-nothing'.
 than `maxwidth' characters."
   (let* ((spl (split-string str))
          (chunks nil)
-         (chunk "")
-         (chars 0)
-         (thislen nil))
+         (chunk (pop spl))
+         (chars (length chunk))
+         (thislen chars))
     (while spl
       (setq thislen (length (car spl)))
-      (if (> (+ chars 1 thislen) maxwidth)
-          (progn
-            (setq chunks (append chunks (ensure-list chunk)))
-            (setq chunk "")
-            (setq chars 0))
+      (cond
+       ;; if the length of the current chunk plus the next word does not exceed
+       ;; the length limit, add another word
+       ((< (+ chars thislen) maxwidth)
         (setq chunk (concat chunk (if (eq chunk "") "" " ") (pop spl)))
-        (setq chars (length chunk))))
+        (setq chars (length chunk)))
+       ;; handle the edge case of a single word longer than the length limit
+       ((>= thislen maxwidth)
+        (setq chunks (append chunks (ensure-list chunk)))
+        (setq chunk (pop spl))
+        (setq chars (length chunk)))
+       ;; start a new chunk
+       (t
+        (setq chunks (append chunks (ensure-list chunk)))
+        (setq chunk "")
+        (setq chars 0))
+       ))
+    ;; handle any residual words
     (append chunks (ensure-list chunk))))
 
 (defun cli-print-option (fstr option docstring doc-width)
@@ -181,11 +185,11 @@ than `maxwidth' characters."
     (if docstring
         (progn
           (princ "\n")
-          (princ (mapconcat 'identity (cli-break-string docstring 70) "\n"))))
-    (princ "\n")
+          (princ (mapconcat 'identity (cli-break-string docstring 70) "\n"))
+          (princ "\n")))
     ))
 
-(defun cli-el-get-setup (emacs-directory package-list &optional upgrade archives)
+(defun cli-el-get-setup (emacs-directory package-list)
   (unless (file-readable-p emacs-directory)
     (message (format "Creating directory %s" emacs-directory))
     (make-directory emacs-directory t))
@@ -197,10 +201,10 @@ than `maxwidth' characters."
     (message (format "Creating directory %s" cli-config-dir))
     (make-directory cli-config-dir t))
 
-  ;; install el-get if necessary
   (setq cli-el-get-repo
 	(concat (file-name-as-directory user-emacs-directory) "el-get"))
 
+  ;; install el-get if necessary
   (unless (file-exists-p cli-el-get-repo)
     (with-current-buffer
 	(url-retrieve-synchronously
@@ -209,25 +213,11 @@ than `maxwidth' characters."
 
   (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
 
+  ;; Use el-get to install packages in 'package-list'
   (require 'el-get)
-
-  ;; Use el-get to install packages in 'package-list' using a while
-  ;; loop and evaluating an expanded macro for each.
-  (let ((pkg nil)
-	(pkg-list package-list))
-    (while pkg-list
-      (setq pkg (car pkg-list))
-      (setq pkg-list (cdr pkg-list))
-      (eval (macroexpand `(el-get-bundle ,pkg)))))
-
-  (if upgrade
-      (progn
-        (package-list-packages)
-	(package-menu-mark-upgrades)
-        (condition-case nil
-            (package-menu-execute t)
-          (error (message "No package updates available"))))
-    (package-list-packages-no-fetch)))
+  (mapc (lambda (pkg)
+          (el-get-bundle-el-get `(:name ,pkg) 'sync))
+        package-list))
 
 ;; other utilities
 
@@ -294,7 +284,7 @@ any identified in comma-delimited string `extra-langs'"
   "Get list containing at most the default entry of face SPEC.
 Return nil if SPEC has no default entry."
   (let* ((first (car-safe spec))
-     (display (car-safe first)))
+         (display (car-safe first)))
     (when (eq display 'default)
       (list (car-safe spec)))))
 
@@ -302,49 +292,49 @@ Return nil if SPEC has no default entry."
   "Get min-color entry of DISPLAY-ATTS pair from face spec."
   (let* ((display (car-safe display-atts)))
     (or (car-safe (cdr (assoc 'min-colors display)))
-    maximal-integer)))
+        maximal-integer)))
 
 (defun face-spec-highest-color (spec)
   "Search face SPEC for highest color.
 That means the DISPLAY entry of SPEC
 with class 'color and highest min-color value."
   (let ((color-list (cl-remove-if-not
-             (lambda (display-atts)
-               (when-let ((display (car-safe display-atts))
-                  (class (and (listp display)
-                          (assoc 'class display)))
-                  (background (assoc 'background display)))
-             (and (member 'light (cdr background))
-                  (member 'color (cdr class)))))
-             spec)))
+                     (lambda (display-atts)
+                       (when-let ((display (car-safe display-atts))
+                                  (class (and (listp display)
+                                              (assoc 'class display)))
+                                  (background (assoc 'background display)))
+                         (and (member 'light (cdr background))
+                              (member 'color (cdr class)))))
+                     spec)))
     (cl-reduce (lambda (display-atts1 display-atts2)
-         (if (> (face-spec-min-color display-atts1)
-            (face-spec-min-color display-atts2))
-             display-atts1
-           display-atts2))
-           (cdr color-list)
-           :initial-value (car color-list))))
+                 (if (> (face-spec-min-color display-atts1)
+                        (face-spec-min-color display-atts2))
+                     display-atts1
+                   display-atts2))
+               (cdr color-list)
+               :initial-value (car color-list))))
 
 (defun face-spec-t (spec)
   "Search face SPEC for fall back."
   (cl-find-if (lambda (display-atts)
-        (eq (car-safe display-atts) t))
-          spec))
+                (eq (car-safe display-atts) t))
+              spec))
 
 (defun my-face-attribute (face attribute &optional frame inherit)
   "Get FACE ATTRIBUTE from `face-user-default-spec' and not from `face-attribute'."
   (let* ((face-spec (face-user-default-spec face))
-     (display-attr (or (face-spec-highest-color face-spec)
-               (face-spec-t face-spec)))
-     (attr (cdr display-attr))
-     (val (or (plist-get attr attribute) (car-safe (cdr (assoc attribute attr))))))
+         (display-attr (or (face-spec-highest-color face-spec)
+                           (face-spec-t face-spec)))
+         (attr (cdr display-attr))
+         (val (or (plist-get attr attribute) (car-safe (cdr (assoc attribute attr))))))
     ;; (message "attribute: %S" attribute) ;; for debugging
     (when (and (null (eq attribute :inherit))
-           (null val))
+               (null val))
       (let ((inherited-face (my-face-attribute face :inherit)))
-    (when (and inherited-face
-           (null (eq inherited-face 'unspecified)))
-      (setq val (my-face-attribute inherited-face attribute)))))
+        (when (and inherited-face
+                   (null (eq inherited-face 'unspecified)))
+          (setq val (my-face-attribute inherited-face attribute)))))
     ;; (message "face: %S attribute: %S display-attr: %S, val: %S" face attribute display-attr val) ;; for debugging
     (or val 'unspecified)))
 
@@ -358,14 +348,16 @@ with class 'color and highest min-color value."
     (progn
       (setq options-alist
 	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	      ("--package-upgrade" "Perform package upgrade" nil)
 	      ("--show-package-dir" "Print the path to package-dir" nil)
               ("--show-default-languages" "list the languages that are activated by default" nil)
 	      ))
 
       (defvar docstring "\nManage elpa packages\n")
 
-      (setq args (cli-parse-args options-alist docstring))
+      (condition-case err
+          (setq args (cli-parse-args options-alist docstring))
+        (error (progn (message (nth 1 err)) (kill-emacs 1))))
+
       (defun getopt (name) (gethash name args))
       (cli-eval-file cli-config-file)
 
@@ -379,7 +371,6 @@ with class 'color and highest min-color value."
             (print cli-org-babel-languages-default)
             (kill-emacs 0)))
 
-      (cli-el-get-setup
-       (getopt "package-dir") cli-packages (getopt "package-upgrade"))
+      (cli-el-get-setup (getopt "package-dir") cli-packages)
 
       ))

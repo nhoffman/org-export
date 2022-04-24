@@ -59,23 +59,21 @@ Invoke using the absolute path to =org-export= within the cloned git repository.
 
 Execute the script with =-h= to see usage and available commands:
 
-#+NAME: cli-help
+#+NAME: main-help
 #+BEGIN_SRC sh :results output :exports both :eval yes
 ./org-export -h
 #+END_SRC
 
-#+RESULTS: cli-help
+#+RESULTS: main-help
 #+begin_example
-Command line options:
+Usage: org-export command options...
 
- --package-dir             directory containing elpa packages
- --package-upgrade         Perform package upgrade
- --show-package-dir        Print the path to package-dir
- --show-default-languages  list the languages that are activated by default
-
-
-Manage elpa packages
-
+Available commands include:
+  cli
+  html
+  pdf
+  pelican
+  tangle
 #+end_example
 
 If all of the scripts are on your $PATH, you should be able to execute
@@ -102,22 +100,6 @@ set to be the parent directory of the input file.
 - Use of ~:session~ with Python3 code blocks causes execution to halt.
 
 * Commands
-
-#+NAME: main-help
-#+BEGIN_SRC sh :results output :exports both :eval yes
-./org-export -h
-#+END_SRC
-
-#+RESULTS: main-help
-: Usage: org-export command options...
-:
-: Available commands include:
-:   cli
-:   html
-:   pdf
-:   pelican
-:   tangle
-
 ** org-export html
 
 Exports org-mode to html
