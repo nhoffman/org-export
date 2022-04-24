@@ -5,10 +5,14 @@
       `(("--infile" "path to input .org file")
 	("--outfile" "path to output .html file (use base name of infile by default)"
 	 nil)
-        ("--add-langs" "comma-delimited list of additional languages to enable in code blocks" nil)
+        ("--add-langs" "comma-delimited list of additional languages to enable in code blocks"
+         nil)
 	("--package-dir" "directory containing elpa packages" ,cli-package-dir)))
 
-(setq args (cli-parse-args options-alist))
+(condition-case err
+    (setq args (cli-parse-args options-alist))
+  (error (progn (message (nth 1 err)) (kill-emacs 1))))
+
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)
 (require 'ox)

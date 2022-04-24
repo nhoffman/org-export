@@ -11,14 +11,18 @@
         ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
 	))
 
-(setq args (cli-parse-args options-alist "
+(setq docstring "
 Note that code block evaluation is disabled by default; use
 '--evaluate' to set a default value of ':eval yes' for all code
 blocks. If you would like to evaluate by default without requiring
 this option, include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
-"))
+")
+
+(condition-case err
+    (setq args (cli-parse-args options-alist docstring))
+  (error (progn (message (nth 1 err)) (kill-emacs 1))))
 
 (defun getopt (name) (gethash name args))
 (cli-el-get-setup (getopt "package-dir") cli-packages)

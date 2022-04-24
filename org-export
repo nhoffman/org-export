@@ -34,4 +34,4 @@ if ! echo $emacs_version | grep -q -E '(2[678]\.[0-9])'; then
   exit 1
 fi
 
-"$emacs" --no-site-file --script $scriptname echo "${@:2}"
+"$emacs" --batch --kill --load $scriptname -- "${@:2}"
