@@ -39,6 +39,7 @@ yes' in the block header.")
 
 (condition-case err
     (setq args (cli-parse-args options-alist docstring))
+  (quit (kill-emacs 0))
   (error (progn (message (nth 1 err)) (kill-emacs 1))))
 
 (defun getopt (name) (gethash name args))
