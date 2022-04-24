@@ -152,17 +152,17 @@ than `maxwidth' characters."
         (setq chars (length chunk)))
        ;; handle the edge case of a single word longer than the length limit
        ((>= thislen maxwidth)
-        (setq chunks (append chunks (ensure-list chunk)))
+        (setq chunks (append chunks `(,chunk)))
         (setq chunk (pop spl))
         (setq chars (length chunk)))
        ;; start a new chunk
        (t
-        (setq chunks (append chunks (ensure-list chunk)))
+        (setq chunks (append chunks `(,chunk)))
         (setq chunk "")
         (setq chars 0))
        ))
     ;; handle any residual words
-    (append chunks (ensure-list chunk))))
+    (append chunks `(,chunk))))
 
 (defun cli-print-option (fstr option docstring doc-width)
   (let ((chunks (cli-break-string docstring doc-width)))
