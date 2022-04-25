@@ -1,4 +1,8 @@
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
+(cli-eval-file cli-config-file)
+(cli-package-setup cli-package-dir cli-packages)
+(require 'ox)
+(require 'ox-latex)
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
@@ -6,10 +10,9 @@
 	("--outfile" "path to output .pdf file (use base name of infile by default)"
 	 nil)
 	("--evaluate" "evaluate source code blocks" nil)
-	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
         ("--config" "an elisp expression defining additional configuration" nil)
-        ("--config-file" "a file path containing elisp expressions defining additional configuration" nil)
-	))
+        ("--config-file" "a file path containing elisp
+          expressions defining additional configuration" nil)))
 
 (setq docstring "
 Note that code block evaluation is disabled by default; use
@@ -26,10 +29,6 @@ yes' in the block header.
   (error (progn (message (nth 1 err)) (kill-emacs 1))))
 
 (defun getopt (name) (gethash name args))
-(cli-el-get-setup (getopt "package-dir") cli-packages)
-
-(require 'ox)
-(require 'ox-latex)
 
 ;; ess configuration
 (add-hook 'ess-mode-hook

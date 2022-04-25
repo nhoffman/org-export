@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2022-04-24 Sun 17:37 -->
+<!-- 2022-04-25 Mon 18:39 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>org-export</title>
@@ -192,7 +192,7 @@
   .org-svg { width: 90%; }
 </style>
 <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-                    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+                integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
 </head>
 <body class="container">
 <div id="content" class="content">
@@ -202,7 +202,7 @@
 </p>
 
 
-<div id="org45cd13e" class="figure">
+<div id="org710c068" class="figure">
 <p><img src="https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg" alt="badge.svg" class="org-svg" style="width: 100px">
 </p>
 </div>
@@ -216,31 +216,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#orged12496">1. Overview</a></li>
-<li><a href="#orge74dde5">2. Installation and use</a>
+<li><a href="#org95d7aed">1. Overview</a></li>
+<li><a href="#orgfd5c713">2. Installation and use</a>
 <ul>
-<li><a href="#org2da1e6c">2.1. known issues</a></li>
+<li><a href="#org98b4ddf">2.1. known issues</a></li>
 </ul>
 </li>
-<li><a href="#org1213381">3. Commands</a>
+<li><a href="#org35288a0">3. Commands</a>
 <ul>
-<li><a href="#orged93d01">3.1. org-export html</a></li>
-<li><a href="#orgc565b29">3.2. org-export pdf</a></li>
-<li><a href="#org1b92cd1">3.3. org-export pelican</a></li>
-<li><a href="#org9e6de7b">3.4. org-export tangle</a></li>
+<li><a href="#org3638c01">3.1. org-export html</a></li>
+<li><a href="#orgfe644f7">3.2. org-export pdf</a></li>
+<li><a href="#orge488267">3.3. org-export pelican</a></li>
+<li><a href="#orgd87f182">3.4. org-export tangle</a></li>
+<li><a href="#orge836b2a">3.5. org-export cli</a></li>
 </ul>
 </li>
-<li><a href="#org6d378bb">4. Org-babel language support</a></li>
-<li><a href="#orgb21cf83">5. Additional configuration</a></li>
-<li><a href="#org4f1bba6">6. Syntax highlighting</a></li>
-<li><a href="#org1181bcb">7. Tests</a></li>
-<li><a href="#orgbfe4298">8. Version info</a></li>
+<li><a href="#org1b540c8">4. Org-babel language support</a></li>
+<li><a href="#org2d6cc19">5. Additional configuration</a></li>
+<li><a href="#orgb5f5fc5">6. Syntax highlighting</a></li>
+<li><a href="#orgc6c0c7e">7. Tests</a></li>
+<li><a href="#org5ef1401">8. Version info</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-orged12496" class="outline-2">
-<h2 id="orged12496"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org95d7aed" class="outline-2">
+<h2 id="org95d7aed"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Emacs <a href="http://orgmode.org/">org-mode</a> is a markup language for "keeping notes, maintaining
@@ -270,8 +271,8 @@ providing css styles.</li>
 </div>
 </div>
 
-<div id="outline-container-orge74dde5" class="outline-2">
-<h2 id="orge74dde5"><span class="section-number-2">2.</span> Installation and use</h2>
+<div id="outline-container-orgfd5c713" class="outline-2">
+<h2 id="orgfd5c713"><span class="section-number-2">2.</span> Installation and use</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 First, clone this repository and enter the cloned directory. There are
@@ -307,7 +308,7 @@ Execute the script with <code>-h</code> to see usage and available commands:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org277f2a2">./org-export -h
+<pre class="src src-sh" id="orgfeffa2a">./org-export -h
 </pre>
 </div>
 
@@ -356,8 +357,8 @@ set to be the parent directory of the input file.
 </p>
 </div>
 
-<div id="outline-container-org2da1e6c" class="outline-3">
-<h3 id="org2da1e6c"><span class="section-number-3">2.1.</span> known issues</h3>
+<div id="outline-container-org98b4ddf" class="outline-3">
+<h3 id="org98b4ddf"><span class="section-number-3">2.1.</span> known issues</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Requires Emacs version 26 or higher.</li>
@@ -367,23 +368,23 @@ set to be the parent directory of the input file.
 </div>
 </div>
 
-<div id="outline-container-org1213381" class="outline-2">
-<h2 id="org1213381"><span class="section-number-2">3.</span> Commands</h2>
+<div id="outline-container-org35288a0" class="outline-2">
+<h2 id="org35288a0"><span class="section-number-2">3.</span> Commands</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orged93d01" class="outline-3">
-<h3 id="orged93d01"><span class="section-number-3">3.1.</span> org-export html</h3>
+<div id="outline-container-org3638c01" class="outline-3">
+<h3 id="org3638c01"><span class="section-number-3">3.1.</span> org-export html</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Exports org-mode to html
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orgc0bec81">./org-export html -h
+<pre class="src src-sh" id="org9b019a4">./org-export html -h
 </pre>
 </div>
 
-<pre class="example" id="orgb7795e6">
+<pre class="example" id="org4a71baf">
 Command line options:
 
  --infile         Path to input .org file (required)
@@ -392,12 +393,11 @@ Command line options:
  --add-langs      Comma-delimited list of additional languages to enable
                   in code blocks
  --evaluate       Evaluate source code blocks
+ --css-name       Use the named css style; choose from 'bootstrap5',
+                  'orgcss', 'org-manual'
  --css            Path or URL of css stylesheet
  --css-integrity  Optional value for css link integrity attribute
  --embed-css      Include contents of css in a &lt;style&gt; block
- --bootstrap      Make Bootstrap-specific modifications to html output;
-                  if selected, link to Bootstrap CDN by default
- --package-dir    Directory containing elpa packages
  --config         An elisp expression defining additional configuration
  --config-file    A file path providing additional configuration
 
@@ -449,26 +449,25 @@ org-export html --infile README.org --css http://orgmode.org/org-manual.css --em
 </pre>
 </div>
 </div>
-<div id="outline-container-orgc565b29" class="outline-3">
-<h3 id="orgc565b29"><span class="section-number-3">3.2.</span> org-export pdf</h3>
+<div id="outline-container-orgfe644f7" class="outline-3">
+<h3 id="orgfe644f7"><span class="section-number-3">3.2.</span> org-export pdf</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 Exports org-mode to pdf using latex
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orgc9b873b">./org-export pdf -h
+<pre class="src src-sh" id="org9e0d0cb">./org-export pdf -h
 </pre>
 </div>
 
-<pre class="example" id="org12dafc1">
+<pre class="example" id="orgbfad5b7">
 Command line options:
 
  --infile       path to input .org file (required)
  --outfile      path to output .pdf file (use base name of infile by
                 default)
  --evaluate     evaluate source code blocks
- --package-dir  directory containing elpa packages
  --config       an elisp expression defining additional configuration
  --config-file  a file path containing elisp expressions defining
                 additional configuration
@@ -484,59 +483,81 @@ yes' in the block header.
 </div>
 </div>
 
-<div id="outline-container-org1b92cd1" class="outline-3">
-<h3 id="org1b92cd1"><span class="section-number-3">3.3.</span> org-export pelican</h3>
+<div id="outline-container-orge488267" class="outline-3">
+<h3 id="orge488267"><span class="section-number-3">3.3.</span> org-export pelican</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Export files for use with the <a href="https://docs.getpelican.com/en/latest/">pelican</a> static site generator
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org288ab85">./org-export pelican -h
+<pre class="src src-sh" id="org72ba592">./org-export pelican -h
 </pre>
 </div>
 
 <pre class="example">
 Command line options:
 
- --infile       path to input .org file
- --outfile      path to output .html file (use base name of infile by
-                default)
- --add-langs    comma-delimited list of additional languages to enable
-                in code blocks
- --package-dir  directory containing elpa packages
+ --infile     path to input .org file
+ --outfile    path to output .html file (use base name of infile by
+              default)
+ --add-langs  comma-delimited list of additional languages to enable
+              in code blocks
 
 </pre>
 </div>
 </div>
 
-<div id="outline-container-org9e6de7b" class="outline-3">
-<h3 id="org9e6de7b"><span class="section-number-3">3.4.</span> org-export tangle</h3>
+<div id="outline-container-orgd87f182" class="outline-3">
+<h3 id="orgd87f182"><span class="section-number-3">3.4.</span> org-export tangle</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 Tangles code blocks in the specified file
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orgbbad49b">./org-export tangle -h
+<pre class="src src-sh" id="org0490bcb">./org-export tangle -h
 </pre>
 </div>
 
 <pre class="example">
 Command line options:
 
- --infile       path to input .org file
- --add-langs    comma-delimited list of additional languages to enable
-                in code blocks
- --package-dir  directory containing elpa packages
+ --infile     path to input .org file
+ --add-langs  comma-delimited list of additional languages to enable
+              in code blocks
+
+</pre>
+</div>
+</div>
+<div id="outline-container-orge836b2a" class="outline-3">
+<h3 id="orge836b2a"><span class="section-number-3">3.5.</span> org-export cli</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+Manage and view packages and defaults.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-sh" id="org08b2fd1">./org-export cli -h
+</pre>
+</div>
+
+<pre class="example">
+Command line options:
+
+ --show-package-dir        Print the path to package-dir
+ --rm-package-dir          Remove 'package-dir' and any installed packges
+ --show-default-languages  list the languages that are activated by default
+
+Manage and view packages and defaults
 
 </pre>
 </div>
 </div>
 </div>
 
-<div id="outline-container-org6d378bb" class="outline-2">
-<h2 id="org6d378bb"><span class="section-number-2">4.</span> Org-babel language support</h2>
+<div id="outline-container-org1b540c8" class="outline-2">
+<h2 id="org1b540c8"><span class="section-number-2">4.</span> Org-babel language support</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 By default, the following languages are activated for use in code blocks:
@@ -559,8 +580,8 @@ Additional languages may be activated using the argument <code>--add-langs</code
 </div>
 </div>
 
-<div id="outline-container-orgb21cf83" class="outline-2">
-<h2 id="orgb21cf83"><span class="section-number-2">5.</span> Additional configuration</h2>
+<div id="outline-container-org2d6cc19" class="outline-2">
+<h2 id="org2d6cc19"><span class="section-number-2">5.</span> Additional configuration</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Additional configuration may be provided as elisp commands in
@@ -598,8 +619,8 @@ elisp code blocks, for example:
 </div>
 </div>
 
-<div id="outline-container-org4f1bba6" class="outline-2">
-<h2 id="org4f1bba6"><span class="section-number-2">6.</span> Syntax highlighting</h2>
+<div id="outline-container-orgb5f5fc5" class="outline-2">
+<h2 id="orgb5f5fc5"><span class="section-number-2">6.</span> Syntax highlighting</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Getting syntax highlighting to work seemed impossible until I came across <a href="https://emacs.stackexchange.com/questions/38437/org-mode-batch-export-missing-syntax-highlighting">this
@@ -609,8 +630,8 @@ included in <code>org-export-cli.el</code> is taken from that post. Thank you, T
 </div>
 </div>
 
-<div id="outline-container-org1181bcb" class="outline-2">
-<h2 id="org1181bcb"><span class="section-number-2">7.</span> Tests</h2>
+<div id="outline-container-orgc6c0c7e" class="outline-2">
+<h2 id="orgc6c0c7e"><span class="section-number-2">7.</span> Tests</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 From the top level of this repository:
@@ -622,8 +643,8 @@ tests/test.sh
 </div>
 </div>
 
-<div id="outline-container-orgbfe4298" class="outline-2">
-<h2 id="orgbfe4298"><span class="section-number-2">8.</span> Version info</h2>
+<div id="outline-container-org5ef1401" class="outline-2">
+<h2 id="org5ef1401"><span class="section-number-2">8.</span> Version info</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-sh">emacs --version
@@ -631,25 +652,25 @@ git --no-pager log -n1
 </pre>
 </div>
 
-<pre class="example" id="orgdc21efa">
+<pre class="example" id="org750d2e1">
 GNU Emacs 28.1
 Copyright (C) 2022 Free Software Foundation, Inc.
 GNU Emacs comes with ABSOLUTELY NO WARRANTY.
 You may redistribute copies of GNU Emacs
 under the terms of the GNU General Public License.
 For more information about these matters, see the file named COPYING.
-commit 4c0ce5409cef38603c3958db59ea7f6f9853906f
+commit 4eae0742f1c5abbbebf42df8c3dad2125840bfc5
 Author: Noah Hoffman &lt;noah.hoffman@gmail.com&gt;
-Date:   Sun Apr 24 10:36:22 2022 -0700
+Date:   Mon Apr 25 11:38:00 2022 -0700
 
-    -h/--help exits with 0 exit status
+    add nongnu to package-archives
 </pre>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Noah Hoffman</p>
-<p class="date">Created: 2022-04-24 Sun 17:37</p>
+<p class="date">Created: 2022-04-25 Mon 18:39</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

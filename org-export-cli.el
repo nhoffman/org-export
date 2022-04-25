@@ -1,3 +1,4 @@
+(setq lexical-binding t)
 (unless (>= emacs-major-version 26)
   (error "Error: emacs version 26 or greater is required"))
 
@@ -5,7 +6,6 @@
 (require 'cl-lib)
 
 ;; configuration applying to all commands
-(setq lexical-binding t)
 (setq make-backup-files nil)
 (setq debug-on-error t)
 
@@ -35,7 +35,7 @@
   (cli-path-join cli-config-dir "config.el")
   "File for user config")
 
-(defvar cli-packages '(htmlize)
+(defvar cli-packages '(htmlize request buttercup)
   "elisp packages installed by each script")
 
 ;; store the execution path for the current environment and provide it
@@ -190,35 +190,26 @@ than `maxwidth' characters."
     (princ "\n")
     ))
 
-(defun cli-el-get-setup (emacs-directory package-list)
+(defun cli-package-setup (emacs-directory &optional package-list)
+  "Set `user-emacs-directory' to `emacs-directory', activate
+package, and install packages in `package-list' if provided."
+
   (unless (file-readable-p emacs-directory)
     (message (format "Creating directory %s" emacs-directory))
     (make-directory emacs-directory t))
 
-  ;; must assign `user-emacs-directory' *before* requiring `package'
+  ;; must assign `user-emacs-directory' *before* initializing `package'
   (setq user-emacs-directory emacs-directory)
+  (setq package-user-dir emacs-directory)
+  (package-initialize)
+  (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
 
-  (unless (file-readable-p cli-config-dir)
-    (message (format "Creating directory %s" cli-config-dir))
-    (make-directory cli-config-dir t))
-
-  (setq cli-el-get-repo
-	(concat (file-name-as-directory user-emacs-directory) "el-get"))
-
-  ;; install el-get if necessary
-  (unless (file-exists-p cli-el-get-repo)
-    (with-current-buffer
-	(url-retrieve-synchronously
-	 "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-      (eval-region url-http-end-of-headers (point-max))))
-
-  (add-to-list 'load-path (concat cli-el-get-repo "/el-get"))
-
-  ;; Use el-get to install packages in 'package-list'
-  (require 'el-get)
-  (mapc (lambda (pkg)
-          (el-get-bundle-el-get `(:name ,pkg) 'sync))
-        package-list))
+  (if package-list
+      (mapc (lambda (pkg)
+              (unless (package-installed-p pkg) (message "Installing %s" pkg))
+              (let ((inhibit-message t))
+                (package-install pkg))
+              ) package-list)))
 
 ;; other utilities
 
@@ -274,7 +265,7 @@ any identified in comma-delimited string `extra-langs'"
 ;; The following code is taken from that post. Full disclosure: I really have
 ;; little idea what this does, but it does seem to enable syntax highlighting.
 
-(require 'font-lock)
+;; (require 'font-lock)
 (require 'subr-x) ;; for `when-let'
 
 (unless (boundp 'maximal-integer)
@@ -348,12 +339,12 @@ with class 'color and highest min-color value."
 	    (mapcar 'file-name-nondirectory command-line-args))
     (progn
       (setq options-alist
-	    `(("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	      ("--show-package-dir" "Print the path to package-dir" nil)
+	    `(("--show-package-dir" "Print the path to package-dir" nil)
+              ("--rm-package-dir" "Remove 'package-dir' and any installed packges" nil)
               ("--show-default-languages" "list the languages that are activated by default" nil)
 	      ))
 
-      (defvar docstring "\nManage elpa packages\n")
+      (defvar docstring "\nManage and view packages and defaults\n")
 
       (condition-case err
           (setq args (cli-parse-args options-alist docstring))
@@ -362,17 +353,21 @@ with class 'color and highest min-color value."
 
       (defun getopt (name) (gethash name args))
       (cli-eval-file cli-config-file)
+      (cli-package-setup cli-package-dir cli-packages)
 
       (if (getopt "show-package-dir")
           (progn
-            (print (getopt "package-dir"))
+            (message cli-package-dir)
+            (kill-emacs 0)))
+
+      (if (and (getopt "rm-package-dir")
+               (yes-or-no-p (format "Remove %s ? " cli-package-dir)))
+          (progn
+            (delete-directory cli-package-dir t)
             (kill-emacs 0)))
 
       (if (getopt "show-default-languages")
           (progn
             (print cli-org-babel-languages-default)
             (kill-emacs 0)))
-
-      (cli-el-get-setup (getopt "package-dir") cli-packages)
-
       ))

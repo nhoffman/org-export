@@ -45,13 +45,13 @@ to a location on your =$PATH= (we'll use =/usr/local/bin= as an example):
 Recommended: use a hard link. This method allows you to update
 =org-export= with a git-pull from the git repository:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :eval no
 ln org-export *.el /usr/local/bin
 #+END_SRC
 
 Copy the files:
 
-#+BEGIN_SRC sh
+#+BEGIN_SRC sh :eval no
 cp org-export *.el /usr/local/bin
 #+END_SRC
 
@@ -119,12 +119,11 @@ Command line options:
  --add-langs      Comma-delimited list of additional languages to enable
                   in code blocks
  --evaluate       Evaluate source code blocks
+ --css-name       Use the named css style; choose from 'bootstrap5',
+                  'orgcss', 'org-manual'
  --css            Path or URL of css stylesheet
  --css-integrity  Optional value for css link integrity attribute
  --embed-css      Include contents of css in a <style> block
- --bootstrap      Make Bootstrap-specific modifications to html output;
-                  if selected, link to Bootstrap CDN by default
- --package-dir    Directory containing elpa packages
  --config         An elisp expression defining additional configuration
  --config-file    A file path providing additional configuration
 
@@ -134,6 +133,7 @@ blocks. If you would like to evaluate by default without requiring
 this option, include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
+
 #+end_example
 
 The simplest invocation is as follows (you can test this out using this document):
@@ -171,7 +171,6 @@ Command line options:
  --outfile      path to output .pdf file (use base name of infile by
                 default)
  --evaluate     evaluate source code blocks
- --package-dir  directory containing elpa packages
  --config       an elisp expression defining additional configuration
  --config-file  a file path containing elisp expressions defining
                 additional configuration
@@ -182,6 +181,7 @@ blocks. If you would like to evaluate by default without requiring
 this option, include '#+PROPERTY: header-args :eval yes' in the file
 header. Individual blocks can be selectively evaluated using ':eval
 yes' in the block header.
+
 #+end_example
 
 ** org-export pelican
@@ -197,12 +197,11 @@ Export files for use with the [[https://docs.getpelican.com/en/latest/][pelican]
 #+begin_example
 Command line options:
 
- --infile       path to input .org file
- --outfile      path to output .html file (use base name of infile by
-                default)
- --add-langs    comma-delimited list of additional languages to enable
-                in code blocks
- --package-dir  directory containing elpa packages
+ --infile     path to input .org file
+ --outfile    path to output .html file (use base name of infile by
+              default)
+ --add-langs  comma-delimited list of additional languages to enable
+              in code blocks
 
 #+end_example
 
@@ -219,10 +218,29 @@ Tangles code blocks in the specified file
 #+begin_example
 Command line options:
 
- --infile       path to input .org file
- --add-langs    comma-delimited list of additional languages to enable
-                in code blocks
- --package-dir  directory containing elpa packages
+ --infile     path to input .org file
+ --add-langs  comma-delimited list of additional languages to enable
+              in code blocks
+
+#+end_example
+** org-export cli
+
+Manage and view packages and defaults.
+
+#+NAME: cli-help
+#+BEGIN_SRC sh :results output :exports both :eval yes
+./org-export cli -h
+#+END_SRC
+
+#+RESULTS: cli-help
+#+begin_example
+Command line options:
+
+ --show-package-dir        Print the path to package-dir
+ --rm-package-dir          Remove 'package-dir' and any installed packges
+ --show-default-languages  list the languages that are activated by default
+
+Manage and view packages and defaults
 
 #+end_example
 
@@ -261,9 +279,11 @@ head -n3 tests/plantuml.org
 #+end_src
 
 #+RESULTS:
-: #+begin_src emacs-lisp :eval yes
-: (setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
-: #+end_src
+#+begin_example
+,#+begin_src emacs-lisp :eval yes
+(setq org-plantuml-jar-path (expand-file-name "~/src/org-export/plantuml-1.2022.3.jar"))
+,#+end_src
+#+end_example
 
 * Syntax highlighting
 
@@ -283,6 +303,18 @@ From the top level of this repository:
 emacs --version
 git --no-pager log -n1
 #+end_src
+
+#+RESULTS:
+#+begin_example
+commit 18f4e1dcbadc1447290156312e5888ce73fbaeb8
+Author: Noah Hoffman <noah.hoffman@gmail.com>
+Date:   Mon Apr 25 08:51:22 2022 -0700
+
+    add framework for selecting an html theme
+
+    - introduce dependency on requests package
+    - replace --bootstrap with --css-name
+#+end_example
 
 * Local Variables :noexport:
 Local Variables:
