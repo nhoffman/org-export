@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- 2022-04-25 Mon 19:02 -->
+<!-- 2022-04-25 Mon 21:28 -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>org-export</title>
@@ -202,7 +202,7 @@
 </p>
 
 
-<div id="org1442eb3" class="figure">
+<div id="orgf6d65ba" class="figure">
 <p><img src="https://github.com/nhoffman/org-export/actions/workflows/test.yml/badge.svg" alt="badge.svg" class="org-svg" style="width: 100px">
 </p>
 </div>
@@ -216,32 +216,32 @@
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents" role="doc-toc">
 <ul>
-<li><a href="#org00b72d5">1. Overview</a></li>
-<li><a href="#org3c83312">2. Installation and use</a>
+<li><a href="#org4629424">1. Overview</a></li>
+<li><a href="#orgcdf4247">2. Installation and use</a>
 <ul>
-<li><a href="#orgc0f23f7">2.1. known issues</a></li>
+<li><a href="#orgf3c2922">2.1. known issues</a></li>
 </ul>
 </li>
-<li><a href="#org9e4a531">3. Commands</a>
+<li><a href="#orgeb45261">3. Commands</a>
 <ul>
-<li><a href="#orgba07525">3.1. org-export html</a></li>
-<li><a href="#org171c524">3.2. org-export pdf</a></li>
-<li><a href="#orge8e57ec">3.3. org-export pelican</a></li>
-<li><a href="#orgffcddf9">3.4. org-export tangle</a></li>
-<li><a href="#orgd73eaa3">3.5. org-export cli</a></li>
+<li><a href="#org4d8254c">3.1. org-export html</a></li>
+<li><a href="#org0501bd8">3.2. org-export pdf</a></li>
+<li><a href="#org23a3e37">3.3. org-export pelican</a></li>
+<li><a href="#org384ac34">3.4. org-export tangle</a></li>
+<li><a href="#org7f815d5">3.5. org-export cli</a></li>
 </ul>
 </li>
-<li><a href="#org1b48755">4. Org-babel language support</a></li>
-<li><a href="#orgdd5dd8c">5. Additional configuration</a></li>
-<li><a href="#org315a4f1">6. Syntax highlighting</a></li>
-<li><a href="#org8c34777">7. Tests</a></li>
-<li><a href="#orgd277e0b">8. Version info</a></li>
+<li><a href="#orgfbb350a">4. Org-babel language support</a></li>
+<li><a href="#org00feb90">5. Additional configuration</a></li>
+<li><a href="#org8ca2222">6. Syntax highlighting</a></li>
+<li><a href="#org26626db">7. Tests</a></li>
+<li><a href="#org0ce499d">8. Version info</a></li>
 </ul>
 </div>
 </div>
 
-<div id="outline-container-org00b72d5" class="outline-2">
-<h2 id="org00b72d5"><span class="section-number-2">1.</span> Overview</h2>
+<div id="outline-container-org4629424" class="outline-2">
+<h2 id="org4629424"><span class="section-number-2">1.</span> Overview</h2>
 <div class="outline-text-2" id="text-1">
 <p>
 Emacs <a href="http://orgmode.org/">org-mode</a> is a markup language for "keeping notes, maintaining
@@ -271,8 +271,8 @@ providing css styles.</li>
 </div>
 </div>
 
-<div id="outline-container-org3c83312" class="outline-2">
-<h2 id="org3c83312"><span class="section-number-2">2.</span> Installation and use</h2>
+<div id="outline-container-orgcdf4247" class="outline-2">
+<h2 id="orgcdf4247"><span class="section-number-2">2.</span> Installation and use</h2>
 <div class="outline-text-2" id="text-2">
 <p>
 First, clone this repository and enter the cloned directory. There are
@@ -308,7 +308,7 @@ Execute the script with <code>-h</code> to see usage and available commands:
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org1c1482c">./org-export -h
+<pre class="src src-sh" id="org6dcf329">./org-export -h
 </pre>
 </div>
 
@@ -357,8 +357,8 @@ set to be the parent directory of the input file.
 </p>
 </div>
 
-<div id="outline-container-orgc0f23f7" class="outline-3">
-<h3 id="orgc0f23f7"><span class="section-number-3">2.1.</span> known issues</h3>
+<div id="outline-container-orgf3c2922" class="outline-3">
+<h3 id="orgf3c2922"><span class="section-number-3">2.1.</span> known issues</h3>
 <div class="outline-text-3" id="text-2-1">
 <ul class="org-ul">
 <li>Requires Emacs version 26 or higher.</li>
@@ -368,23 +368,23 @@ set to be the parent directory of the input file.
 </div>
 </div>
 
-<div id="outline-container-org9e4a531" class="outline-2">
-<h2 id="org9e4a531"><span class="section-number-2">3.</span> Commands</h2>
+<div id="outline-container-orgeb45261" class="outline-2">
+<h2 id="orgeb45261"><span class="section-number-2">3.</span> Commands</h2>
 <div class="outline-text-2" id="text-3">
 </div>
-<div id="outline-container-orgba07525" class="outline-3">
-<h3 id="orgba07525"><span class="section-number-3">3.1.</span> org-export html</h3>
+<div id="outline-container-org4d8254c" class="outline-3">
+<h3 id="org4d8254c"><span class="section-number-3">3.1.</span> org-export html</h3>
 <div class="outline-text-3" id="text-3-1">
 <p>
 Exports org-mode to html
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org32e16a1">./org-export html -h
+<pre class="src src-sh" id="orgb370180">./org-export html -h
 </pre>
 </div>
 
-<pre class="example" id="org61f0ec4">
+<pre class="example" id="org07be78e">
 Command line options:
 
  --infile         Path to input .org file (required)
@@ -449,19 +449,19 @@ org-export html --infile README.org --css http://orgmode.org/org-manual.css --em
 </pre>
 </div>
 </div>
-<div id="outline-container-org171c524" class="outline-3">
-<h3 id="org171c524"><span class="section-number-3">3.2.</span> org-export pdf</h3>
+<div id="outline-container-org0501bd8" class="outline-3">
+<h3 id="org0501bd8"><span class="section-number-3">3.2.</span> org-export pdf</h3>
 <div class="outline-text-3" id="text-3-2">
 <p>
 Exports org-mode to pdf using latex
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orgc1ed4cf">./org-export pdf -h
+<pre class="src src-sh" id="orgcfba05c">./org-export pdf -h
 </pre>
 </div>
 
-<pre class="example" id="org4da3870">
+<pre class="example" id="org63910bb">
 Command line options:
 
  --infile       path to input .org file (required)
@@ -483,15 +483,15 @@ yes' in the block header.
 </div>
 </div>
 
-<div id="outline-container-orge8e57ec" class="outline-3">
-<h3 id="orge8e57ec"><span class="section-number-3">3.3.</span> org-export pelican</h3>
+<div id="outline-container-org23a3e37" class="outline-3">
+<h3 id="org23a3e37"><span class="section-number-3">3.3.</span> org-export pelican</h3>
 <div class="outline-text-3" id="text-3-3">
 <p>
 Export files for use with the <a href="https://docs.getpelican.com/en/latest/">pelican</a> static site generator
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org0093208">./org-export pelican -h
+<pre class="src src-sh" id="org8be06c2">./org-export pelican -h
 </pre>
 </div>
 
@@ -508,15 +508,15 @@ Command line options:
 </div>
 </div>
 
-<div id="outline-container-orgffcddf9" class="outline-3">
-<h3 id="orgffcddf9"><span class="section-number-3">3.4.</span> org-export tangle</h3>
+<div id="outline-container-org384ac34" class="outline-3">
+<h3 id="org384ac34"><span class="section-number-3">3.4.</span> org-export tangle</h3>
 <div class="outline-text-3" id="text-3-4">
 <p>
 Tangles code blocks in the specified file
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="orga3675ab">./org-export tangle -h
+<pre class="src src-sh" id="org31d4047">./org-export tangle -h
 </pre>
 </div>
 
@@ -530,15 +530,15 @@ Command line options:
 </pre>
 </div>
 </div>
-<div id="outline-container-orgd73eaa3" class="outline-3">
-<h3 id="orgd73eaa3"><span class="section-number-3">3.5.</span> org-export cli</h3>
+<div id="outline-container-org7f815d5" class="outline-3">
+<h3 id="org7f815d5"><span class="section-number-3">3.5.</span> org-export cli</h3>
 <div class="outline-text-3" id="text-3-5">
 <p>
 Manage and view packages and defaults.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-sh" id="org4311a81">./org-export cli -h
+<pre class="src src-sh" id="orgb8e1a91">./org-export cli -h
 </pre>
 </div>
 
@@ -556,8 +556,8 @@ Manage and view packages and defaults
 </div>
 </div>
 
-<div id="outline-container-org1b48755" class="outline-2">
-<h2 id="org1b48755"><span class="section-number-2">4.</span> Org-babel language support</h2>
+<div id="outline-container-orgfbb350a" class="outline-2">
+<h2 id="orgfbb350a"><span class="section-number-2">4.</span> Org-babel language support</h2>
 <div class="outline-text-2" id="text-4">
 <p>
 By default, the following languages are activated for use in code blocks:
@@ -580,8 +580,8 @@ Additional languages may be activated using the argument <code>--add-langs</code
 </div>
 </div>
 
-<div id="outline-container-orgdd5dd8c" class="outline-2">
-<h2 id="orgdd5dd8c"><span class="section-number-2">5.</span> Additional configuration</h2>
+<div id="outline-container-org00feb90" class="outline-2">
+<h2 id="org00feb90"><span class="section-number-2">5.</span> Additional configuration</h2>
 <div class="outline-text-2" id="text-5">
 <p>
 Additional configuration may be provided as elisp commands in
@@ -619,8 +619,8 @@ elisp code blocks, for example:
 </div>
 </div>
 
-<div id="outline-container-org315a4f1" class="outline-2">
-<h2 id="org315a4f1"><span class="section-number-2">6.</span> Syntax highlighting</h2>
+<div id="outline-container-org8ca2222" class="outline-2">
+<h2 id="org8ca2222"><span class="section-number-2">6.</span> Syntax highlighting</h2>
 <div class="outline-text-2" id="text-6">
 <p>
 Getting syntax highlighting to work seemed impossible until I came across <a href="https://emacs.stackexchange.com/questions/38437/org-mode-batch-export-missing-syntax-highlighting">this
@@ -630,8 +630,8 @@ included in <code>org-export-cli.el</code> is taken from that post. Thank you, T
 </div>
 </div>
 
-<div id="outline-container-org8c34777" class="outline-2">
-<h2 id="org8c34777"><span class="section-number-2">7.</span> Tests</h2>
+<div id="outline-container-org26626db" class="outline-2">
+<h2 id="org26626db"><span class="section-number-2">7.</span> Tests</h2>
 <div class="outline-text-2" id="text-7">
 <p>
 From the top level of this repository:
@@ -643,8 +643,8 @@ tests/test.sh
 </div>
 </div>
 
-<div id="outline-container-orgd277e0b" class="outline-2">
-<h2 id="orgd277e0b"><span class="section-number-2">8.</span> Version info</h2>
+<div id="outline-container-org0ce499d" class="outline-2">
+<h2 id="org0ce499d"><span class="section-number-2">8.</span> Version info</h2>
 <div class="outline-text-2" id="text-8">
 <div class="org-src-container">
 <pre class="src src-sh">emacs --version
@@ -652,25 +652,25 @@ git --no-pager log -n1
 </pre>
 </div>
 
-<pre class="example" id="org4eb6ee6">
+<pre class="example" id="org86a48d4">
 GNU Emacs 28.1
 Copyright (C) 2022 Free Software Foundation, Inc.
 GNU Emacs comes with ABSOLUTELY NO WARRANTY.
 You may redistribute copies of GNU Emacs
 under the terms of the GNU General Public License.
 For more information about these matters, see the file named COPYING.
-commit 727cd4cac61d2100567a17d2be0ebc7b34a17145
+commit ceb545bc51502bd04682d8c160729cdafd7ebe44
 Author: Noah Hoffman &lt;noah.hoffman@gmail.com&gt;
-Date:   Mon Apr 25 12:01:23 2022 -0700
+Date:   Mon Apr 25 14:25:41 2022 -0700
 
-    require package before adding to package-archives
+    Fix package installation for emacs 26 by preventing package signature check
 </pre>
 </div>
 </div>
 </div>
 <div id="postamble" class="status">
 <p class="author">Author: Noah Hoffman</p>
-<p class="date">Created: 2022-04-25 Mon 19:02</p>
+<p class="date">Created: 2022-04-25 Mon 21:28</p>
 <p class="validation"><a href="https://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>
