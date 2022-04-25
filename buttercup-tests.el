@@ -2,7 +2,8 @@
 
 (setq lexical-binding t)
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
-(cli-el-get-setup cli-package-dir '(buttercup))
+(cli-eval-file cli-config-file)
+(cli-package-setup cli-package-dir cli-packages)
 (require 'cl-lib)
 (require 'buttercup)
 
@@ -44,6 +45,8 @@
       (expect (gethash "infile" args) :to-equal "foo"))
     (it "tests --outfile"
       (expect (gethash "outfile" args) :to-be nil))
+    (it "tests --package-dir"
+      (expect (gethash "package-dir" args) :to-equal cli-package-dir))
     ))
 
 (describe "cli-parse-args with invalid arguments"

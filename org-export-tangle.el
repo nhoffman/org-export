@@ -1,20 +1,18 @@
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
+(cli-eval-file cli-config-file)
+(cli-package-setup cli-package-dir cli-packages)
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
       `(("--infile" "path to input .org file")
         ("--add-langs" "comma-delimited list of additional languages to enable in code blocks"
-         nil)
-	("--package-dir" "directory containing elpa packages" ,cli-package-dir)
-	))
+         nil)))
 
 (condition-case err
     (setq args (cli-parse-args options-alist))
   (quit (kill-emacs 0))
   (error (progn (message (nth 1 err)) (kill-emacs 1))))
-
 (defun getopt (name) (gethash name args))
-(cli-el-get-setup (getopt "package-dir") cli-packages)
 
 ;; ess configuration
 (add-hook 'ess-mode-hook

@@ -1,5 +1,7 @@
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
-(cli-el-get-setup cli-package-dir cli-packages)
+(cli-eval-file cli-config-file)
+(cli-package-setup cli-package-dir cli-packages)
+
 (require 'request)
 (require 'ox)
 (require 'ox-html)
@@ -87,8 +89,6 @@
         ("--css-integrity"
          "Optional value for css link integrity attribute" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
-	("--package-dir"
-         "Directory containing elpa packages" ,cli-package-dir)
         ("--config"
          "An elisp expression defining additional configuration" nil)
         ("--config-file"
@@ -109,7 +109,6 @@ yes' in the block header.")
   (error (progn (message (nth 1 err)) (kill-emacs 1))))
 
 (defun getopt (name) (gethash name args))
-(cli-el-get-setup (getopt "package-dir") cli-packages)
 
 ;; css configuration
 (cond
