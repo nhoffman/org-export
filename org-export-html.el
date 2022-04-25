@@ -1,6 +1,73 @@
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
+(cli-el-get-setup cli-package-dir cli-packages)
+(require 'request)
 (require 'ox)
 (require 'ox-html)
+
+(defvar oe-html-css-styles
+  '((:name "bootstrap5"
+           :url "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+           :integrity "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+           :reference "https://getbootstrap.com/docs/5.1/getting-started/introduction/"
+           :pre-export (lambda ()
+                         (setq org-html-htmlize-output-type 'css))
+           :post-export (lambda () (oe-html-fix-bootstrap)))
+    (:name "orgcss"
+           :url "https://gongzhitaao.org/orgcss/org.css"
+           :reference "https://github.com/gongzhitaao/orgcss"
+           :pre-export (lambda ()
+                         (setq org-html-htmlize-output-type 'css)
+                         (setq org-html-head-include-default-style nil)))
+    (:name "org-manual"
+           :url "https://www.gnu.org/software/emacs/manual.css"
+           :reference "https://orgmode.org"
+           :pre-export (lambda ()
+                         (setq org-html-htmlize-output-type 'css)
+                         (setq org-html-head-include-default-style nil)))
+    ))
+
+(defvar oe-html-css-style-names
+  (mapconcat (lambda (plist) (format "'%s'" (plist-get plist ':name))) oe-html-css-styles ", "))
+
+(defvar oe-html-pre-export nil)
+(defvar oe-html-post-export nil)
+
+(defun oe-html-fix-bootstrap ()
+  "Make adjustments to html in current buffer for bootstrap"
+  (cli-replace-all "<body>" "<body class=\"container\">")
+  (cli-replace-all
+   "<table>"
+   "<table class=\"table table-bordered table-sm\" style=\"width: auto;\">")
+  )
+
+(defun oe-html-css-link (url &optional integrity)
+  "Return a <link> tag specifying a css style"
+  (if integrity
+      (format
+       "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"
+                integrity=\"%s\" crossorigin=\"anonymous\" />"
+       url integrity)
+    (format
+     "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
+     url)))
+
+(defun oe-html-css-content (url)
+  "Return a <style> tag with embedded css"
+  (message (format "Inserting contents of %s" url))
+  (format "<style type=\"text/css\">\n%s\n</style>\n"
+          (if (string-match "^http" url)
+              (request-response-data
+               (request url :parser 'buffer-string :sync t))
+            (with-temp-buffer
+              (insert-file-contents url)
+              (buffer-string)))))
+
+(defun oe-get-plist-by-name (name list-of-plists)
+  (car (remq nil (mapcar
+                  (lambda(plist)
+                    (if (string-equal name (plist-get plist ':name))
+                        plist))
+                  list-of-plists))))
 
 ;; (byte-compile-file (concat (file-name-directory load-file-name) "cli.el"))
 (setq options-alist
@@ -13,14 +80,13 @@
           to enable in code blocks"
          nil)
 	("--evaluate" "Evaluate source code blocks" nil)
+	("--css-name"
+         ,(format "Use the named css style; choose from %s" oe-html-css-style-names)
+         nil)
 	("--css" "Path or URL of css stylesheet" nil)
         ("--css-integrity"
          "Optional value for css link integrity attribute" nil)
 	("--embed-css" "Include contents of css in a <style> block" nil)
-	("--bootstrap"
-         "Make Bootstrap-specific modifications to html output;
-          if selected, link to Bootstrap CDN by default"
-         nil)
 	("--package-dir"
          "Directory containing elpa packages" ,cli-package-dir)
         ("--config"
@@ -46,66 +112,33 @@ yes' in the block header.")
 (cli-el-get-setup (getopt "package-dir") cli-packages)
 
 ;; css configuration
-(defvar use-bootstrap
-  (if (getopt "bootstrap") t nil))
+(cond
+ ((getopt "css")
+  (setq css-config
+        `(:name "custom" :url ,(getopt "css") :integrity ,(getopt "css-integrity"))))
+ ((getopt "css-name")
+  (setq css-config
+        (oe-get-plist-by-name (getopt "css-name") oe-html-css-styles))
+  (unless css-config
+    (message "'--css-name %s' is not a valid selection, choose from %s"
+             (getopt "css-name") oe-html-css-style-names)
+    (kill-emacs 1))
+  (setq oe-html-pre-export (plist-get css-config ':pre-export))
+  (setq oe-html-post-export (plist-get css-config ':post-export)))
+ (t
+  (setq css-config nil)))
 
-(defvar bootstrap-url
-  "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css")
-
-(defvar bootstrap-integrity
-  "sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC")
-
-(defvar css-url (getopt "css"))
-(defvar css-intergrity (getopt "css-integrity"))
-
-(if use-bootstrap
-    (progn
-      (setq css-url bootstrap-url)
-      (setq css-integrity bootstrap-integrity)))
-
-(defun html-fix-bootstrap ()
-  "Make adjustments to html in current buffer for bootstrap"
-  (cli-replace-all "<body>" "<body class=\"container\">")
-  (cli-replace-all
-   "<table>"
-   "<table class=\"table table-bordered table-sm\" style=\"width: auto;\">")
-  )
-
-(defvar my-html-head "")
-(if css-url
-    (if (getopt "embed-css")
-	;; embed css contents in a <style> block
-	(progn
-	  (setq my-html-head
-		(format "<style type=\"text/css\">\n%s\n</style>\n"
-			(if (string-match "^http" css-url)
-			    ;; use the contents of file at path
-			    (with-current-buffer
-				(url-retrieve-synchronously css-url)
-			      (message
-                               (format "Inserting contents of %s" css-url))
-			      (buffer-string))
-			  ;; use the contents of the file at css-url
-			  (with-temp-buffer
-			    (insert-file-contents css-url)
-			    (buffer-string)))
-                        )))
-      ;; ...or add a link to the css file
-      (setq my-html-head
-            (if css-integrity
-	        (format
-                 "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\"
-                    integrity=\"%s\" crossorigin=\"anonymous\" />"
-                 css-url css-integrity)
-              (format
-	       "<link rel=\"stylesheet\" type=\"text/css\" href=\"%s\" />"
-               css-url)))
-      ))
+(defvar oe-html-head
+  (if css-config
+      (let ((url (plist-get css-config ':url))
+            (integrity (plist-get css-config ':integrity)))
+        (if (getopt "embed-css")
+            (oe-html-css-content url)
+          (oe-html-css-link url integrity)))))
 
 ;; org-mode and export configuration
 (add-hook 'org-mode-hook
 	  (lambda ()
-	    ;; (font-lock-mode)
 	    ;; (setq org-src-fontify-natively t)
 	    ;; (setq htmlize-output-type 'inline-css)
 	    (setq org-confirm-babel-evaluate nil)
@@ -114,7 +147,7 @@ yes' in the block header.")
 	    ;; (setq org-export-with-sub-superscripts nil)
 	    ;; (setq org-export-with-section-numbers nil)
 	    (setq org-html-doctype "html5")
-	    (setq org-html-head my-html-head)
+	    (setq org-html-head oe-html-head)
 	    ;; (setq org-html-head-extra my-html-head-extra)
 	    (setq org-babel-sh-command "bash")
 	    (setq org-babel-python-command "python3")
@@ -165,11 +198,13 @@ yes' in the block header.")
     (font-lock-flush)
     (font-lock-fontify-buffer)
 
+    (if oe-html-pre-export
+        (funcall oe-html-pre-export))
+
     (org-html-export-as-html)
 
-    ;; It is not possible to add attributes to certain elements (eg,
-    ;; <body>) using org-mode configuration, so we'll just use string
-    ;; replacement as necessary.
-    (if use-bootstrap (html-fix-bootstrap))
+    (if oe-html-post-export
+        (funcall oe-html-post-export))
+
     (write-file outfile)
     (message "wrote %s" outfile)))
