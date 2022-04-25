@@ -202,6 +202,7 @@ package, and install packages in `package-list' if provided."
   (setq user-emacs-directory emacs-directory)
   (setq package-user-dir emacs-directory)
   (package-initialize)
+  (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
 
   (if package-list
       (mapc (lambda (pkg)
