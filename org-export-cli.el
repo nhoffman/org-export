@@ -205,13 +205,15 @@ package, and install packages in `package-list' if provided."
   (require 'package)
   (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
   (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+  
   (package-initialize)
-  (if package-list
-      (mapc (lambda (pkg)
-              (unless (package-installed-p pkg) (message "Installing %s" pkg))
-              (let ((inhibit-message t))
-                (package-install pkg))
-              ) package-list)))
+  
+  (if (and package-list (member nil (mapcar 'package-installed-p package-list)))
+      (progn
+	(unless (>= emacs-major-version 28)
+	  (setq package-check-signature nil))
+	(package-refresh-contents)
+	(mapc 'package-install  package-list))))
 
 ;; other utilities
 
@@ -356,7 +358,7 @@ with class 'color and highest min-color value."
       (defun getopt (name) (gethash name args))
       (cli-eval-file cli-config-file)
       (cli-package-setup cli-package-dir cli-packages)
-
+      
       (if (getopt "show-package-dir")
           (progn
             (message cli-package-dir)
