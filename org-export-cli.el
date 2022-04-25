@@ -201,10 +201,11 @@ package, and install packages in `package-list' if provided."
   ;; must assign `user-emacs-directory' *before* initializing `package'
   (setq user-emacs-directory emacs-directory)
   (setq package-user-dir emacs-directory)
-  (package-initialize)
+
+  (require 'package)
   (add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/") t)
   (add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
-
+  (package-initialize)
   (if package-list
       (mapc (lambda (pkg)
               (unless (package-installed-p pkg) (message "Installing %s" pkg))
