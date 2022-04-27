@@ -138,16 +138,10 @@ yes' in the block header.")
 ;; org-mode and export configuration
 (add-hook 'org-mode-hook
 	  (lambda ()
-	    ;; (setq org-src-fontify-natively t)
-	    ;; (setq htmlize-output-type 'inline-css)
 	    (setq org-confirm-babel-evaluate nil)
 	    (setq org-export-allow-BIND 1)
-	    ;; (setq org-export-preserve-breaks t)
-	    ;; (setq org-export-with-sub-superscripts nil)
-	    ;; (setq org-export-with-section-numbers nil)
 	    (setq org-html-doctype "html5")
 	    (setq org-html-head oe-html-head)
-	    ;; (setq org-html-head-extra my-html-head-extra)
 	    (setq org-babel-sh-command "bash")
 	    (setq org-babel-python-command "python3")
 	    (setq org-babel-default-header-args
@@ -159,13 +153,7 @@ yes' in the block header.")
 			`(:noweb . "no")
 			`(:hlines . "no")
 			`(:tangle . "no")
-			`(:padnewline . "yes")
-			))
-
-	    ;; explicitly set the PATH in sh code blocks; note that
-	    ;; `list`, the backtick, and the comma are required to
-	    ;; dereference cli-sh-src-prologue as a variable; see
-	    ;; http://stackoverflow.com/questions/24188100
+			`(:padnewline . "yes")))
 	    (setq org-babel-default-header-args:sh
 		  (list `(:prologue . ,cli-sh-src-prologue)))
 

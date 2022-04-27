@@ -337,6 +337,20 @@ with class 'color and highest min-color value."
 (advice-add 'face-attribute :override #'my-face-attribute)
 ;;;; end code by Tobias
 
+;; Fix issue where python code block evaluation freezes on a mac using :session.
+;; This as a bug in prompt detection in python.el: apparently the startup
+;; message for the python interpreter is not being recognized. Launching the
+;; interpreter with python -q suppresses the prompt, but the variable
+;; python-shell-interpreter-args does not appear to be respected. So the brute
+;; force solution is to advise the function that sets up inferior-python-mode to
+;; add -q:
+(defun advised-python-shell-make-comint (orig-fun &rest args)
+  (setq args (append '("python3 -q") (cdr args)))
+  (apply orig-fun args))
+
+(if (eq system-type 'darwin)
+    (advice-add 'python-shell-make-comint :around #'advised-python-shell-make-comint))
+
 ;; only executed if this is the script called from the command line
 ;; (like python's "if __name__ == '__main__'")
 (if (member (file-name-nondirectory load-file-name)
