@@ -55,6 +55,13 @@ outfile=$out/el1.2.html
              --config-file tests/test-config.el
 test_pattern_present $outfile YYYYY
 
+if command -v dot; then
+    outfile=$out/dot.1.html
+    rm -f $out/test-dot.png
+    ./org-export html --infile tests/dot.org --outfile $outfile --evaluate
+    test -f $out/test-dot.png
+fi
+
 if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
     emacs="${EMACS-/Applications/Emacs.app/Contents/MacOS/Emacs}"
 else
