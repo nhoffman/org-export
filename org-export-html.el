@@ -1,3 +1,4 @@
+(setq lexical-binding t)
 (require 'cli (concat (file-name-directory load-file-name) "org-export-cli.el"))
 (cli-eval-file cli-config-file)
 (cli-package-setup cli-package-dir cli-packages)
@@ -135,31 +136,9 @@ yes' in the block header.")
             (oe-html-css-content url)
           (oe-html-css-link url integrity)))))
 
-;; org-mode and export configuration
-(add-hook 'org-mode-hook
-	  (lambda ()
-	    (setq org-confirm-babel-evaluate nil)
-	    (setq org-export-allow-BIND 1)
-	    (setq org-html-doctype "html5")
-	    (setq org-html-head oe-html-head)
-	    (setq org-babel-sh-command "bash")
-	    (setq org-babel-python-command "python3")
-	    (setq org-babel-default-header-args
-		  (list `(:session . "none")
-			`(:eval . ,(if (getopt "evaluate") "yes" "no"))
-			`(:results . "output replace")
-			`(:exports . "both")
-			`(:cache . "no")
-			`(:noweb . "no")
-			`(:hlines . "no")
-			`(:tangle . "no")
-			`(:padnewline . "yes")))
-	    (setq org-babel-default-header-args:sh
-		  (list `(:prologue . ,cli-sh-src-prologue)))
-
-            (cli-org-babel-load-languages (getopt "add-langs"))
-
-	    )) ;; end org-mode-hook
+;; apparently this needs to be explicitly global to be easily defined in
+;; org-mode-hook
+(defvar oe-output-dir nil)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;; compile and export ;;;;;;;;;;;;;;;
@@ -174,6 +153,33 @@ yes' in the block header.")
 ;; directory contains the input file.
 (let* ((infile (expand-file-name (getopt "infile")))
        (outfile (cli-get-output-file (getopt "outfile") infile ".html")))
+
+  (setq oe-output-dir (file-name-directory outfile))
+
+  (add-hook 'org-mode-hook
+	    (lambda ()
+	      (setq org-confirm-babel-evaluate nil)
+	      (setq org-export-allow-BIND 1)
+	      (setq org-html-doctype "html5")
+	      (setq org-html-head oe-html-head)
+	      (setq org-babel-sh-command "bash")
+	      (setq org-babel-python-command "python3")
+	      (setq org-babel-default-header-args
+		    (list `(:session . "none")
+		      `(:eval . ,(if (getopt "evaluate") "yes" "no"))
+		      `(:results . "output replace")
+		      `(:exports . "both")
+		      `(:cache . "no")
+		      `(:noweb . "no")
+		      `(:hlines . "no")
+		      `(:tangle . "no")
+		      `(:padnewline . "yes")
+                      `(:output-dir . ,oe-output-dir)))
+	      (setq org-babel-default-header-args:sh
+		    (list `(:prologue . ,cli-sh-src-prologue)))
+
+              (cli-org-babel-load-languages (getopt "add-langs"))))
+
   (with-temp-buffer
     (insert-file-contents-literally infile)
     (cd (file-name-directory infile))

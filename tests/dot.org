@@ -1,0 +1,3 @@
+#+BEGIN_SRC dot :file test-dot.png :exports results :eval yes
+digraph G {Hello->World}
+#+END_SRC
