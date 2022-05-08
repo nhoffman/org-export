@@ -86,10 +86,14 @@ environment variable; for example on OS X:
 
 : EMACS=/Applications/Emacs.app/Contents/MacOS/Emacs org-export html --infile ...
 
-By default, a new directory is created in =$XDG_DATA_HOME/org-export=
-(or =~/.local/share/org-export= if =$XDG_DATA_HOME= is undefined) the
-first time a script is executed, and dependencies (such as the most
-recent version of org-mode) are installed.
+The package directory is defined as follows:
+
+- In the directory identified by =$ORG_EXPORT_DATA_DIR=; or
+- in the directory identified by =$XDG_DATA_HOME/org-export=; or
+- in =~/.local/share/org-export=
+
+The first time a script is executed the package directory is created and
+dependencies (such as the most recent version of org-mode) are installed.
 
 Note that source code blocks are evaluated with the working directory
 set to be the parent directory of the input file.
@@ -260,9 +264,12 @@ Additional languages may be activated using the argument =--add-langs=.
 
 * Additional configuration
 
-Additional configuration may be provided as elisp commands in
-=$XDG_CONFIG_HOME/org-export/config.el= (defaulting to
-=~/.config/org-export/config.el=)
+Scripts will search for a config file containing elisp commands in the following
+sequence:
+
+- =$ORG_EXPORT_CONFIG_DIR/config.el=
+- =$XDG_CONFIG_HOME/org-export/config.el=
+- =~/.config/org-export/config.el=
 
 Configuration may also be provided as elisp expressions using the
 arguments =--config= and =--config-file=. For example, to compile a

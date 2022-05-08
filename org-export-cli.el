@@ -21,14 +21,19 @@
               (append (mapcar 'file-name-as-directory (butlast parts)) (last parts))
               "")))
 
+(defun cli-expand-file-name (path)
+  (if path (expand-file-name path)))
+
 (defvar cli-package-dir
-  (cli-path-join
-   (or (getenv "XDG_DATA_HOME") "~/.local/share") "org-export")
+  (or (cli-expand-file-name (getenv "ORG_EXPORT_DATA_DIR"))
+      (cli-path-join
+       (or (getenv "XDG_DATA_HOME") "~/.local/share") "org-export"))
   "Location to install org-mode and dependencies")
 
 (defvar cli-config-dir
-  (cli-path-join
-   (or (getenv "XDG_CONFIG_HOME") "~/.config") "org-export")
+  (or (cli-expand-file-name (getenv "ORG_EXPORT_CONFIG_DIR"))
+      (cli-path-join
+       (or (getenv "XDG_CONFIG_HOME") "~/.config") "org-export"))
   "Directory for config files")
 
 (defvar cli-config-file
@@ -357,7 +362,8 @@ with class 'color and highest min-color value."
 	    (mapcar 'file-name-nondirectory command-line-args))
     (progn
       (setq options-alist
-	    `(("--show-package-dir" "Print the path to package-dir" nil)
+	    `(("--show-package-dir" "Print the path to the directory storing elisp packages" nil)
+              ("--show-config" "Print the path where the config file may be located" nil)
               ("--rm-package-dir" "Remove 'package-dir' and any installed packges" nil)
               ("--show-default-languages" "list the languages that are activated by default" nil)
 	      ))
@@ -376,6 +382,11 @@ with class 'color and highest min-color value."
       (if (getopt "show-package-dir")
           (progn
             (message cli-package-dir)
+            (kill-emacs 0)))
+
+      (if (getopt "show-config")
+          (progn
+            (message cli-config-file)
             (kill-emacs 0)))
 
       (if (and (getopt "rm-package-dir")
