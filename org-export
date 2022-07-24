@@ -21,10 +21,10 @@ if [[ ! -f $scriptname ]]; then
     exit 1
 fi
 
-if [[ $(uname) == "Darwin" && -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
+if [[ -x /Applications/Emacs.app/Contents/MacOS/Emacs ]]; then
     emacs="${EMACS-/Applications/Emacs.app/Contents/MacOS/Emacs}"
 else
-    emacs="${EMACS-$(which emacs)}"
+    emacs="$(which emacs)"
 fi
 
 emacs_version=$($emacs --version | head -1)
